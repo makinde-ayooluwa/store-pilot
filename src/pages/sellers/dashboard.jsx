@@ -10,9 +10,25 @@ import {
     MdWarning,
     MdArrowForward
 } from 'react-icons/md'
-
+import {
+    ResponsiveContainer,
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip
+} from "recharts"
 export default function SellerDashboard() {
-
+    const salesData = [
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 220000 },
+        { day: "Sun", sales: 175000 }
+    ]
     const stats = [
         {
             title: "Total Sales",
@@ -95,7 +111,6 @@ export default function SellerDashboard() {
 
     return (
         <div className="p-4 sm:p-6 bg-gray-50 min-h-[calc(100vh-70px)]">
-
             {/* Dashboard intro */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
 
@@ -163,44 +178,88 @@ export default function SellerDashboard() {
                 {/* SALES OVERVIEW */}
                 <div className="xl:col-span-2 bg-white border border-gray-200 rounded-2xl p-5">
 
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="bg-white border border-gray-200 rounded-2xl p-5">
 
-                        <div>
-                            <h3 className="font-semibold text-gray-900">
-                                Sales Overview
-                            </h3>
+                        <div className="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-900">
+                                    Sales Overview
+                                </h2>
 
-                            <p className="text-xs text-gray-500 mt-1">
-                                Track your store's sales performance
-                            </p>
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Your sales performance for the last 7 days
+                                </p>
+                            </div>
+
+                            <select className="border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none">
+                                <option>Last 7 days</option>
+                                <option>Last 30 days</option>
+                                <option>Last 3 months</option>
+                                <option>Last year</option>
+                            </select>
                         </div>
 
-                        <select className="border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none">
-                            <option>Last 7 days</option>
-                            <option>Last 30 days</option>
-                            <option>Last 3 months</option>
-                            <option>This year</option>
-                        </select>
 
-                    </div>
+                        <div className="w-full h-[320px]">
 
+                            <ResponsiveContainer width="100%" height="100%">
 
-                    {/* Temporary chart area */}
-                    <div className="h-[280px] mt-6 flex items-center justify-center border border-dashed border-gray-200 rounded-xl">
+                                <AreaChart data={salesData}>
 
-                        <div className="text-center">
-                            <MdTrendingUp
-                                size={40}
-                                className="mx-auto text-green-600"
-                            />
+                                    <defs>
+                                        <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
+                                            <stop
+                                                offset="0%"
+                                                stopColor="#16a34a"
+                                                stopOpacity={0.25}
+                                            />
 
-                            <p className="text-sm font-medium text-gray-700 mt-2">
-                                Sales Chart
-                            </p>
+                                            <stop
+                                                offset="100%"
+                                                stopColor="#16a34a"
+                                                stopOpacity={0}
+                                            />
+                                        </linearGradient>
+                                    </defs>
 
-                            <p className="text-xs text-gray-400">
-                                Chart will be connected to your sales data
-                            </p>
+                                    <CartesianGrid
+                                        strokeDasharray="3 3"
+                                        vertical={false}
+                                    />
+
+                                    <XAxis
+                                        dataKey="day"
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fontSize: 12 }}
+                                    />
+
+                                    <YAxis
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fontSize: 12 }}
+                                        tickFormatter={(value) => `₦${value / 1000}k`}
+                                    />
+
+                                    <Tooltip
+                                        formatter={(value) => [
+                                            `₦${Number(value).toLocaleString()}`,
+                                            "Sales"
+                                        ]}
+                                    />
+
+                                    <Area
+                                        type="monotone"
+                                        dataKey="sales"
+                                        stroke="#16a34a"
+                                        strokeWidth={3}
+                                        fill="url(#salesGradient)"
+                                    />
+
+                                </AreaChart>
+
+                            </ResponsiveContainer>
+
                         </div>
 
                     </div>

@@ -7,7 +7,7 @@ import {
 
 export default function SellerHeader({ setOpen }) {
     return (
-        <header className="w-full h-[70px] sticky top-0 border-b border-gray-200 bg-white px-3 sm:px-5">
+        <header className="w-full h-[70px] sticky top-0 z-200 border-b border-gray-200 bg-white px-3 sm:px-5">
 
             <div className="h-full flex items-center justify-between">
 
