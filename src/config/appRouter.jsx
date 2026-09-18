@@ -14,6 +14,8 @@ import ProductDetails from '../pages/product-details'
 import Cart from '../pages/cart'
 import Checkout from '../pages/checkout'
 import OrderDetails from '../pages/customer/orderDetails'
+import Orders from '../pages/customer/orders'
+import Account from '../pages/customer/account'
 
 export default function AppRouter() {
   return (
@@ -27,7 +29,12 @@ export default function AppRouter() {
         <Route path="/sell" element={<Sell />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/orders/:id" element={<OrderDetails />} />
+        <Route path="/orders" element={<Outlet />}>
+          <Route index element={<Orders />} />
+          <Route path=':id' element={<OrderDetails />} />
+        </Route>
+        <Route path='/account' element={<Account />} />
+        {/* SELLER */}
         <Route path='/seller' element={
           <SellerLayout />
         }
