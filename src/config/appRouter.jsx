@@ -9,13 +9,25 @@ import SellerCategories from '../pages/sellers/categories'
 import SellerStockOverview from '../pages/sellers/stockOverview'
 import Homepage from '../pages/homepage'
 import Sell from '../pages/sell'
+import Products from '../pages/products'
+import ProductDetails from '../pages/product-details'
+import Cart from '../pages/cart'
+import Checkout from '../pages/checkout'
+import OrderDetails from '../pages/customer/orderDetails'
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Homepage />} />
+        <Route path="/products" element={<Outlet />}>
+          <Route index element={<Products />} />
+          <Route path=':id' element={<ProductDetails />} />
+        </Route>
         <Route path="/sell" element={<Sell />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/orders/:id" element={<OrderDetails />} />
         <Route path='/seller' element={
           <SellerLayout />
         }
