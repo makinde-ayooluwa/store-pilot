@@ -19,10 +19,9 @@ export default function Register() {
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [loading, setLoading] = useState(false)
-
+    const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
+        fullname: '',
         email: '',
         password: '',
         confirmPassword: '',
@@ -61,12 +60,8 @@ export default function Register() {
     const validateForm = () => {
         const newErrors = {}
 
-        if (!formData.firstName.trim()) {
-            newErrors.firstName = 'First name is required'
-        }
-
-        if (!formData.lastName.trim()) {
-            newErrors.lastName = 'Last name is required'
+        if (!formData.fullname.trim()) {
+            newErrors.fullname = 'Full name is required'
         }
 
         if (!formData.email.trim()) {
@@ -98,28 +93,46 @@ export default function Register() {
         return Object.keys(newErrors).length === 0
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
         if (!validateForm()) return
 
         setLoading(true)
-        const result = register(formData);
-        // Temporary frontend registration.
-        // This will later connect to POST /api/auth/register.
-        setTimeout(() => {
-            setLoading(false)
+        setError(null)
 
-            if (result.status == 200) {
-                if (formData.role === 'seller') {
-                    navigate('/seller')
-                    return
-                }
-                navigate("/")
+        try {
+            const result = await register(formData)
+
+            console.log("REGISTER RESULT:", result)
+
+            if (!result?.status) {
+                setError({
+                    status: 500,
+                    message: result?.message || "Registration failed"
+                })
+                return
             }
 
-            navigate('/')
-        }, 800)
+            if (formData.role === 'seller') {
+                navigate('/seller')
+            } else {
+                navigate('/')
+            }
+
+        } catch (error) {
+            console.log("REGISTER ERROR:", error)
+
+            setError({
+                status: error?.response?.status || 500,
+                message:
+                    error?.response?.data?.message ||
+                    error?.message ||
+                    "Registration failed"
+            })
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -155,7 +168,11 @@ export default function Register() {
 
             {/* Main */}
             <main className="px-4 py-10 sm:px-6 lg:py-12">
-
+                {error?.message && (
+                    <p className="mb-4 text-center text-sm text-red-500">
+                        {(error.message)}
+                    </p>
+                )}
                 <div className="mx-auto w-full max-w-xl">
 
                     {/* Intro */}
@@ -264,53 +281,29 @@ export default function Register() {
 
                                 <div>
                                     <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-                                        First Name
+                                        Full Name
                                     </label>
 
                                     <input
                                         type="text"
-                                        name="firstName"
-                                        value={formData.firstName}
+                                        name="fullname"
+                                        value={formData.fullname}
                                         onChange={handleChange}
-                                        placeholder="First name"
-                                        autoComplete="given-name"
-                                        className={`h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none transition placeholder:text-slate-400 ${errors.firstName
+                                        placeholder="Full name"
+                                        className={`h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none transition placeholder:text-slate-400 ${errors.fullname
                                             ? 'border-red-300 focus:border-red-500'
                                             : 'border-slate-200 focus:border-emerald-500'
                                             }`}
                                     />
 
-                                    {errors.firstName && (
+                                    {errors.fullname && (
                                         <p className="mt-1.5 text-xs text-red-500">
-                                            {errors.firstName}
+                                            {errors.fullname}
                                         </p>
                                     )}
                                 </div>
 
-                                <div>
-                                    <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-                                        Last Name
-                                    </label>
 
-                                    <input
-                                        type="text"
-                                        name="lastName"
-                                        value={formData.lastName}
-                                        onChange={handleChange}
-                                        placeholder="Last name"
-                                        autoComplete="family-name"
-                                        className={`h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none transition placeholder:text-slate-400 ${errors.lastName
-                                            ? 'border-red-300 focus:border-red-500'
-                                            : 'border-slate-200 focus:border-emerald-500'
-                                            }`}
-                                    />
-
-                                    {errors.lastName && (
-                                        <p className="mt-1.5 text-xs text-red-500">
-                                            {errors.lastName}
-                                        </p>
-                                    )}
-                                </div>
 
                             </div>
 

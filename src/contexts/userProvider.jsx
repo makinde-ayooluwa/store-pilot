@@ -14,8 +14,10 @@ export const UserProvider = ({ children }) => {
         try {
             const checked = localStorage.getItem("user");
             if (checked) {
-                setUser(checked);
-                console.log("USER TEST CHECKED")
+                const response = await axios.post(`${backendUrl}/auth/getUser`, {id: checked})
+                const data = await response.data;
+                setUser(data)
+                console.log("USER TEST CHECKED", user)
             } else {
                 setUser(null);
                 console.log("USER DOES NOT EXISTS");
@@ -35,14 +37,15 @@ export const UserProvider = ({ children }) => {
             await localStorage.setItem("user", JSON.stringify({id: result._id}));
             setUser(result._id)
             return {
-                status: true
+                status: true,
+                message: result.message
             }
         }else{
             return {
-                status: false
+                status: false,
+                message: result.message
             }
         }
-        console.log(result);
     }
     return <UserContext.Provider value={{ user, login, register }}>
         {children}
