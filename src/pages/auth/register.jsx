@@ -110,7 +110,7 @@ export default function Register() {
             setLoading(false)
 
             if (formData.role === 'seller') {
-                navigate('/seller/register')
+                navigate('/seller')
                 return
             }
 

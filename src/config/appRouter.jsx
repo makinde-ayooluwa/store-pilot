@@ -32,6 +32,11 @@ import Terms from '../pages/terms'
 import Privacy from '../pages/privacy'
 import NotFound from '../pages/notFound'
 import SellerRegister from '../pages/sellers/register'
+import EditProduct from '../pages/sellers/editProduct'
+import SellerProductDetails from '../pages/sellers/productDetails'
+import SellerOrders from '../pages/sellers/orders'
+import SellerCustomers from '../pages/sellers/customers'
+import SellerOrderDetails from '../pages/sellers/orderDetails'
 export default function AppRouter() {
     const { products, categories, getProductsByCategory, getCategoryBySlug, stores } = useProduct();
     return (
@@ -98,10 +103,31 @@ export default function AppRouter() {
                         <Route index element={<SellerAllProducts />} />
                         <Route path='add' element={<SellerAddProduct />} />
                         <Route path='categories' element={<SellerCategories />} />
+                        <Route
+                            path=":id/edit"
+                            element={<EditProduct />}
+                        />
+                        <Route
+                            path=":id"
+                            element={<SellerProductDetails />}
+                        />
                     </Route>
+                    <Route
+                        path="orders"
+                        element={<Outlet />}
+                    >
+                        <Route index element={<SellerOrders />} />
+                        <Route path=':id' element={<SellerOrderDetails />} />
+                    </Route>
+
                     <Route path='inventory' element={<Outlet />}>
                         <Route index element={<SellerStockOverview />} />
                     </Route>
+
+                    <Route
+                        path="customers"
+                        element={<SellerCustomers />}
+                    />
                     <Route path='wallet' element={<SellerWallet />} />
                     <Route path='*' element={<h1>Not Found</h1>} />
                 </Route>

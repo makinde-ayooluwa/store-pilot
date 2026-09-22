@@ -3,59 +3,18 @@ import {
     MdAdd,
     MdSearch,
     MdFilterList,
-    MdMoreVert,
     MdEdit,
-    MdDelete,
+    MdInventory,
     MdVisibility,
-    MdInventory
+    MdMoreVert
 } from "react-icons/md"
 import { Link } from "react-router-dom"
+import { useSeller } from "../../contexts/sellerProvider"
 
-const products = [
-    {
-        id: "SP-001",
-        name: "Nike Air Max",
-        category: "Shoes",
-        price: 85000,
-        stock: 24,
-        status: "Active"
-    },
-    {
-        id: "SP-002",
-        name: "Smart Watch Pro",
-        category: "Electronics",
-        price: 45000,
-        stock: 8,
-        status: "Active"
-    },
-    {
-        id: "SP-003",
-        name: "AirPods Pro",
-        category: "Electronics",
-        price: 120000,
-        stock: 0,
-        status: "Out of stock"
-    },
-    {
-        id: "SP-004",
-        name: "Classic Hoodie",
-        category: "Fashion",
-        price: 28000,
-        stock: 15,
-        status: "Active"
-    },
-    {
-        id: "SP-005",
-        name: "Leather Backpack",
-        category: "Bags",
-        price: 35000,
-        stock: 4,
-        status: "Low stock"
-    }
-]
 
 export default function SellerAllProducts() {
-
+    const { products } = useSeller()
+    const [openMenu, setOpenMenu] = useState(null)
     const [search, setSearch] = useState("")
     const [filter, setFilter] = useState("All")
 
@@ -221,10 +180,21 @@ export default function SellerAllProducts() {
                                     bg-white
                                 "
                             >
-                                <option value="All">All Products</option>
-                                <option value="Active">Active</option>
-                                <option value="Low stock">Low Stock</option>
-                                <option value="Out of stock">Out of Stock</option>
+                                <option value="All">
+                                    All Products
+                                </option>
+
+                                <option value="Active">
+                                    Active
+                                </option>
+
+                                <option value="Low stock">
+                                    Low Stock
+                                </option>
+
+                                <option value="Out of stock">
+                                    Out of Stock
+                                </option>
                             </select>
 
                         </div>
@@ -263,7 +233,9 @@ export default function SellerAllProducts() {
                                     Status
                                 </th>
 
-                                <th className="px-5 py-3"></th>
+                                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                                    Actions
+                                </th>
 
                             </tr>
 
@@ -297,6 +269,7 @@ export default function SellerAllProducts() {
                                             </div>
 
                                             <div>
+
                                                 <p className="text-sm font-semibold text-gray-900">
                                                     {product.name}
                                                 </p>
@@ -304,6 +277,7 @@ export default function SellerAllProducts() {
                                                 <p className="text-xs text-gray-400">
                                                     {product.id}
                                                 </p>
+
                                             </div>
 
                                         </div>
@@ -340,10 +314,9 @@ export default function SellerAllProducts() {
                                                 rounded-full
                                                 text-xs
                                                 font-medium
-                                                ${
-                                                    product.status === "Active"
-                                                        ? "bg-green-50 text-green-700"
-                                                        : product.status === "Low stock"
+                                                ${product.status === "Active"
+                                                    ? "bg-green-50 text-green-700"
+                                                    : product.status === "Low stock"
                                                         ? "bg-orange-50 text-orange-600"
                                                         : "bg-red-50 text-red-600"
                                                 }
@@ -356,17 +329,101 @@ export default function SellerAllProducts() {
 
 
                                     {/* ACTIONS */}
-                                    <td className="px-5 py-4">
+                                    <td className="px-5 py-4 relative">
+                                        <div className="relative inline-block">
 
-                                        <button className="
-                                            p-2
-                                            rounded-lg
-                                            hover:bg-gray-100
-                                            text-gray-500
-                                        ">
-                                            <MdMoreVert size={21} />
-                                        </button>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setOpenMenu(
+                                                        openMenu === product.id
+                                                            ? null
+                                                            : product.id
+                                                    )
+                                                }
+                                                className="
+                w-9
+                h-9
+                flex
+                items-center
+                justify-center
+                rounded-lg
+                text-gray-500
+                hover:bg-gray-100
+                hover:text-gray-700
+                transition
+            "
+                                            >
+                                                <MdMoreVert size={21} />
+                                            </button>
 
+
+                                            {openMenu === product.id && (
+                                                <div
+                                                    className="
+                    absolute
+                    right-0
+                    top-11
+                    z-50
+                    w-36
+                    bg-white
+                    border
+                    border-gray-200
+                    rounded-xl
+                    shadow-lg
+                    p-1
+                "
+                                                >
+
+                                                    {/* View */}
+                                                    <Link
+                                                        to={`/seller/products/${product.id}`}
+                                                        onClick={() => setOpenMenu(null)}
+                                                        className="
+                        flex
+                        items-center
+                        gap-2
+                        w-full
+                        px-3
+                        py-2.5
+                        rounded-lg
+                        text-sm
+                        text-gray-700
+                        hover:bg-gray-50
+                        transition
+                    "
+                                                    >
+                                                        <MdVisibility size={18} />
+                                                        View
+                                                    </Link>
+
+
+                                                    {/* Edit */}
+                                                    <Link
+                                                        to={`/seller/products/${product.id}/edit`}
+                                                        onClick={() => setOpenMenu(null)}
+                                                        className="
+                        flex
+                        items-center
+                        gap-2
+                        w-full
+                        px-3
+                        py-2.5
+                        rounded-lg
+                        text-sm
+                        text-green-700
+                        hover:bg-green-50
+                        transition
+                    "
+                                                    >
+                                                        <MdEdit size={18} />
+                                                        Edit
+                                                    </Link>
+
+                                                </div>
+                                            )}
+
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -420,9 +477,24 @@ export default function SellerAllProducts() {
 
                                 </div>
 
-                                <button className="p-2 text-gray-500">
-                                    <MdMoreVert size={21} />
-                                </button>
+                                <Link
+                                    to={`/seller/products/${product.id}/edit`}
+                                    className="
+                                        inline-flex
+                                        items-center
+                                        gap-1.5
+                                        px-3
+                                        py-2
+                                        rounded-lg
+                                        text-sm
+                                        font-medium
+                                        text-green-700
+                                        bg-green-50
+                                    "
+                                >
+                                    <MdEdit size={17} />
+                                    Edit
+                                </Link>
 
                             </div>
 
@@ -474,10 +546,9 @@ export default function SellerAllProducts() {
                                         rounded-full
                                         text-xs
                                         font-medium
-                                        ${
-                                            product.status === "Active"
-                                                ? "bg-green-50 text-green-700"
-                                                : product.status === "Low stock"
+                                        ${product.status === "Active"
+                                            ? "bg-green-50 text-green-700"
+                                            : product.status === "Low stock"
                                                 ? "bg-orange-50 text-orange-600"
                                                 : "bg-red-50 text-red-600"
                                         }

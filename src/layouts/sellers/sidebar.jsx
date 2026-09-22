@@ -108,14 +108,14 @@ export default function SellerSidebar({ open, setOpen }) {
                 title: "All Orders",
                 link: "/seller/orders"
             },
-            {
-                title: "Pending",
-                link: "/seller/orders/pending"
-            },
-            {
-                title: "Completed",
-                link: "/seller/orders/completed"
-            }
+            // {
+            //     title: "Pending",
+            //     link: "/seller/orders/pending"
+            // },
+            // {
+            //     title: "Completed",
+            //     link: "/seller/orders/completed"
+            // }
         ]
     },
 

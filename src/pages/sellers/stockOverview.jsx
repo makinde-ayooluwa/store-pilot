@@ -13,98 +13,13 @@ import {
     MdArrowUpward,
     MdArrowDownward
 } from 'react-icons/md'
-
+import {useSeller} from "../../contexts/sellerProvider"
 export default function SellerStockOverview() {
     const [search, setSearch] = useState('')
     const [stockFilter, setStockFilter] = useState('All')
     const [openMenu, setOpenMenu] = useState(null)
 
-    const products = [
-        {
-            id: 1,
-            name: 'iPhone 15 Pro',
-            sku: 'IPH15-PRO-001',
-            category: 'Electronics',
-            stock: 42,
-            minStock: 10,
-            price: 1250000,
-            status: 'In Stock',
-            movement: '+12',
-            movementType: 'up'
-        },
-        {
-            id: 2,
-            name: 'Samsung Galaxy S24',
-            sku: 'SAM-S24-002',
-            category: 'Electronics',
-            stock: 8,
-            minStock: 10,
-            price: 980000,
-            status: 'Low Stock',
-            movement: '-4',
-            movementType: 'down'
-        },
-        {
-            id: 3,
-            name: 'Nike Air Max',
-            sku: 'NIK-AMX-003',
-            category: 'Fashion',
-            stock: 25,
-            minStock: 8,
-            price: 185000,
-            status: 'In Stock',
-            movement: '+7',
-            movementType: 'up'
-        },
-        {
-            id: 4,
-            name: 'MacBook Air M3',
-            sku: 'MAC-M3-004',
-            category: 'Electronics',
-            stock: 0,
-            minStock: 5,
-            price: 1850000,
-            status: 'Out of Stock',
-            movement: '-8',
-            movementType: 'down'
-        },
-        {
-            id: 5,
-            name: 'Sony WH-1000XM5',
-            sku: 'SON-WH5-005',
-            category: 'Electronics',
-            stock: 14,
-            minStock: 6,
-            price: 450000,
-            status: 'In Stock',
-            movement: '+3',
-            movementType: 'up'
-        },
-        {
-            id: 6,
-            name: 'Leather Backpack',
-            sku: 'LTH-BAG-006',
-            category: 'Accessories',
-            stock: 4,
-            minStock: 8,
-            price: 75000,
-            status: 'Low Stock',
-            movement: '-2',
-            movementType: 'down'
-        },
-        {
-            id: 7,
-            name: 'Air Fryer 5L',
-            sku: 'AIR-FRY-007',
-            category: 'Home & Kitchen',
-            stock: 19,
-            minStock: 5,
-            price: 95000,
-            status: 'In Stock',
-            movement: '+9',
-            movementType: 'up'
-        }
-    ]
+    const {products} = useSeller() 
 
     const totalProducts = products.length
 

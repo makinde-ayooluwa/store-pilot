@@ -19,6 +19,7 @@ import {
     CartesianGrid,
     Tooltip
 } from "recharts"
+import { useSocket } from '../../contexts/socketProvider'
 export default function SellerDashboard() {
     const salesData = [
         { day: "Mon", sales: 85000 },
@@ -108,7 +109,7 @@ export default function SellerDashboard() {
             revenue: "₦435,000"
         }
     ]
-
+    const { send } = useSocket()
     return (
         <div className="p-4 sm:p-6 bg-gray-50 min-h-[calc(100vh-70px)]">
             {/* Dashboard intro */}

@@ -11,6 +11,7 @@ import {
     MdClose,
     MdKeyboardArrowDown
 } from 'react-icons/md'
+import { useSeller } from '../../contexts/sellerProvider'
 
 export default function SellerCategories() {
     const [search, setSearch] = useState('')
@@ -18,50 +19,7 @@ export default function SellerCategories() {
     const [showModal, setShowModal] = useState(false)
     const [openMenu, setOpenMenu] = useState(null)
 
-    const [categories, setCategories] = useState([
-        {
-            id: 1,
-            name: 'Electronics',
-            description: 'Phones, laptops and electronic devices',
-            products: 24,
-            status: 'Active'
-        },
-        {
-            id: 2,
-            name: 'Fashion',
-            description: 'Clothing, shoes and accessories',
-            products: 18,
-            status: 'Active'
-        },
-        {
-            id: 3,
-            name: 'Home & Kitchen',
-            description: 'Home appliances and kitchen items',
-            products: 12,
-            status: 'Active'
-        },
-        {
-            id: 4,
-            name: 'Beauty',
-            description: 'Beauty and personal care products',
-            products: 9,
-            status: 'Active'
-        },
-        {
-            id: 5,
-            name: 'Sports',
-            description: 'Sports equipment and accessories',
-            products: 7,
-            status: 'Active'
-        },
-        {
-            id: 6,
-            name: 'Accessories',
-            description: 'Useful accessories and everyday items',
-            products: 5,
-            status: 'Inactive'
-        }
-    ])
+    const {categories, products} = useSeller()
 
     const [form, setForm] = useState({
         name: '',
@@ -85,10 +43,7 @@ export default function SellerCategories() {
         return matchesSearch && matchesStatus
     })
 
-    const totalProducts = categories.reduce(
-        (total, category) => total + category.products,
-        0
-    )
+    const totalProducts = products.length
 
     const activeCategories = categories.filter(
         category => category.status === 'Active'
