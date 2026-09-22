@@ -11,10 +11,11 @@ import {
     MdVisibilityOff
 } from 'react-icons/md'
 import { Link, useNavigate } from 'react-router-dom'
+import { useUser } from '../../contexts/userProvider';
 
 export default function Register() {
     const navigate = useNavigate()
-
+    const { register } = useUser();
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -103,15 +104,18 @@ export default function Register() {
         if (!validateForm()) return
 
         setLoading(true)
-
+        const result = register(formData);
         // Temporary frontend registration.
         // This will later connect to POST /api/auth/register.
         setTimeout(() => {
             setLoading(false)
 
-            if (formData.role === 'seller') {
-                navigate('/seller')
-                return
+            if (result.status == 200) {
+                if (formData.role === 'seller') {
+                    navigate('/seller')
+                    return
+                }
+                navigate("/")
             }
 
             navigate('/')
@@ -191,11 +195,10 @@ export default function Register() {
                                     <button
                                         type="button"
                                         onClick={() => selectRole('user')}
-                                        className={`rounded-xl border p-4 text-left transition ${
-                                            formData.role === 'user'
-                                                ? 'border-emerald-500 bg-emerald-50'
-                                                : 'border-slate-200 hover:border-slate-300'
-                                        }`}
+                                        className={`rounded-xl border p-4 text-left transition ${formData.role === 'user'
+                                            ? 'border-emerald-500 bg-emerald-50'
+                                            : 'border-slate-200 hover:border-slate-300'
+                                            }`}
                                     >
                                         <div className="flex items-start justify-between">
 
@@ -224,11 +227,10 @@ export default function Register() {
                                     <button
                                         type="button"
                                         onClick={() => selectRole('seller')}
-                                        className={`rounded-xl border p-4 text-left transition ${
-                                            formData.role === 'seller'
-                                                ? 'border-emerald-500 bg-emerald-50'
-                                                : 'border-slate-200 hover:border-slate-300'
-                                        }`}
+                                        className={`rounded-xl border p-4 text-left transition ${formData.role === 'seller'
+                                            ? 'border-emerald-500 bg-emerald-50'
+                                            : 'border-slate-200 hover:border-slate-300'
+                                            }`}
                                     >
                                         <div className="flex items-start justify-between">
 
@@ -272,11 +274,10 @@ export default function Register() {
                                         onChange={handleChange}
                                         placeholder="First name"
                                         autoComplete="given-name"
-                                        className={`h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none transition placeholder:text-slate-400 ${
-                                            errors.firstName
-                                                ? 'border-red-300 focus:border-red-500'
-                                                : 'border-slate-200 focus:border-emerald-500'
-                                        }`}
+                                        className={`h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none transition placeholder:text-slate-400 ${errors.firstName
+                                            ? 'border-red-300 focus:border-red-500'
+                                            : 'border-slate-200 focus:border-emerald-500'
+                                            }`}
                                     />
 
                                     {errors.firstName && (
@@ -298,11 +299,10 @@ export default function Register() {
                                         onChange={handleChange}
                                         placeholder="Last name"
                                         autoComplete="family-name"
-                                        className={`h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none transition placeholder:text-slate-400 ${
-                                            errors.lastName
-                                                ? 'border-red-300 focus:border-red-500'
-                                                : 'border-slate-200 focus:border-emerald-500'
-                                        }`}
+                                        className={`h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none transition placeholder:text-slate-400 ${errors.lastName
+                                            ? 'border-red-300 focus:border-red-500'
+                                            : 'border-slate-200 focus:border-emerald-500'
+                                            }`}
                                     />
 
                                     {errors.lastName && (
@@ -334,11 +334,10 @@ export default function Register() {
                                         onChange={handleChange}
                                         placeholder="you@example.com"
                                         autoComplete="email"
-                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none transition placeholder:text-slate-400 ${
-                                            errors.email
-                                                ? 'border-red-300 focus:border-red-500'
-                                                : 'border-slate-200 focus:border-emerald-500'
-                                        }`}
+                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none transition placeholder:text-slate-400 ${errors.email
+                                            ? 'border-red-300 focus:border-red-500'
+                                            : 'border-slate-200 focus:border-emerald-500'
+                                            }`}
                                     />
 
                                 </div>
@@ -374,11 +373,10 @@ export default function Register() {
                                         onChange={handleChange}
                                         placeholder="At least 8 characters"
                                         autoComplete="new-password"
-                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-11 text-sm outline-none transition placeholder:text-slate-400 ${
-                                            errors.password
-                                                ? 'border-red-300 focus:border-red-500'
-                                                : 'border-slate-200 focus:border-emerald-500'
-                                        }`}
+                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-11 text-sm outline-none transition placeholder:text-slate-400 ${errors.password
+                                            ? 'border-red-300 focus:border-red-500'
+                                            : 'border-slate-200 focus:border-emerald-500'
+                                            }`}
                                     />
 
                                     <button
@@ -428,11 +426,10 @@ export default function Register() {
                                         onChange={handleChange}
                                         placeholder="Repeat your password"
                                         autoComplete="new-password"
-                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-11 text-sm outline-none transition placeholder:text-slate-400 ${
-                                            errors.confirmPassword
-                                                ? 'border-red-300 focus:border-red-500'
-                                                : 'border-slate-200 focus:border-emerald-500'
-                                        }`}
+                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-11 text-sm outline-none transition placeholder:text-slate-400 ${errors.confirmPassword
+                                            ? 'border-red-300 focus:border-red-500'
+                                            : 'border-slate-200 focus:border-emerald-500'
+                                            }`}
                                     />
 
                                     <button

@@ -21,6 +21,8 @@ import {
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
+import { useWishlist } from '../contexts/wishlistProvider'
+import { useProduct } from '../contexts/productProvider'
 
 const reviews = [
     {
@@ -50,43 +52,18 @@ const reviews = [
 ]
 
 
-const storeData = {
-    'TechHub Store': {
-        slug: 'techhub-store',
-        products: 128,
-        rating: 4.9,
-        location: 'Lagos, Nigeria'
-    },
-    'Urban Fits': {
-        slug: 'urban-fits',
-        products: 94,
-        rating: 4.8,
-        location: 'Lagos, Nigeria'
-    },
-    'Home Space': {
-        slug: 'home-space',
-        products: 76,
-        rating: 4.7,
-        location: 'Abuja, Nigeria'
-    },
-    'Glow Beauty': {
-        slug: 'glow-beauty',
-        products: 61,
-        rating: 4.8,
-        location: 'Lagos, Nigeria'
-    }
-}
 
 
 export default function ProductDetails({products}) {
 
+const {stores} = useProduct();
     const { id } = useParams()
     const navigate = useNavigate()
 
     const [mobileMenu, setMobileMenu] = useState(false)
     const [quantity, setQuantity] = useState(1)
     const [selectedImage, setSelectedImage] = useState(0)
-    const [favorite, setFavorite] = useState(false)
+    const {isWishlisted, toggleWishlist} = useWishlist();
     const [addedToCart, setAddedToCart] = useState(false)
 
     const { addToCart } = useCart()
@@ -195,7 +172,7 @@ export default function ProductDetails({products}) {
     }
 
 
-    const store = storeData[product.store]
+    const store = stores[product.store]
 
 
     return (
@@ -268,13 +245,13 @@ export default function ProductDetails({products}) {
 
                                 <button
                                     onClick={() =>
-                                        setFavorite(!favorite)
+                                        toggleWishlist(product)
                                     }
                                     className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm transition hover:scale-105"
                                     aria-label="Add to wishlist"
                                 >
 
-                                    {favorite ? (
+                                    {isWishlisted(product.id) ? (
                                         <MdFavorite
                                             size={21}
                                             className="text-rose-500"

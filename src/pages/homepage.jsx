@@ -179,7 +179,7 @@ export default function Homepage({ products, categories, stores }) {
                         {categories.map(category => (
                             <Link
                                 key={category.name}
-                                to={`/categories/${category.name.toLowerCase().replaceAll(' ', '-')}`}
+                                to={`/categories/${category.slug}`}
                                 className="group relative overflow-hidden rounded-xl"
                             >
 
