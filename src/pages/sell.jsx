@@ -128,7 +128,7 @@ export default function Sell() {
                     {/* Actions */}
                     <div className="flex items-center gap-2 sm:gap-3">
                         <Link
-                            to="/seller/login"
+                            to="/login"
                             className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 sm:block"
                         >
                             Login
@@ -815,7 +815,7 @@ export default function Sell() {
                             </a>
 
                             <Link
-                                to="/seller/login"
+                                to="/login"
                                 className="text-xs font-medium text-slate-400 hover:text-slate-700"
                             >
                                 Login

@@ -28,7 +28,10 @@ import Search from '../pages/search'
 import Notifications from '../pages/customer/notifications'
 import Addresses from '../pages/customer/addresses'
 import Settings from '../pages/customer/settings'
-
+import Terms from '../pages/terms'
+import Privacy from '../pages/privacy'
+import NotFound from '../pages/notFound'
+import SellerRegister from '../pages/sellers/register'
 export default function AppRouter() {
     const { products, categories, getProductsByCategory, getCategoryBySlug, stores } = useProduct();
     return (
@@ -38,6 +41,10 @@ export default function AppRouter() {
                 <Route path='/login' element={<Login />} />
                 <Route path='/register' element={<Register />} />
                 <Route path='/search' element={<Search />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+
+                <Route path="*" element={<NotFound />} />
                 <Route path="/products" element={<Outlet />}>
                     <Route index element={<Products products={products} categories={categories} />} />
                     <Route path=':id' element={<ProductDetails products={products} />} />
@@ -67,8 +74,10 @@ export default function AppRouter() {
                     />
                 </Route>
                 {/* SELLER */}
-                <Route path='/seller/register' element={<h1>Seller Register page</h1>} />
-                <Route path='/seller/login' element={<h1>Seller login page</h1>} />
+                <Route
+                    path="/seller/register"
+                    element={<SellerRegister />}
+                />
                 <Route path='/seller' element={
                     <SellerLayout />
                 }
