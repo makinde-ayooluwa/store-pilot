@@ -12,7 +12,7 @@ import {
     MdKeyboardArrowDown
 } from 'react-icons/md'
 
-export default function Categories() {
+export default function SellerCategories() {
     const [search, setSearch] = useState('')
     const [statusFilter, setStatusFilter] = useState('All')
     const [showModal, setShowModal] = useState(false)

@@ -128,14 +128,14 @@ export default function Sell() {
                     {/* Actions */}
                     <div className="flex items-center gap-2 sm:gap-3">
                         <Link
-                            to="/login"
+                            to="/seller/login"
                             className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 sm:block"
                         >
                             Login
                         </Link>
 
                         <Link
-                            to="/register"
+                            to="/seller/register"
                             className="flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
                         >
                             Get Started
@@ -179,7 +179,7 @@ export default function Sell() {
                             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
 
                                 <Link
-                                    to="/register"
+                                    to="/seller/register"
                                     className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                                 >
                                     Start using StorePilot
@@ -239,7 +239,7 @@ export default function Sell() {
                                     </div>
 
                                     <div className="mx-auto hidden h-6 w-56 items-center justify-center rounded-md bg-slate-50 text-[9px] text-slate-400 sm:flex">
-                                        app.storepilot.com/dashboard
+                                        storepilot.com/seller/dashboard
                                     </div>
 
                                 </div>
@@ -749,7 +749,7 @@ export default function Sell() {
                         </div>
 
                         <Link
-                            to="/register"
+                            to="/seller/register"
                             className="flex shrink-0 items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-bold text-slate-900 transition hover:bg-slate-100"
                         >
                             Get started
@@ -815,7 +815,7 @@ export default function Sell() {
                             </a>
 
                             <Link
-                                to="/login"
+                                to="/seller/login"
                                 className="text-xs font-medium text-slate-400 hover:text-slate-700"
                             >
                                 Login

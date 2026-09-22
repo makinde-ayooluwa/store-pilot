@@ -137,7 +137,18 @@ export default function Account() {
                                     </p>
                                 </div>
                             </div>
-
+                            <Link
+                                to="/account/settings"
+                                className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+                            >
+                                Account Settings
+                            </Link>
+                            <Link
+                                to="/account/addresses"
+                                className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+                            >
+                                Manage Addresses
+                            </Link>
                             <button
                                 onClick={() => setEditing(!editing)}
                                 className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
@@ -272,11 +283,10 @@ export default function Account() {
                                             value={profile.firstName}
                                             onChange={handleProfileChange}
                                             disabled={!editing}
-                                            className={`h-11 w-full rounded-xl border pl-10 pr-3 text-sm outline-none transition ${
-                                                editing
-                                                    ? 'border-slate-300 bg-white focus:border-emerald-500'
-                                                    : 'border-slate-200 bg-slate-50 text-slate-600'
-                                            }`}
+                                            className={`h-11 w-full rounded-xl border pl-10 pr-3 text-sm outline-none transition ${editing
+                                                ? 'border-slate-300 bg-white focus:border-emerald-500'
+                                                : 'border-slate-200 bg-slate-50 text-slate-600'
+                                                }`}
                                         />
                                     </div>
                                 </div>
@@ -291,11 +301,10 @@ export default function Account() {
                                         value={profile.lastName}
                                         onChange={handleProfileChange}
                                         disabled={!editing}
-                                        className={`h-11 w-full rounded-xl border px-3 text-sm outline-none transition ${
-                                            editing
-                                                ? 'border-slate-300 bg-white focus:border-emerald-500'
-                                                : 'border-slate-200 bg-slate-50 text-slate-600'
-                                        }`}
+                                        className={`h-11 w-full rounded-xl border px-3 text-sm outline-none transition ${editing
+                                            ? 'border-slate-300 bg-white focus:border-emerald-500'
+                                            : 'border-slate-200 bg-slate-50 text-slate-600'
+                                            }`}
                                     />
                                 </div>
 
@@ -313,11 +322,10 @@ export default function Account() {
                                             value={profile.email}
                                             onChange={handleProfileChange}
                                             disabled={!editing}
-                                            className={`h-11 w-full rounded-xl border pl-10 pr-3 text-sm outline-none transition ${
-                                                editing
-                                                    ? 'border-slate-300 bg-white focus:border-emerald-500'
-                                                    : 'border-slate-200 bg-slate-50 text-slate-600'
-                                            }`}
+                                            className={`h-11 w-full rounded-xl border pl-10 pr-3 text-sm outline-none transition ${editing
+                                                ? 'border-slate-300 bg-white focus:border-emerald-500'
+                                                : 'border-slate-200 bg-slate-50 text-slate-600'
+                                                }`}
                                         />
                                     </div>
                                 </div>
@@ -335,11 +343,10 @@ export default function Account() {
                                             value={profile.phone}
                                             onChange={handleProfileChange}
                                             disabled={!editing}
-                                            className={`h-11 w-full rounded-xl border pl-10 pr-3 text-sm outline-none transition ${
-                                                editing
-                                                    ? 'border-slate-300 bg-white focus:border-emerald-500'
-                                                    : 'border-slate-200 bg-slate-50 text-slate-600'
-                                            }`}
+                                            className={`h-11 w-full rounded-xl border pl-10 pr-3 text-sm outline-none transition ${editing
+                                                ? 'border-slate-300 bg-white focus:border-emerald-500'
+                                                : 'border-slate-200 bg-slate-50 text-slate-600'
+                                                }`}
                                         />
                                     </div>
                                 </div>

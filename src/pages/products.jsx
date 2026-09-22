@@ -18,174 +18,8 @@ import { Link } from 'react-router-dom'
 import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
 
-const products = [
-    {
-        id: 1,
-        name: 'iPhone 15 Pro',
-        store: 'TechHub Store',
-        category: 'Phones',
-        price: 1250000,
-        oldPrice: 1350000,
-        rating: 4.9,
-        reviews: 124,
-        stock: 12,
-        image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=700&q=80',
-        badge: 'Popular'
-    },
-    {
-        id: 2,
-        name: 'Nike Air Max 270',
-        store: 'Urban Fits',
-        category: 'Fashion',
-        price: 85000,
-        oldPrice: 100000,
-        rating: 4.8,
-        reviews: 89,
-        stock: 24,
-        image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=700&q=80',
-        badge: 'Sale'
-    },
-    {
-        id: 3,
-        name: 'Sony WH-1000XM5',
-        store: 'TechHub Store',
-        category: 'Electronics',
-        price: 420000,
-        oldPrice: 450000,
-        rating: 4.9,
-        reviews: 76,
-        stock: 8,
-        image: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=700&q=80',
-        badge: 'Top Rated'
-    },
-    {
-        id: 4,
-        name: 'Leather Backpack',
-        store: 'Urban Fits',
-        category: 'Accessories',
-        price: 45000,
-        oldPrice: null,
-        rating: 4.6,
-        reviews: 52,
-        stock: 31,
-        image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=700&q=80',
-        badge: null
-    },
-    {
-        id: 5,
-        name: 'Smart LED TV 55"',
-        store: 'Home Space',
-        category: 'Electronics',
-        price: 680000,
-        oldPrice: 750000,
-        rating: 4.7,
-        reviews: 63,
-        stock: 6,
-        image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=700&q=80',
-        badge: 'Sale'
-    },
-    {
-        id: 6,
-        name: 'Air Fryer 5.5L',
-        store: 'Home Space',
-        category: 'Home & Kitchen',
-        price: 95000,
-        oldPrice: 110000,
-        rating: 4.7,
-        reviews: 48,
-        stock: 15,
-        image: 'https://images.unsplash.com/photo-1585515320310-259814833e62?auto=format&fit=crop&w=700&q=80',
-        badge: 'Deal'
-    },
-    {
-        id: 7,
-        name: 'Premium Face Serum',
-        store: 'Glow Beauty',
-        category: 'Beauty',
-        price: 32000,
-        oldPrice: 38000,
-        rating: 4.8,
-        reviews: 71,
-        stock: 18,
-        image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=700&q=80',
-        badge: 'Popular'
-    },
-    {
-        id: 8,
-        name: 'Classic Wrist Watch',
-        store: 'Urban Fits',
-        category: 'Accessories',
-        price: 65000,
-        oldPrice: 80000,
-        rating: 4.6,
-        reviews: 39,
-        stock: 10,
-        image: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=700&q=80',
-        badge: 'Sale'
-    },
-    {
-        id: 9,
-        name: 'Samsung Galaxy S24',
-        store: 'TechHub Store',
-        category: 'Phones',
-        price: 980000,
-        oldPrice: 1050000,
-        rating: 4.8,
-        reviews: 96,
-        stock: 9,
-        image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=700&q=80',
-        badge: 'New'
-    },
-    {
-        id: 10,
-        name: 'Minimalist Table Lamp',
-        store: 'Home Space',
-        category: 'Home & Kitchen',
-        price: 28000,
-        oldPrice: 35000,
-        rating: 4.5,
-        reviews: 28,
-        stock: 22,
-        image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=700&q=80',
-        badge: null
-    },
-    {
-        id: 11,
-        name: 'Oversized Cotton T-Shirt',
-        store: 'Urban Fits',
-        category: 'Fashion',
-        price: 18000,
-        oldPrice: 25000,
-        rating: 4.7,
-        reviews: 64,
-        stock: 42,
-        image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=700&q=80',
-        badge: 'Sale'
-    },
-    {
-        id: 12,
-        name: 'Wireless Mechanical Keyboard',
-        store: 'TechHub Store',
-        category: 'Electronics',
-        price: 78000,
-        oldPrice: 90000,
-        rating: 4.8,
-        reviews: 44,
-        stock: 14,
-        image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=700&q=80',
-        badge: 'Popular'
-    }
-]
 
-const categories = [
-    'All Categories',
-    'Electronics',
-    'Phones',
-    'Fashion',
-    'Beauty',
-    'Home & Kitchen',
-    'Accessories'
-]
+
 
 const sortOptions = [
     'Featured',
@@ -194,16 +28,18 @@ const sortOptions = [
     'Price: High to Low',
     'Top Rated'
 ]
-
+import { useWishlist } from '../contexts/wishlistProvider'
 const ITEMS_PER_PAGE = 8
 
-export default function Products() {
-
+export default function Products({ products, categories }) {
     const [mobileMenu, setMobileMenu] = useState(false)
     const [search, setSearch] = useState('')
     const [category, setCategory] = useState('All Categories')
     const [sort, setSort] = useState('Featured')
-    const [favorites, setFavorites] = useState([])
+    const {
+        isWishlisted,
+        toggleWishlist
+    } = useWishlist()
     const [showFilters, setShowFilters] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [maxPrice, setMaxPrice] = useState(1500000)
@@ -296,14 +132,6 @@ export default function Products() {
         currentPage * ITEMS_PER_PAGE
     )
 
-    const toggleFavorite = id => {
-
-        setFavorites(prev =>
-            prev.includes(id)
-                ? prev.filter(item => item !== id)
-                : [...prev, id]
-        )
-    }
 
     /*
         Add the actual product object to CartProvider.
@@ -444,22 +272,21 @@ export default function Products() {
                                     {categories.map(item => (
 
                                         <button
-                                            key={item}
+                                            key={item.id}
                                             onClick={() =>
                                                 handleCategoryChange(item)
                                             }
-                                            className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition ${
-                                                category === item
+                                            className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition ${category === item
                                                     ? 'bg-emerald-50 font-semibold text-emerald-700'
                                                     : 'text-slate-600 hover:bg-slate-50'
-                                            }`}
+                                                }`}
                                         >
 
                                             <span>
-                                                {item}
+                                                {item.name}
                                             </span>
 
-                                            {category === item && (
+                                            {category === item.name && (
                                                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
                                             )}
 
@@ -600,73 +427,73 @@ export default function Products() {
                             category !== 'All Categories' ||
                             maxPrice < 1500000) && (
 
-                            <div className="mb-5 flex flex-wrap items-center gap-2">
+                                <div className="mb-5 flex flex-wrap items-center gap-2">
 
-                                {search && (
+                                    {search && (
 
-                                    <div className="flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">
+                                        <div className="flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">
 
-                                        Search: "{search}"
+                                            Search: "{search}"
 
-                                        <button
-                                            onClick={() =>
-                                                handleSearch('')
-                                            }
-                                        >
-                                            <MdClose size={15} />
-                                        </button>
+                                            <button
+                                                onClick={() =>
+                                                    handleSearch('')
+                                                }
+                                            >
+                                                <MdClose size={15} />
+                                            </button>
 
-                                    </div>
+                                        </div>
 
-                                )}
+                                    )}
 
-                                {category !== 'All Categories' && (
+                                    {category !== 'All Categories' && (
 
-                                    <div className="flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">
+                                        <div className="flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">
 
-                                        {category}
+                                            {category}
 
-                                        <button
-                                            onClick={() =>
-                                                handleCategoryChange(
-                                                    'All Categories'
-                                                )
-                                            }
-                                        >
-                                            <MdClose size={15} />
-                                        </button>
+                                            <button
+                                                onClick={() =>
+                                                    handleCategoryChange(
+                                                        'All Categories'
+                                                    )
+                                                }
+                                            >
+                                                <MdClose size={15} />
+                                            </button>
 
-                                    </div>
+                                        </div>
 
-                                )}
+                                    )}
 
-                                {maxPrice < 1500000 && (
+                                    {maxPrice < 1500000 && (
 
-                                    <div className="flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">
+                                        <div className="flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">
 
-                                        Under {formatPrice(maxPrice)}
+                                            Under {formatPrice(maxPrice)}
 
-                                        <button
-                                            onClick={() => {
+                                            <button
+                                                onClick={() => {
 
-                                                setMaxPrice(
-                                                    1500000
-                                                )
+                                                    setMaxPrice(
+                                                        1500000
+                                                    )
 
-                                                setCurrentPage(1)
+                                                    setCurrentPage(1)
 
-                                            }}
-                                        >
-                                            <MdClose size={15} />
-                                        </button>
+                                                }}
+                                            >
+                                                <MdClose size={15} />
+                                            </button>
 
-                                    </div>
+                                        </div>
 
-                                )}
+                                    )}
 
-                            </div>
+                                </div>
 
-                        )}
+                            )}
 
                         {/* PRODUCT GRID */}
 
@@ -676,11 +503,7 @@ export default function Products() {
 
                                 {paginatedProducts.map(product => {
 
-                                    const isFavorite =
-                                        favorites.includes(
-                                            product.id
-                                        )
-
+                                    
                                     const inCart =
                                         isProductInCart(
                                             product.id
@@ -702,7 +525,7 @@ export default function Products() {
                                                 >
 
                                                     <img
-                                                        src={product.image}
+                                                        src={product.image ?? product.images[0]}
                                                         alt={product.name}
                                                         className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                                                     />
@@ -722,29 +545,13 @@ export default function Products() {
                                                 {/* WISHLIST */}
 
                                                 <button
-                                                    onClick={() =>
-                                                        toggleFavorite(
-                                                            product.id
-                                                        )
-                                                    }
-                                                    className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-slate-600 shadow-sm backdrop-blur transition hover:text-rose-500"
+                                                    onClick={() => toggleWishlist(product)}
+                                                    className={`... ${isWishlisted(product.id)
+                                                            ? 'text-red-500'
+                                                            : 'text-gray-400'
+                                                        }`}
                                                 >
-
-                                                    {isFavorite ? (
-
-                                                        <MdFavorite
-                                                            size={19}
-                                                            className="text-rose-500"
-                                                        />
-
-                                                    ) : (
-
-                                                        <MdFavoriteBorder
-                                                            size={19}
-                                                        />
-
-                                                    )}
-
+                                                    <MdFavorite />
                                                 </button>
 
                                                 {/* CART */}
@@ -755,11 +562,10 @@ export default function Products() {
                                                             product
                                                         )
                                                     }
-                                                    className={`absolute bottom-3 left-3 right-3 flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold shadow-sm transition ${
-                                                        inCart
+                                                    className={`absolute bottom-3 left-3 right-3 flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold shadow-sm transition ${inCart
                                                             ? 'bg-slate-900 text-white'
                                                             : 'bg-white text-slate-900 hover:bg-emerald-600 hover:text-white'
-                                                    }`}
+                                                        }`}
                                                 >
 
                                                     <MdShoppingCart
@@ -850,11 +656,10 @@ export default function Products() {
                                                 {/* STOCK */}
 
                                                 <p
-                                                    className={`mt-2 text-[11px] font-medium ${
-                                                        product.stock <= 8
+                                                    className={`mt-2 text-[11px] font-medium ${product.stock <= 8
                                                             ? 'text-orange-600'
                                                             : 'text-slate-400'
-                                                    }`}
+                                                        }`}
                                                 >
 
                                                     {product.stock <= 8
@@ -940,11 +745,10 @@ export default function Products() {
                                                 page
                                             )
                                         }
-                                        className={`h-10 min-w-10 rounded-xl px-3 text-sm font-semibold transition ${
-                                            currentPage === page
+                                        className={`h-10 min-w-10 rounded-xl px-3 text-sm font-semibold transition ${currentPage === page
                                                 ? 'bg-emerald-600 text-white'
                                                 : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                                        }`}
+                                            }`}
                                     >
                                         {page}
                                     </button>
@@ -1033,11 +837,10 @@ export default function Products() {
                                             setCurrentPage(1)
 
                                         }}
-                                        className={`rounded-xl border px-3 py-2.5 text-left text-xs font-medium ${
-                                            sort === option
+                                        className={`rounded-xl border px-3 py-2.5 text-left text-xs font-medium ${sort === option
                                                 ? 'border-emerald-600 bg-emerald-50 text-emerald-700'
                                                 : 'border-slate-200 text-slate-600'
-                                        }`}
+                                            }`}
                                     >
                                         {option}
                                     </button>
@@ -1067,11 +870,10 @@ export default function Products() {
                                                 item
                                             )
                                         }
-                                        className={`rounded-xl border px-3 py-2.5 text-left text-xs font-medium ${
-                                            category === item
+                                        className={`rounded-xl border px-3 py-2.5 text-left text-xs font-medium ${category === item
                                                 ? 'border-emerald-600 bg-emerald-50 text-emerald-700'
                                                 : 'border-slate-200 text-slate-600'
-                                        }`}
+                                            }`}
                                     >
                                         {item}
                                     </button>

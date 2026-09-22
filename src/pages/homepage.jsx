@@ -8,132 +8,31 @@ import {
     MdKeyboardArrowRight,
     MdFavoriteBorder,
     MdMenu,
-    MdClose
+    MdClose,
+    MdFavorite
 } from 'react-icons/md'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Header from '../components/header'
+import { useWishlist } from '../contexts/wishlistProvider'
 
-export default function Homepage() {
+export default function Homepage({ products, categories, stores }) {
     const [mobileMenu, setMobileMenu] = useState(false)
-
-    const categories = [
-        {
-            name: 'Electronics',
-            image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=600&q=80'
-        },
-        {
-            name: 'Fashion',
-            image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=600&q=80'
-        },
-        {
-            name: 'Beauty',
-            image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=80'
-        },
-        {
-            name: 'Home & Kitchen',
-            image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80'
-        },
-        {
-            name: 'Accessories',
-            image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80'
-        },
-        {
-            name: 'Phones',
-            image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80'
-        }
-    ]
-
-    const products = [
-        {
-            id: 1,
-            name: 'iPhone 15 Pro',
-            store: 'TechHub Store',
-            price: 1250000,
-            oldPrice: 1350000,
-            image: 'https://images.unsplash.com/photo-1696446702183-cbd13d8e8f34?auto=format&fit=crop&w=700&q=80'
-        },
-        {
-            id: 2,
-            name: 'Nike Air Max',
-            store: 'Urban Fits',
-            price: 185000,
-            oldPrice: 210000,
-            image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=700&q=80'
-        },
-        {
-            id: 3,
-            name: 'Leather Backpack',
-            store: 'Carry Co.',
-            price: 75000,
-            oldPrice: 90000,
-            image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=700&q=80'
-        },
-        {
-            id: 4,
-            name: 'Sony WH-1000XM5',
-            store: 'Audio World',
-            price: 450000,
-            oldPrice: 490000,
-            image: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=700&q=80'
-        }
-    ]
-
-    const newProducts = [
-        {
-            id: 5,
-            name: 'Samsung Galaxy S24',
-            store: 'Mobile Planet',
-            price: 980000,
-            image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=700&q=80'
-        },
-        {
-            id: 6,
-            name: 'Minimal Desk Lamp',
-            store: 'Home Space',
-            price: 45000,
-            image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=700&q=80'
-        },
-        {
-            id: 7,
-            name: 'Classic Wrist Watch',
-            store: 'Time House',
-            price: 120000,
-            image: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=700&q=80'
-        },
-        {
-            id: 8,
-            name: 'Wireless Keyboard',
-            store: 'TechHub Store',
-            price: 65000,
-            image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=700&q=80'
-        }
-    ]
-
-    const stores = [
-        {
-            name: 'TechHub Store',
-            category: 'Electronics',
-            products: '124 products',
-            image: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=700&q=80'
-        },
-        {
-            name: 'Urban Fits',
-            category: 'Fashion',
-            products: '86 products',
-            image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=700&q=80'
-        },
-        {
-            name: 'Home Space',
-            category: 'Home & Living',
-            products: '64 products',
-            image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=700&q=80'
-        }
-    ]
-
+    const {
+        isWishlisted,
+        toggleWishlist
+    } = useWishlist()
+    const navigate = useNavigate()
+    const [search, setSearch] = useState("")
+    const handleSearch = () => {
+        navigate(`/search?q=${encodeURIComponent(
+            search.trim()
+        )}`)
+    }
     const formatPrice = price =>
-        `₦${price.toLocaleString('en-NG')}`
+        `₦${price}`
 
     return (
+
         <div className="min-h-screen w-full overflow-hidden bg-white text-slate-900">
 
             {/* Navbar */}
@@ -175,12 +74,14 @@ export default function Homepage() {
                             />
 
                             <input
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
                                 type="text"
                                 placeholder="What are you looking for?"
                                 className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
                             />
 
-                            <button className="hidden rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 sm:block">
+                            <button onClick={handleSearch} className="hidden rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 sm:block">
                                 Search
                             </button>
 
@@ -334,7 +235,7 @@ export default function Homepage() {
 
                     <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4">
 
-                        {products.map(product => (
+                        {products.filter((product, index) => index < 8).map(product => (
                             <Link
                                 key={product.id}
                                 to={`/products/${product.id}`}
@@ -344,16 +245,20 @@ export default function Homepage() {
                                 <div className="relative overflow-hidden bg-slate-100">
 
                                     <img
-                                        src={product.image}
+                                        src={product.image ?? product.images[0]}
                                         alt={product.name}
                                         className="h-48 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-56"
                                     />
 
                                     <button
-                                        onClick={e => e.preventDefault()}
-                                        className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-500 shadow-sm backdrop-blur hover:text-red-500"
+                                        onClick={() => toggleWishlist(product)}
+                                        className={`absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur hover:text-red-500
+                                             ${isWishlisted(product.id)
+                                                ? 'text-red-500'
+                                                : 'text-gray-400'
+                                            }`}
                                     >
-                                        <MdFavoriteBorder size={17} />
+                                        <MdFavorite size={17} />
                                     </button>
 
                                 </div>
@@ -371,7 +276,7 @@ export default function Homepage() {
 
                                     <div className="mt-3 flex items-end justify-between">
 
-                                        <div>
+                                        {product.price && <div>
                                             <p className="text-sm font-bold text-slate-900">
                                                 {formatPrice(product.price)}
                                             </p>
@@ -379,7 +284,7 @@ export default function Homepage() {
                                             <p className="mt-0.5 text-[10px] text-slate-400 line-through">
                                                 {formatPrice(product.oldPrice)}
                                             </p>
-                                        </div>
+                                        </div>}
 
                                         <button
                                             onClick={e => e.preventDefault()}
@@ -503,7 +408,7 @@ export default function Homepage() {
                                 <div className="flex">
 
                                     <img
-                                        src={store.image}
+                                        src={store.image ?? stores.logo}
                                         alt={store.name}
                                         className="h-28 w-28 shrink-0 object-cover transition group-hover:scale-105"
                                     />
@@ -519,7 +424,7 @@ export default function Homepage() {
                                         </p>
 
                                         <p className="mt-2 text-[10px] font-medium text-slate-500">
-                                            {store.products}
+                                            {store.productsCount} products
                                         </p>
 
                                         <div className="mt-2 flex items-center gap-1 text-[10px] font-semibold text-emerald-600">
