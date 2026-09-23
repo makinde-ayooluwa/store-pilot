@@ -107,8 +107,11 @@ export default function Register() {
             console.log("REGISTER RESULT:", result)
 
             if (!result?.status) {
+                console.log('====================================');
+                console.log(result.message);
+                console.log('====================================');
                 Swal.fire({
-                    title:"Error",
+                    title: "Error",
                     timer: 2000,
                     text: result?.message || "Registration error",
                     icon: "error"
@@ -119,21 +122,20 @@ export default function Register() {
             setTimeout(() => {
                 // Swal.fire("Success", result?.message || "Registration successful");
                 Swal.fire({
-                    title:"Success",
+                    title: "Success",
                     timer: 2000,
                     text: result?.message || "Registration successful",
                     icon: "success"
                 })
-                if (formData.role === 'seller') {
-                    navigate('/seller')
-                } else {
-                    navigate('/')
-                }
+                navigate('/')
             }, 2000);
 
         } catch (error) {
+            console.log('====================================');
+            console.log(error?.response?.data?.message || error?.message);
+            console.log('====================================');
             console.log("REGISTER ERROR:", error)
-            Swal.fire("Error", error?.response?.data?.message || error?.message || "Registration failed");
+            Swal.fire({ title: "Error", text: error?.response?.data?.message || error?.message || "Registration failed", icon: "error" });
         } finally {
             setLoading(false)
         }
@@ -201,7 +203,7 @@ export default function Register() {
                         >
 
                             {/* Account Type */}
-                            <div>
+                            {/* <div>
                                 <label className="mb-2 block text-xs font-semibold text-slate-700">
                                     Account Type
                                 </label>
@@ -273,7 +275,7 @@ export default function Register() {
                                     </button>
 
                                 </div>
-                            </div>
+                            </div> */}
 
                             {/* Names */}
                             <div className="grid gap-5 sm:grid-cols-2">
@@ -282,18 +284,23 @@ export default function Register() {
                                     <label className="mb-1.5 block text-xs font-semibold text-slate-700">
                                         Full Name
                                     </label>
-
-                                    <input
-                                        type="text"
-                                        name="fullname"
-                                        value={formData.fullname}
-                                        onChange={handleChange}
-                                        placeholder="Full name"
-                                        className={`h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none transition placeholder:text-slate-400 ${errors.fullname
-                                            ? 'border-red-300 focus:border-red-500'
-                                            : 'border-slate-200 focus:border-emerald-500'
-                                            }`}
-                                    />
+                                    <div className="relative">
+                                        <MdPerson
+                                            size={19}
+                                            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                                        />
+                                        <input
+                                            type="text"
+                                            name="fullname"
+                                            value={formData.fullname}
+                                            onChange={handleChange}
+                                            placeholder="Full name"
+                                            className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none transition placeholder:text-slate-400 ${errors.fullname
+                                                ? 'border-red-300 focus:border-red-500'
+                                                : 'border-slate-200 focus:border-emerald-500'
+                                                }`}
+                                        />
+                                    </div>
 
                                     {errors.fullname && (
                                         <p className="mt-1.5 text-xs text-red-500">

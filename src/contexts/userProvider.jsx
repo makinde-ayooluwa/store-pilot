@@ -37,6 +37,7 @@ export const UserProvider = ({ children }) => {
         setUser(data)
     }
     const register = async (data) => {
+        console.log("Registration in progress...")
         const response = await axios.post(`${backendUrl}/auth/register`, data);
         // const response = {
         //     data:{
@@ -47,11 +48,17 @@ export const UserProvider = ({ children }) => {
         if (result.statusCode == 200) {
             await localStorage.setItem("user", JSON.stringify({ id: result._id }));
             setUser(result._id)
+            console.log('====================================');
+            console.log(result.message);
+            console.log('====================================');
             return {
                 status: true,
                 message: result.message
             }
         } else {
+            console.log('====================================');
+            console.log(result.message);
+            console.log('====================================');
             return {
                 status: false,
                 message: result.message
