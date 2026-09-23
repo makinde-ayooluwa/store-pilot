@@ -22,7 +22,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
 import { useWishlist } from '../contexts/wishlistProvider'
-import { useProduct } from '../contexts/productProvider'
+import { useResource } from '../contexts/resourceProvider'
 
 const reviews = [
     {
@@ -56,7 +56,7 @@ const reviews = [
 
 export default function ProductDetails({products}) {
 
-const {stores} = useProduct();
+const {stores} = useResource();
     const { id } = useParams()
     const navigate = useNavigate()
 

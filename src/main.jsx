@@ -5,7 +5,7 @@ import App from './App.jsx'
 import { CartProvider } from './contexts/cartProvider.jsx'
 import { OrderProvider } from './contexts/orderProvider.jsx'
 import { UserProvider } from './contexts/userProvider.jsx'
-import { ProductProvider } from './contexts/productProvider.jsx'
+import { ResourceProvider } from './contexts/resourceProvider.jsx'
 import { WishlistProvider } from './contexts/wishlistProvider.jsx'
 import { SellerProvider } from './contexts/sellerProvider.jsx'
 import { SocketProvider } from './contexts/socketProvider.jsx'
@@ -15,13 +15,13 @@ createRoot(document.getElementById('root')).render(
       <UserProvider>
         <SellerProvider>
           <WishlistProvider>
-            <ProductProvider>
+            <ResourceProvider>
               <CartProvider>
                 <OrderProvider>
                   <App />
                 </OrderProvider>
               </CartProvider>
-            </ProductProvider>
+            </ResourceProvider>
           </WishlistProvider>
         </SellerProvider>
       </UserProvider>

@@ -490,7 +490,7 @@ export default function CategoryDetails({products, categories, getCategoryBySlug
                                                     {/* Image */}
                                                     <div className="relative aspect-square overflow-hidden bg-slate-100">
                                                         <Link
-                                                            to={`/products/${product.slug}`}
+                                                            to={`/products/${product.id}`}
                                                         >
                                                             <img
                                                                 src={

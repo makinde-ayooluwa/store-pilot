@@ -8,8 +8,8 @@ import products, {
     getProductsByCategory
 } from '../data/products'
 import stores from "../data/stores";
-export const ProductContext = createContext()
-export const ProductProvider = ({ children }) => {
+export const ResourceContext = createContext()
+export const ResourceProvider = ({ children }) => {
     // const categories = [
     //     {
     //         id: 1,
@@ -388,10 +388,10 @@ export const ProductProvider = ({ children }) => {
     //         ]
     //     }
     // ]
-    return <ProductContext.Provider value={{ products, stores, getCategoryBySlug, getProductsByCategory, categories }}>
+    return <ResourceContext.Provider value={{ products, stores, getCategoryBySlug, getProductsByCategory, categories }}>
         {children}
-    </ProductContext.Provider>
+    </ResourceContext.Provider>
 }
-export const useProduct = () => {
-    return useContext(ProductContext);
+export const useResource = () => {
+    return useContext(ResourceContext);
 }

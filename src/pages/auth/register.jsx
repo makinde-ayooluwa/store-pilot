@@ -12,6 +12,7 @@ import {
 } from 'react-icons/md'
 import { Link, useNavigate } from 'react-router-dom'
 import { useUser } from '../../contexts/userProvider';
+import Swal from 'sweetalert2';
 
 export default function Register() {
     const navigate = useNavigate()
@@ -19,7 +20,6 @@ export default function Register() {
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
         fullname: '',
         email: '',
@@ -99,7 +99,7 @@ export default function Register() {
         if (!validateForm()) return
 
         setLoading(true)
-        setError(null)
+
 
         try {
             const result = await register(formData)
@@ -107,29 +107,33 @@ export default function Register() {
             console.log("REGISTER RESULT:", result)
 
             if (!result?.status) {
-                setError({
-                    status: 500,
-                    message: result?.message || "Registration failed"
+                Swal.fire({
+                    title:"Error",
+                    timer: 2000,
+                    text: result?.message || "Registration error",
+                    icon: "error"
                 })
                 return
             }
 
-            if (formData.role === 'seller') {
-                navigate('/seller')
-            } else {
-                navigate('/')
-            }
+            setTimeout(() => {
+                // Swal.fire("Success", result?.message || "Registration successful");
+                Swal.fire({
+                    title:"Success",
+                    timer: 2000,
+                    text: result?.message || "Registration successful",
+                    icon: "success"
+                })
+                if (formData.role === 'seller') {
+                    navigate('/seller')
+                } else {
+                    navigate('/')
+                }
+            }, 2000);
 
         } catch (error) {
             console.log("REGISTER ERROR:", error)
-
-            setError({
-                status: error?.response?.status || 500,
-                message:
-                    error?.response?.data?.message ||
-                    error?.message ||
-                    "Registration failed"
-            })
+            Swal.fire("Error", error?.response?.data?.message || error?.message || "Registration failed");
         } finally {
             setLoading(false)
         }
@@ -168,11 +172,6 @@ export default function Register() {
 
             {/* Main */}
             <main className="px-4 py-10 sm:px-6 lg:py-12">
-                {error?.message && (
-                    <p className="mb-4 text-center text-sm text-red-500">
-                        {(error.message)}
-                    </p>
-                )}
                 <div className="mx-auto w-full max-w-xl">
 
                     {/* Intro */}

@@ -5,16 +5,19 @@ import axios from "axios";
 
 export const UserContext = createContext();
 export const UserProvider = ({ children }) => {
+    const [loading, setLoading] = useState(false);
     const [user, setUser] = useState(null);
+    const [error, setError] = useState({});
     useEffect(() => {
         checkUser()
     }, [user])
     const { send } = useSocket()
     const checkUser = async () => {
         try {
+            setLoading(true);
             const checked = localStorage.getItem("user");
             if (checked) {
-                const response = await axios.post(`${backendUrl}/auth/getUser`, {id: checked})
+                const response = await axios.post(`${backendUrl}/auth/getUser`, { id: checked })
                 const data = await response.data;
                 setUser(data)
                 console.log("USER TEST CHECKED", user)
@@ -23,7 +26,10 @@ export const UserProvider = ({ children }) => {
                 console.log("USER DOES NOT EXISTS");
             }
         } catch (error) {
-            console.log(error)
+            console.log("USER CHECK ERROR", error)
+        }
+        finally{
+            setLoading(false);
         }
     }
     const login = async (data) => {
@@ -32,15 +38,20 @@ export const UserProvider = ({ children }) => {
     }
     const register = async (data) => {
         const response = await axios.post(`${backendUrl}/auth/register`, data);
+        // const response = {
+        //     data:{
+        //         message: "Testing"
+        //     }
+        // }
         const result = response.data;
         if (result.statusCode == 200) {
-            await localStorage.setItem("user", JSON.stringify({id: result._id}));
+            await localStorage.setItem("user", JSON.stringify({ id: result._id }));
             setUser(result._id)
             return {
                 status: true,
                 message: result.message
             }
-        }else{
+        } else {
             return {
                 status: false,
                 message: result.message

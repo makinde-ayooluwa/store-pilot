@@ -19,7 +19,7 @@ import Account from '../pages/customer/account'
 import Login from '../pages/auth/login'
 import Register from '../pages/auth/register'
 import Categories from '../pages/categories'
-import { useProduct } from '../contexts/productProvider'
+import { useResource } from '../contexts/resourceProvider'
 import CategoryDetails from '../pages/categoryDetails'
 import Stores from '../pages/stores'
 import StoreDetails from '../pages/storeDetails'
@@ -38,7 +38,7 @@ import SellerOrders from '../pages/sellers/orders'
 import SellerCustomers from '../pages/sellers/customers'
 import SellerOrderDetails from '../pages/sellers/orderDetails'
 export default function AppRouter() {
-    const { products, categories, getProductsByCategory, getCategoryBySlug, stores } = useProduct();
+    const { products, categories, getProductsByCategory, getCategoryBySlug, stores } = useResource();
     return (
         <BrowserRouter>
             <Routes>

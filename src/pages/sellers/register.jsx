@@ -10,15 +10,16 @@ import {
     MdCheckCircle
 } from 'react-icons/md'
 import { Link, useNavigate } from 'react-router-dom'
-
+import { useResource } from '../../contexts/resourceProvider'
+import { useUser } from "../../contexts/userProvider"
 export default function SellerRegister() {
     const navigate = useNavigate()
-
+    const { user } = useUser()
     const [formData, setFormData] = useState({
         storeName: '',
-        ownerName: '',
-        email: '',
-        phone: '',
+        ownerName: user?.fullname ?? '',
+        email: user?.email ?? '',
+        phone: user?.phone ?? '',
         category: '',
         location: '',
         description: ''
@@ -26,20 +27,7 @@ export default function SellerRegister() {
 
     const [errors, setErrors] = useState({})
 
-    const categories = [
-        'Electronics',
-        'Fashion',
-        'Home & Living',
-        'Groceries',
-        'Beauty',
-        'Sports',
-        'Computers',
-        'Phones & Tablets',
-        'Automotive',
-        'Kids',
-        'Books',
-        'Others'
-    ]
+    const { categories } = useResource();
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -217,11 +205,10 @@ export default function SellerRegister() {
                                         value={formData.storeName}
                                         onChange={handleChange}
                                         placeholder="e.g. Tech Haven"
-                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 ${
-                                            errors.storeName
+                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 ${errors.storeName
                                                 ? 'border-red-300'
                                                 : 'border-slate-200'
-                                        }`}
+                                            }`}
                                     />
                                 </div>
 
@@ -251,11 +238,10 @@ export default function SellerRegister() {
                                         value={formData.ownerName}
                                         onChange={handleChange}
                                         placeholder="Your full name"
-                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm text-slate-700 outline-none focus:border-slate-400 ${
-                                            errors.ownerName
+                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm text-slate-700 outline-none focus:border-slate-400 ${errors.ownerName
                                                 ? 'border-red-300'
                                                 : 'border-slate-200'
-                                        }`}
+                                            }`}
                                     />
                                 </div>
 
@@ -287,11 +273,10 @@ export default function SellerRegister() {
                                             value={formData.email}
                                             onChange={handleChange}
                                             placeholder="you@example.com"
-                                            className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none focus:border-slate-400 ${
-                                                errors.email
+                                            className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none focus:border-slate-400 ${errors.email
                                                     ? 'border-red-300'
                                                     : 'border-slate-200'
-                                            }`}
+                                                }`}
                                         />
                                     </div>
 
@@ -319,11 +304,10 @@ export default function SellerRegister() {
                                             value={formData.phone}
                                             onChange={handleChange}
                                             placeholder="0800 000 0000"
-                                            className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none focus:border-slate-400 ${
-                                                errors.phone
+                                            className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none focus:border-slate-400 ${errors.phone
                                                     ? 'border-red-300'
                                                     : 'border-slate-200'
-                                            }`}
+                                                }`}
                                         />
                                     </div>
 
@@ -347,11 +331,10 @@ export default function SellerRegister() {
                                     name="category"
                                     value={formData.category}
                                     onChange={handleChange}
-                                    className={`h-11 w-full rounded-xl border bg-white px-3 text-sm text-slate-700 outline-none focus:border-slate-400 ${
-                                        errors.category
+                                    className={`h-11 w-full rounded-xl border bg-white px-3 text-sm text-slate-700 outline-none focus:border-slate-400 ${errors.category
                                             ? 'border-red-300'
                                             : 'border-slate-200'
-                                    }`}
+                                        }`}
                                 >
                                     <option value="">
                                         Select a category
@@ -359,10 +342,10 @@ export default function SellerRegister() {
 
                                     {categories.map((category) => (
                                         <option
-                                            key={category}
-                                            value={category}
+                                            key={category.id}
+                                            value={category.slug}
                                         >
-                                            {category}
+                                            {category.name}
                                         </option>
                                     ))}
                                 </select>
@@ -393,11 +376,10 @@ export default function SellerRegister() {
                                         value={formData.location}
                                         onChange={handleChange}
                                         placeholder="City or business location"
-                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none focus:border-slate-400 ${
-                                            errors.location
+                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none focus:border-slate-400 ${errors.location
                                                 ? 'border-red-300'
                                                 : 'border-slate-200'
-                                        }`}
+                                            }`}
                                     />
                                 </div>
 
