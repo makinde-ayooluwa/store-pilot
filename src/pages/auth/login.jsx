@@ -87,7 +87,7 @@ export default function Login() {
             console.log(error)
             Swal.fire({
                 title: "Error",
-                icon: "error",
+                icon: "info",
                 text: error.message
             })
         }
