@@ -7,16 +7,17 @@ import {
     MdLockReset,
     MdStorefront
 } from 'react-icons/md'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useUser } from '../../contexts/userProvider'
 import Swal from 'sweetalert2'
 
 export default function ForgotPassword() {
+    const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [loading, setLoading] = useState(false)
-    const { forgotPassword } = useUser()
+    const { forgotPassword, user } = useUser()
     const handleSubmit = async (e) => {
         e.preventDefault()
 
@@ -66,7 +67,9 @@ export default function ForgotPassword() {
             setLoading(false)
         }
     }
-
+    if (user !== null) {
+        navigate("/");
+    }
     return (
         <div className="min-h-screen bg-slate-50">
 

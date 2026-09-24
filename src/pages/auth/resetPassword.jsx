@@ -16,7 +16,7 @@ import { useUser } from '../../contexts/userProvider'
 export default function ResetPassword() {
     const navigate = useNavigate()
     const { token } = useParams()
-    
+
     // Use null for loading state: null = verifying, true = valid, false = invalid
     const [tokenValid, setTokenValid] = useState(null)
     const [showPassword, setShowPassword] = useState(false)
@@ -27,7 +27,7 @@ export default function ResetPassword() {
         confirmPassword: ''
     })
 
-    const { validateToken, resetPassword } = useUser()
+    const { validateToken, resetPassword, user } = useUser()
 
     useEffect(() => {
         let isMounted = true
@@ -128,6 +128,9 @@ export default function ResetPassword() {
         }
     }
 
+    if (user !== null) {
+        navigate("/");
+    }
     // 1. Loading state while validating token
     if (tokenValid === null) {
         return (
@@ -227,7 +230,6 @@ export default function ResetPassword() {
             </div>
         )
     }
-
     // 4. Valid Token Password Form
     return (
         <div className="min-h-screen bg-slate-50">
@@ -292,11 +294,10 @@ export default function ResetPassword() {
                                         onChange={handleChange}
                                         placeholder="At least 8 characters"
                                         autoComplete="new-password"
-                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-11 text-sm outline-none transition placeholder:text-slate-400 ${
-                                            errors.password
+                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-11 text-sm outline-none transition placeholder:text-slate-400 ${errors.password
                                                 ? 'border-red-300 focus:border-red-500'
                                                 : 'border-slate-200 focus:border-emerald-500'
-                                        }`}
+                                            }`}
                                     />
                                     <button
                                         type="button"
@@ -329,11 +330,10 @@ export default function ResetPassword() {
                                         onChange={handleChange}
                                         placeholder="Repeat your new password"
                                         autoComplete="new-password"
-                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-11 text-sm outline-none transition placeholder:text-slate-400 ${
-                                            errors.confirmPassword
+                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-11 text-sm outline-none transition placeholder:text-slate-400 ${errors.confirmPassword
                                                 ? 'border-red-300 focus:border-red-500'
                                                 : 'border-slate-200 focus:border-emerald-500'
-                                        }`}
+                                            }`}
                                     />
                                     <button
                                         type="button"
