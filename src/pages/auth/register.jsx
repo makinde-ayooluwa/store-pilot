@@ -16,7 +16,7 @@ import Swal from 'sweetalert2';
 
 export default function Register() {
     const navigate = useNavigate()
-    const { register } = useUser();
+    const { user, register } = useUser();
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -140,7 +140,9 @@ export default function Register() {
             setLoading(false)
         }
     }
-
+    if (user !== null) {
+        navigate("/");
+    }
     return (
         <div className="min-h-screen bg-slate-50">
 

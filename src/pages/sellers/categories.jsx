@@ -11,7 +11,7 @@ import {
     MdClose,
     MdKeyboardArrowDown
 } from 'react-icons/md'
-import { useSeller } from '../../contexts/sellerProvider'
+import { useStore } from '../../contexts/storeProvider'
 
 export default function SellerCategories() {
     const [search, setSearch] = useState('')
@@ -19,7 +19,7 @@ export default function SellerCategories() {
     const [showModal, setShowModal] = useState(false)
     const [openMenu, setOpenMenu] = useState(null)
 
-    const {categories, products} = useSeller()
+    const {categories, products} = useStore()
 
     const [form, setForm] = useState({
         name: '',

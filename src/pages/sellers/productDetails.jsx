@@ -13,11 +13,11 @@ import {
     MdImage
 } from 'react-icons/md'
 import { Link, useParams } from 'react-router-dom'
-import { useSeller } from '../../contexts/sellerProvider'
+import { useStore } from '../../contexts/storeProvider'
 
 export default function SellerProductDetails() {
     const { id } = useParams()
-    const { products } = useSeller()
+    const { products } = useStore()
 
     const product = products.find(
         (item) => item.id === id

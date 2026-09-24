@@ -13,13 +13,13 @@ import {
     MdArrowUpward,
     MdArrowDownward
 } from 'react-icons/md'
-import {useSeller} from "../../contexts/sellerProvider"
+import {useStore} from "../../contexts/storeProvider"
 export default function SellerStockOverview() {
     const [search, setSearch] = useState('')
     const [stockFilter, setStockFilter] = useState('All')
     const [openMenu, setOpenMenu] = useState(null)
 
-    const {products} = useSeller() 
+    const {products} = useStore() 
 
     const totalProducts = products.length
 

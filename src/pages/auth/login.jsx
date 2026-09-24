@@ -10,16 +10,18 @@ import {
 } from 'react-icons/md'
 import { Link, useNavigate } from 'react-router-dom'
 import { useUser } from '../../contexts/userProvider'
+import Swal from 'sweetalert2'
 
 export default function Login() {
     const navigate = useNavigate()
-const {login} = useUser()
+    const { user, login } = useUser()
     const [showPassword, setShowPassword] = useState(false)
     const [loading, setLoading] = useState(false)
 
     const [formData, setFormData] = useState({
         email: '',
-        password: ''
+        password: '',
+        rememberMe: false
     })
 
     const [errors, setErrors] = useState({})
@@ -56,22 +58,46 @@ const {login} = useUser()
         return Object.keys(newErrors).length === 0
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
+    const handleSubmit = async (e) => {
+        try {
+            e.preventDefault()
 
-        if (!validateForm()) return
+            if (!validateForm()) return
 
-        setLoading(true)
-
-        // Temporary frontend authentication.
-        // This will be replaced with the MERN API.
-        setTimeout(() => {
+            setLoading(true)
+            const response = await login(formData)
+            if (response.status == true) {
+                Swal.fire({
+                    title: "Success",
+                    icon: "success",
+                    text: response.message
+                })
+                setTimeout(() => {
+                    setLoading(false)
+                    navigate('/')
+                }, 2000)
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    icon: "error",
+                    text: response.message
+                })
+            }
+        } catch (error) {
+            console.log(error)
+            Swal.fire({
+                title: "Error",
+                icon: "error",
+                text: error.message
+            })
+        }
+        finally {
             setLoading(false)
-            login(formData)
-            navigate('/')
-        }, 800)
+        }
     }
-
+    if (user !== null) {
+        navigate("/");
+    }
     return (
         <div className="min-h-screen bg-slate-50">
 
@@ -150,11 +176,10 @@ const {login} = useUser()
                                         onChange={handleChange}
                                         placeholder="you@example.com"
                                         autoComplete="email"
-                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 ${
-                                            errors.email
-                                                ? 'border-red-300 focus:border-red-500'
-                                                : 'border-slate-200 focus:border-emerald-500'
-                                        }`}
+                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 ${errors.email
+                                            ? 'border-red-300 focus:border-red-500'
+                                            : 'border-slate-200 focus:border-emerald-500'
+                                            }`}
                                     />
                                 </div>
 
@@ -172,12 +197,12 @@ const {login} = useUser()
                                         Password
                                     </label>
 
-                                    <button
-                                        type="button"
-                                        className="text-xs font-semibold text-emerald-600 transition hover:text-emerald-700"
+                                    <Link
+                                        to="/forgot-password"
+                                        className="text-sm font-semibold text-emerald-600 hover:text-emerald-700"
                                     >
                                         Forgot password?
-                                    </button>
+                                    </Link>
                                 </div>
 
                                 <div className="relative">
@@ -193,11 +218,10 @@ const {login} = useUser()
                                         onChange={handleChange}
                                         placeholder="Enter your password"
                                         autoComplete="current-password"
-                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-11 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 ${
-                                            errors.password
-                                                ? 'border-red-300 focus:border-red-500'
-                                                : 'border-slate-200 focus:border-emerald-500'
-                                        }`}
+                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-11 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 ${errors.password
+                                            ? 'border-red-300 focus:border-red-500'
+                                            : 'border-slate-200 focus:border-emerald-500'
+                                            }`}
                                     />
 
                                     <button
@@ -225,6 +249,8 @@ const {login} = useUser()
                             {/* Remember */}
                             <label className="flex cursor-pointer items-center gap-2">
                                 <input
+                                    value={formData?.rememberMe}
+                                    onChange={(e) => setFormData({ ...formData, rememberMe: e.target.checked })}
                                     type="checkbox"
                                     className="h-4 w-4 rounded border-slate-300 accent-emerald-500"
                                 />

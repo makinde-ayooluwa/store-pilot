@@ -15,7 +15,7 @@ export default function SellerLayout() {
             />
 
             <main className="min-w-0">
-                <SellerHeader setOpen={setOpen} />
+                <SellerHeader open={open} setOpen={setOpen} />
 
                 <Outlet />
             </main>

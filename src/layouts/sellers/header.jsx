@@ -5,7 +5,7 @@ import {
     MdMenu
 } from 'react-icons/md'
 
-export default function SellerHeader({ setOpen }) {
+export default function SellerHeader({ open, setOpen }) {
     return (
         <header className="w-full h-[70px] sticky top-0 z-200 border-b border-gray-200 bg-white px-3 sm:px-5">
 
@@ -16,7 +16,7 @@ export default function SellerHeader({ setOpen }) {
 
                     {/* Mobile menu */}
                     <button
-                        onClick={() => setOpen(true)}
+                        onClick={() => setOpen(!open)}
                         className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
                     >
                         <MdMenu size={25} />

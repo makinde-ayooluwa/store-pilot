@@ -37,6 +37,8 @@ import SellerProductDetails from '../pages/sellers/productDetails'
 import SellerOrders from '../pages/sellers/orders'
 import SellerCustomers from '../pages/sellers/customers'
 import SellerOrderDetails from '../pages/sellers/orderDetails'
+import ForgotPassword from '../pages/auth/forgotPassword'
+import ResetPassword from '../pages/auth/resetPassword'
 export default function AppRouter() {
     const { products, categories, getProductsByCategory, getCategoryBySlug, stores } = useResource();
     return (
@@ -45,6 +47,11 @@ export default function AppRouter() {
                 <Route path="/" element={<Homepage products={products} stores={stores} categories={categories} />} />
                 <Route path='/login' element={<Login />} />
                 <Route path='/register' element={<Register />} />
+                <Route path='/forgot-password' element={<ForgotPassword />} />
+                <Route
+    path="/reset-password/:token"
+    element={<ResetPassword />}
+/>
                 <Route path='/search' element={<Search />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />

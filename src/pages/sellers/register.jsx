@@ -14,12 +14,12 @@ import { useResource } from '../../contexts/resourceProvider'
 import { useUser } from "../../contexts/userProvider"
 export default function SellerRegister() {
     const navigate = useNavigate()
-    const { user } = useUser()
+    const { user, data } = useUser()
     const [formData, setFormData] = useState({
         storeName: '',
-        ownerName: user?.fullname ?? '',
-        email: user?.email ?? '',
-        phone: user?.phone ?? '',
+        ownerName: data?.fullname ?? '',
+        email: data?.email ?? '',
+        phone: data?.phone ?? '',
         category: '',
         location: '',
         description: ''

@@ -10,13 +10,13 @@ import {
 } from 'react-icons/md'
 
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useSeller } from '../../contexts/sellerProvider'
+import { useStore } from '../../contexts/storeProvider'
 
 export default function EditProduct() {
     const { id } = useParams()
     const navigate = useNavigate()
 
-    const { products = [] } = useSeller()
+    const { products = [] } = useStore()
 
     const product = products.find(
         (item) => String(item.id) === String(id)
@@ -110,7 +110,7 @@ export default function EditProduct() {
     /*
      * Submit
      *
-     * Actual update logic can be connected to your sellerProvider
+     * Actual update logic can be connected to your storeProvider
      * when you are ready.
      */
     const handleSubmit = (e) => {

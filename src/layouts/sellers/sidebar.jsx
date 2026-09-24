@@ -343,7 +343,7 @@ export default function SellerSidebar({ open, setOpen }) {
         >
             {/* Close button */}
             <button
-                onClick={() => setOpen(false)}
+                onClick={() => setOpen(!open)}
                 className="lg:hidden absolute top-4 right-4 text-2xl z-50"
             >
                 ×

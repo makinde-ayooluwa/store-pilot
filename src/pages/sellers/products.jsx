@@ -9,11 +9,11 @@ import {
     MdMoreVert
 } from "react-icons/md"
 import { Link } from "react-router-dom"
-import { useSeller } from "../../contexts/sellerProvider"
+import { useStore } from "../../contexts/storeProvider"
 
 
 export default function SellerAllProducts() {
-    const { products } = useSeller()
+    const { products } = useStore()
     const [openMenu, setOpenMenu] = useState(null)
     const [search, setSearch] = useState("")
     const [filter, setFilter] = useState("All")
