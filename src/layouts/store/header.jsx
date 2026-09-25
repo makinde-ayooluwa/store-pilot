@@ -74,11 +74,11 @@ export default function SellerHeader({ open, setOpen, storeData }) {
                         {/* Hide text on mobile */}
                         <div className="hidden sm:block">
                             <p className="text-sm font-semibold text-gray-900">
-                                Ayooluwa
+                                {storeData?.ownerName}
                             </p>
 
                             <p className="text-xs text-gray-500">
-                                Store
+                                Store Owner
                             </p>
                         </div>
 
