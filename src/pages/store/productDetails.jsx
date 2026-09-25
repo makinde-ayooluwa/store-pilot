@@ -47,7 +47,7 @@ export default function SellerProductDetails() {
                     </p>
 
                     <Link
-                        to="/seller/products"
+                        to="/store/products"
                         className="
                             inline-flex
                             items-center
@@ -130,7 +130,7 @@ export default function SellerProductDetails() {
 
                         <div className="flex items-center gap-3">
                             <Link
-                                to="/seller/products"
+                                to="/store/products"
                                 className="
                                     w-10
                                     h-10
@@ -160,7 +160,7 @@ export default function SellerProductDetails() {
                         </div>
 
                         <Link
-                            to={`/seller/products/${product.id}/edit`}
+                            to={`/store/products/${product.id}/edit`}
                             className="
                                 inline-flex
                                 items-center
@@ -539,7 +539,7 @@ export default function SellerProductDetails() {
                             <div className="mt-4 space-y-2">
 
                                 <Link
-                                    to={`/seller/products/${product.id}/edit`}
+                                    to={`/store/products/${product.id}/edit`}
                                     className="
                                         w-full
                                         flex
@@ -562,7 +562,7 @@ export default function SellerProductDetails() {
 
 
                                 <Link
-                                    to="/seller/products"
+                                    to="/store/products"
                                     className="
                                         w-full
                                         flex

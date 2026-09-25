@@ -129,7 +129,7 @@ export default function EditProduct() {
 
         setTimeout(() => {
             setSaving(false)
-            navigate('/seller/products')
+            navigate('/store/products')
         }, 800)
     }
 
@@ -176,7 +176,7 @@ export default function EditProduct() {
                     </p>
 
                     <Link
-                        to="/seller/products"
+                        to="/store/products"
                         className="
                             mt-6
                             inline-flex
@@ -226,7 +226,7 @@ export default function EditProduct() {
                 <div className="flex items-center gap-3">
 
                     <Link
-                        to="/seller/products"
+                        to="/store/products"
                         className="
                             flex
                             h-10

@@ -1,6 +1,6 @@
 import React from 'react'
 import LOGO2 from "../../assets/images/logo-2.png"
-import SellerSidebarNav from '../../components/seller/sellerSidebarNav'
+import SellerSidebarNav from '../../components/store/storeSidebarNav'
 
 import {
     MdDashboard,
@@ -34,11 +34,11 @@ export default function SellerSidebar({ open, setOpen }) {
         dropdown: [
             {
                 title: "Overview",
-                link: "/seller"
+                link: "/store"
             },
             // {
             //     title: "Statistics",
-            //     link: "/seller/statistics"
+            //     link: "/store/statistics"
             // }
         ]
     },
@@ -56,15 +56,15 @@ export default function SellerSidebar({ open, setOpen }) {
         dropdown: [
             {
                 title: "All Products",
-                link: "/seller/products"
+                link: "/store/products"
             },
             {
                 title: "Add Product",
-                link: "/seller/products/add"
+                link: "/store/products/add"
             },
             {
                 title: "Categories",
-                link: "/seller/products/categories"
+                link: "/store/products/categories"
             }
         ]
     },
@@ -81,15 +81,15 @@ export default function SellerSidebar({ open, setOpen }) {
         dropdown: [
             {
                 title: "Stock Overview",
-                link: "/seller/inventory"
+                link: "/store/inventory"
             },
             // {
             //     title: "Low Stock",
-            //     link: "/seller/inventory/low-stock"
+            //     link: "/store/inventory/low-stock"
             // },
             // {
             //     title: "Stock History",
-            //     link: "/seller/inventory/history"
+            //     link: "/store/inventory/history"
             // }
         ]
     },
@@ -106,15 +106,15 @@ export default function SellerSidebar({ open, setOpen }) {
         dropdown: [
             {
                 title: "All Orders",
-                link: "/seller/orders"
+                link: "/store/orders"
             },
             // {
             //     title: "Pending",
-            //     link: "/seller/orders/pending"
+            //     link: "/store/orders/pending"
             // },
             // {
             //     title: "Completed",
-            //     link: "/seller/orders/completed"
+            //     link: "/store/orders/completed"
             // }
         ]
     },
@@ -128,7 +128,7 @@ export default function SellerSidebar({ open, setOpen }) {
             />
         ),
         hasDropdown: false,
-        link: "/seller/customers"
+        link: "/store/customers"
     },
 
     // SALES
@@ -144,11 +144,11 @@ export default function SellerSidebar({ open, setOpen }) {
         dropdown: [
             {
                 title: "Sales Overview",
-                link: "/seller/sales"
+                link: "/store/sales"
             },
             {
                 title: "Sales History",
-                link: "/seller/sales/history"
+                link: "/store/sales/history"
             }
         ]
     },
@@ -162,7 +162,7 @@ export default function SellerSidebar({ open, setOpen }) {
             />
         ),
         hasDropdown: false,
-        link: "/seller/transactions"
+        link: "/store/transactions"
     },
 
     {
@@ -174,7 +174,7 @@ export default function SellerSidebar({ open, setOpen }) {
             />
         ),
         hasDropdown: false,
-        link: "/seller/wallet"
+        link: "/store/wallet"
     },
 
     {
@@ -189,11 +189,11 @@ export default function SellerSidebar({ open, setOpen }) {
         dropdown: [
             {
                 title: "All Discounts",
-                link: "/seller/discounts"
+                link: "/store/discounts"
             },
             {
                 title: "Create Discount",
-                link: "/seller/discounts/create"
+                link: "/store/discounts/create"
             }
         ]
     },
@@ -211,15 +211,15 @@ export default function SellerSidebar({ open, setOpen }) {
         dropdown: [
             {
                 title: "Overview",
-                link: "/seller/analytics"
+                link: "/store/analytics"
             },
             {
                 title: "Sales Analytics",
-                link: "/seller/analytics/sales"
+                link: "/store/analytics/sales"
             },
             {
                 title: "Product Analytics",
-                link: "/seller/analytics/products"
+                link: "/store/analytics/products"
             }
         ]
     },
@@ -236,15 +236,15 @@ export default function SellerSidebar({ open, setOpen }) {
         dropdown: [
             {
                 title: "Sales Report",
-                link: "/seller/reports/sales"
+                link: "/store/reports/sales"
             },
             {
                 title: "Inventory Report",
-                link: "/seller/reports/inventory"
+                link: "/store/reports/inventory"
             },
             {
                 title: "Customer Report",
-                link: "/seller/reports/customers"
+                link: "/store/reports/customers"
             }
         ]
     },
@@ -262,15 +262,15 @@ export default function SellerSidebar({ open, setOpen }) {
         dropdown: [
             {
                 title: "Store Profile",
-                link: "/seller/store"
+                link: "/store/store"
             },
             {
                 title: "Store Appearance",
-                link: "/seller/store/appearance"
+                link: "/store/store/appearance"
             },
             {
                 title: "Store Information",
-                link: "/seller/store/information"
+                link: "/store/store/information"
             }
         ]
     },
@@ -287,11 +287,11 @@ export default function SellerSidebar({ open, setOpen }) {
         dropdown: [
             {
                 title: "Team Members",
-                link: "/seller/team"
+                link: "/store/team"
             },
             {
                 title: "Roles & Permissions",
-                link: "/seller/team/roles"
+                link: "/store/team/roles"
             }
         ]
     },
@@ -308,15 +308,15 @@ export default function SellerSidebar({ open, setOpen }) {
         dropdown: [
             {
                 title: "General",
-                link: "/seller/settings"
+                link: "/store/settings"
             },
             {
                 title: "Account",
-                link: "/seller/settings/account"
+                link: "/store/settings/account"
             },
             {
                 title: "Notifications",
-                link: "/seller/settings/notifications"
+                link: "/store/settings/notifications"
             }
         ]
     }

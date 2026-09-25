@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import SellerSidebar from './sellers/sidebar'
+import SellerSidebar from './store/sidebar'
 import { Outlet } from 'react-router-dom'
-import SellerHeader from './sellers/header'
+import SellerHeader from './store/header'
 
 export default function SellerLayout() {
     const [open, setOpen] = useState(false)

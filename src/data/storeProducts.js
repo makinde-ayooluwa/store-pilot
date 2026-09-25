@@ -1,4 +1,4 @@
-const sellerProducts = [
+const storeProducts = [
     {
         id: "SP-001",
         name: "Nike Air Max",
@@ -101,4 +101,4 @@ const sellerProducts = [
     }
 ]
 
-export default sellerProducts
+export default storeProducts

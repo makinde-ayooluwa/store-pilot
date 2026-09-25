@@ -95,7 +95,7 @@ export default function SellerOrderDetails() {
                     </p>
 
                     <Link
-                        to="/seller/orders"
+                        to="/store/orders"
                         className="
                             inline-flex
                             items-center
@@ -316,7 +316,7 @@ export default function SellerOrderDetails() {
                         <div className="flex items-center gap-3">
 
                             <Link
-                                to="/seller/orders"
+                                to="/store/orders"
                                 className="
                                     w-10
                                     h-10
@@ -1262,7 +1262,7 @@ export default function SellerOrderDetails() {
                         <button
                             type="button"
                             onClick={() =>
-                                navigate('/seller/orders')
+                                navigate('/store/orders')
                             }
                             className="
                                 w-full

@@ -22,7 +22,8 @@ export default function SellerRegister() {
         phone: data?.phone ?? '',
         category: '',
         location: '',
-        description: ''
+        description: '',
+        slug: ""
     })
 
     const [errors, setErrors] = useState({})
@@ -31,7 +32,13 @@ export default function SellerRegister() {
 
     const handleChange = (e) => {
         const { name, value } = e.target
-
+        if (name == "storeName") {
+            setFormData((current) => ({
+                ...current,
+                slug: value.split(" ").join("-")
+            }))
+            console.log(formData)
+        }
         setFormData((current) => ({
             ...current,
             [name]: value
@@ -84,7 +91,7 @@ export default function SellerRegister() {
         // Later this will send the data to:
         // POST /api/stores
 
-        navigate('/seller/dashboard')
+        navigate('/store/dashboard')
     }
 
     return (
@@ -206,8 +213,8 @@ export default function SellerRegister() {
                                         onChange={handleChange}
                                         placeholder="e.g. Tech Haven"
                                         className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 ${errors.storeName
-                                                ? 'border-red-300'
-                                                : 'border-slate-200'
+                                            ? 'border-red-300'
+                                            : 'border-slate-200'
                                             }`}
                                     />
                                 </div>
@@ -239,8 +246,8 @@ export default function SellerRegister() {
                                         onChange={handleChange}
                                         placeholder="Your full name"
                                         className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm text-slate-700 outline-none focus:border-slate-400 ${errors.ownerName
-                                                ? 'border-red-300'
-                                                : 'border-slate-200'
+                                            ? 'border-red-300'
+                                            : 'border-slate-200'
                                             }`}
                                     />
                                 </div>
@@ -274,8 +281,8 @@ export default function SellerRegister() {
                                             onChange={handleChange}
                                             placeholder="you@example.com"
                                             className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none focus:border-slate-400 ${errors.email
-                                                    ? 'border-red-300'
-                                                    : 'border-slate-200'
+                                                ? 'border-red-300'
+                                                : 'border-slate-200'
                                                 }`}
                                         />
                                     </div>
@@ -305,8 +312,8 @@ export default function SellerRegister() {
                                             onChange={handleChange}
                                             placeholder="0800 000 0000"
                                             className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none focus:border-slate-400 ${errors.phone
-                                                    ? 'border-red-300'
-                                                    : 'border-slate-200'
+                                                ? 'border-red-300'
+                                                : 'border-slate-200'
                                                 }`}
                                         />
                                     </div>
@@ -332,8 +339,8 @@ export default function SellerRegister() {
                                     value={formData.category}
                                     onChange={handleChange}
                                     className={`h-11 w-full rounded-xl border bg-white px-3 text-sm text-slate-700 outline-none focus:border-slate-400 ${errors.category
-                                            ? 'border-red-300'
-                                            : 'border-slate-200'
+                                        ? 'border-red-300'
+                                        : 'border-slate-200'
                                         }`}
                                 >
                                     <option value="">
@@ -377,8 +384,8 @@ export default function SellerRegister() {
                                         onChange={handleChange}
                                         placeholder="City or business location"
                                         className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none focus:border-slate-400 ${errors.location
-                                                ? 'border-red-300'
-                                                : 'border-slate-200'
+                                            ? 'border-red-300'
+                                            : 'border-slate-200'
                                             }`}
                                     />
                                 </div>

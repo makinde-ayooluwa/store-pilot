@@ -1,12 +1,12 @@
 import React from 'react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
-import SellerLayout from '../layouts/sellerLayout'
-import SellerDashboard from '../pages/sellers/dashboard'
-import SellerWallet from '../pages/sellers/wallet'
-import SellerAllProducts from '../pages/sellers/products'
-import SellerAddProduct from '../pages/sellers/addProduct'
-import SellerCategories from '../pages/sellers/categories'
-import SellerStockOverview from '../pages/sellers/stockOverview'
+import SellerLayout from '../layouts/storeLayout'
+import SellerDashboard from '../pages/store/dashboard'
+import SellerWallet from '../pages/store/wallet'
+import SellerAllProducts from '../pages/store/products'
+import SellerAddProduct from '../pages/store/addProduct'
+import SellerCategories from '../pages/store/categories'
+import SellerStockOverview from '../pages/store/stockOverview'
 import Homepage from '../pages/homepage'
 import Sell from '../pages/sell'
 import Products from '../pages/products'
@@ -31,12 +31,12 @@ import Settings from '../pages/customer/settings'
 import Terms from '../pages/terms'
 import Privacy from '../pages/privacy'
 import NotFound from '../pages/notFound'
-import SellerRegister from '../pages/sellers/register'
-import EditProduct from '../pages/sellers/editProduct'
-import SellerProductDetails from '../pages/sellers/productDetails'
-import SellerOrders from '../pages/sellers/orders'
-import SellerCustomers from '../pages/sellers/customers'
-import SellerOrderDetails from '../pages/sellers/orderDetails'
+import SellerRegister from '../pages/store/register'
+import EditProduct from '../pages/store/editProduct'
+import SellerProductDetails from '../pages/store/productDetails'
+import SellerOrders from '../pages/store/orders'
+import SellerCustomers from '../pages/store/customers'
+import SellerOrderDetails from '../pages/store/orderDetails'
 import ForgotPassword from '../pages/auth/forgotPassword'
 import ResetPassword from '../pages/auth/resetPassword'
 export default function AppRouter() {
@@ -87,10 +87,10 @@ export default function AppRouter() {
                 </Route>
                 {/* SELLER */}
                 <Route
-                    path="/seller/register"
+                    path="/store/register"
                     element={<SellerRegister />}
                 />
-                <Route path='/seller' element={
+                <Route path='/store' element={
                     <SellerLayout />
                 }
                 >

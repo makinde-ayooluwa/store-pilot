@@ -379,7 +379,7 @@ export default function SellerOrders() {
                                                 <div className="absolute right-0 top-11 z-50 w-40 rounded-xl border border-slate-200 bg-white p-1 text-left shadow-lg">
 
                                                     <Link
-                                                        to={`/seller/orders/${order.id}`}
+                                                        to={`/store/orders/${order.id}`}
                                                         onClick={() =>
                                                             setOpenMenu(null)
                                                         }
@@ -497,7 +497,7 @@ export default function SellerOrders() {
                         </div>
 
                         <Link
-                            to={`/seller/orders/${order.id}`}
+                            to={`/store/orders/${order.id}`}
                             className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-xs font-bold text-white transition hover:bg-slate-800"
                         >
                             <MdVisibility size={17} />

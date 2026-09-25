@@ -48,7 +48,7 @@ export default function SellerAllProducts() {
                 </div>
 
                 <Link
-                    to="/seller/products/add"
+                    to="/store/products/add"
                     className="
                         inline-flex items-center justify-center gap-2
                         px-4 py-2.5
@@ -377,7 +377,7 @@ export default function SellerAllProducts() {
 
                                                     {/* View */}
                                                     <Link
-                                                        to={`/seller/products/${product.id}`}
+                                                        to={`/store/products/${product.id}`}
                                                         onClick={() => setOpenMenu(null)}
                                                         className="
                         flex
@@ -400,7 +400,7 @@ export default function SellerAllProducts() {
 
                                                     {/* Edit */}
                                                     <Link
-                                                        to={`/seller/products/${product.id}/edit`}
+                                                        to={`/store/products/${product.id}/edit`}
                                                         onClick={() => setOpenMenu(null)}
                                                         className="
                         flex
@@ -478,7 +478,7 @@ export default function SellerAllProducts() {
                                 </div>
 
                                 <Link
-                                    to={`/seller/products/${product.id}/edit`}
+                                    to={`/store/products/${product.id}/edit`}
                                     className="
                                         inline-flex
                                         items-center

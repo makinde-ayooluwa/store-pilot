@@ -75,7 +75,7 @@ export default function SellerAddProduct() {
                 <div className="flex items-center gap-3">
 
                     <Link
-                        to="/seller/products"
+                        to="/store/products"
                         className="
                             p-2
                             rounded-xl
@@ -609,7 +609,7 @@ export default function SellerAddProduct() {
 
 
                             <Link
-                                to="/seller/products"
+                                to="/store/products"
                                 className="
                                     w-full
                                     flex items-center justify-center

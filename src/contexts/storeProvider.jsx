@@ -1,9 +1,16 @@
-import { createContext, useCallback, useContext } from "react";
-import sellerProducts from '../data/sellerProducts'
-import sellerCategories from "../data/sellerCategories";
+import { createContext, useCallback, useContext, useState } from "react";
+import storeProducts from '../data/storeProducts'
+import storeCategories from "../data/storeCategories";
 export const StoreContext = createContext();
 export const StoreProvider = ({children})=>{
-    return <StoreContext.Provider value={{products: sellerProducts, categories: sellerCategories}}>
+    const [store, setStore] = useState(null);
+    const register = async(data)=>{
+
+    }
+    const login = async(data)=>{
+
+    }
+    return <StoreContext.Provider value={{products: storeProducts, categories: storeCategories}}>
         {children}
     </StoreContext.Provider>
 }

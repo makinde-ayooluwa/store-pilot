@@ -24,6 +24,7 @@ export default function Homepage({ products, categories, stores }) {
     const navigate = useNavigate()
     const [search, setSearch] = useState("")
     const handleSearch = () => {
+        if(search.trim() == "") return;
         navigate(`/search?q=${encodeURIComponent(
             search.trim()
         )}`)
@@ -81,7 +82,7 @@ export default function Homepage({ products, categories, stores }) {
                                 className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
                             />
 
-                            <button onClick={handleSearch} className="hidden rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 sm:block">
+                            <button onClick={handleSearch} className="rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 sm:block">
                                 Search
                             </button>
 

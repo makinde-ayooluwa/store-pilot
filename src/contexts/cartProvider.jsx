@@ -4,7 +4,7 @@ const CartContext = createContext()
 
 export function CartProvider({ children }) {
     const [cartItems, setCartItems] = useState([])
-
+    
     const addToCart = (product, quantity = 1) => {
         setCartItems((currentItems) => {
             const existingItem = currentItems.find(

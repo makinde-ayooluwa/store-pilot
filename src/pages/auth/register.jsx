@@ -545,7 +545,7 @@ export default function Register() {
                         </p>
 
                         <Link
-                            to="/seller/register"
+                            to="/store/register"
                             className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-slate-700 hover:text-emerald-600"
                         >
                             Go to Seller Registration

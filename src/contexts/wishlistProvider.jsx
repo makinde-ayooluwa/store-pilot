@@ -1,10 +1,23 @@
-import React, { createContext, useContext, useMemo, useState } from 'react'
+import axios from 'axios'
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { backendUrl } from '../data/constants'
+import { useUser } from './userProvider'
 
 const WishlistContext = createContext(null)
 
 export function WishlistProvider({ children }) {
     const [wishlistItems, setWishlistItems] = useState([])
-
+    const { user } = useUser()
+    // const getWishlists = async () => {
+    //     const response = await axios.post(`${backendUrl}/wishlist`, { userId: user })
+    //     const result = response.data;
+    //     if(result.status){
+    //         setWishlistItems(result.data)
+    //     }
+    // }
+    // useEffect(()=>{
+    //     getWishlists();
+    // },[])
     const isWishlisted = (productId) => {
         return wishlistItems.some((item) => item.id === productId)
     }
