@@ -61,7 +61,6 @@ export const UserProvider = ({ children }) => {
 
     const login = async (loginData) => {
         try {
-            setUserLoading(true);
             const response = await axios.post(`${backendUrl}/auth/login`, loginData);
             // const response = {
             //     data:{
@@ -85,15 +84,13 @@ export const UserProvider = ({ children }) => {
                 }
 
                 // Fetch fresh user profile details
-                await checkUser();
+                // await checkUser();
 
                 return { status: true, message: result.message };
             } else {
-                setUserLoading(false);
                 return { status: false, message: result.message };
             }
         } catch (error) {
-            setUserLoading(false);
             return {
                 status: false,
                 message: error.response?.data?.message || "Login failed",
@@ -103,7 +100,6 @@ export const UserProvider = ({ children }) => {
 
     const register = async (registerData) => {
         try {
-            setUserLoading(true);
             const response = await axios.post(`${backendUrl}/auth/register`, registerData);
             const result = response.data;
 
@@ -111,15 +107,13 @@ export const UserProvider = ({ children }) => {
                 localStorage.removeItem("user");
                 sessionStorage.setItem("user", JSON.stringify({ _id: result._id }));
 
-                await checkUser();
+                // await checkUser();
 
                 return { status: true, message: result.message };
             } else {
-                setUserLoading(false);
                 return { status: false, message: result.message };
             }
         } catch (error) {
-            setUserLoading(false);
             return {
                 status: false,
                 message: error.response?.data?.message || "Registration failed",
