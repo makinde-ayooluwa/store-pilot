@@ -17,7 +17,7 @@ export default function ForgotPassword() {
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [loading, setLoading] = useState(false)
-    const { forgotPassword, user } = useUser()
+    const { forgotPassword, user, requestToken, requestMail } = useUser()
     const handleSubmit = async (e) => {
         e.preventDefault()
 
@@ -46,10 +46,17 @@ export default function ForgotPassword() {
             });
 
             if (result.status) {
-                setSuccess(
-                    'If an account exists with this email, a password reset link has been sent.'
-                )
-                setEmail('')
+                const { token, status } = await requestToken(result.userId)
+                if (status) {
+                    const { status } = await requestMail(result.userId, token)
+                    if (status) {
+                        setSuccess(
+                            'If an account exists with this email, a password reset link has been sent.'
+                        )
+                        setEmail('')
+                        console.log(result)
+                    }
+                }
             } else {
                 setError(
                     error?.response?.data?.message ||
