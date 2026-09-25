@@ -84,7 +84,7 @@ export const UserProvider = ({ children }) => {
                 }
 
                 // Fetch fresh user profile details
-                // await checkUser();
+                await checkUser();
 
                 return { status: true, message: result.message };
             } else {
@@ -107,7 +107,7 @@ export const UserProvider = ({ children }) => {
                 localStorage.removeItem("user");
                 sessionStorage.setItem("user", JSON.stringify({ _id: result._id }));
 
-                // await checkUser();
+                await checkUser();
 
                 return { status: true, message: result.message };
             } else {
@@ -121,14 +121,14 @@ export const UserProvider = ({ children }) => {
         }
     };
     const forgotPassword = async (data) => {
-        const to = data.email;
+        const {email} = data;
 
         const sendData = {
-            to, email: to
+            email
         };
         const response = await axios.post(`${backendUrl}/auth/forgot-password`, sendData)
         const result = response.data;
-        return result.userId;
+        return result;
     }
     const requestToken = async (userId) => {
         const response = await axios.post(`${backendUrl}/auth/request-token`, { userId })
@@ -139,7 +139,7 @@ export const UserProvider = ({ children }) => {
     }
     const requestMail = async (userId, token) => {
         // 4. Use environment variable for domain with localhost fallback
-        const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+        const clientUrl = "http://localhost:5173";
         const resetLink = `${clientUrl}/reset-password/${token}`;
 
         const subject = "Forgot password -- StorePilot";
@@ -234,18 +234,37 @@ export const UserProvider = ({ children }) => {
         >
             {userError?.status == 500 && (
                 <>
-                    <div className="w-full h-screen flex justify-center">
-                        <div className="mt-50 justify-center">
-                            <MdErrorOutline className="text-5xl text-red-500" />
-                            <p>Error occured while loading.</p>
-                            <div className="m-5 justify-self-center">
-                                <button onClick={() => checkUser()} className="border-2 border-blue-500 p-3 text-blue-500 cursor-pointer rounded">Try again</button>
-                            </div>
-                        </div>
-                    </div>
+                    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+            <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-8">
+                {/* Icon Container */}
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600">
+                    <MdErrorOutline size={30} />
+                </div>
+
+                {/* Main Heading */}
+                <h2 className="text-xl font-bold tracking-tight text-slate-900">
+                    Something went wrong
+                </h2>
+
+                {/* Subtext */}
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                    An error occurred while loading your profile. Please try again.
+                </p>
+
+                {/* Retry Button */}
+                <button
+                    type="button"
+                    onClick={() => checkUser()}
+                    className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98]"
+                >
+                    <MdRefresh size={18} />
+                    Try again
+                </button>
+            </div>
+        </div>
                 </>
             )}
-            {userLoading && <Loading page={"profile"} />}
+            {userLoading && <Loading page={"homepage"} />}
             {(!userLoading && userError?.status != 500) && children}
         </UserContext.Provider>
     );

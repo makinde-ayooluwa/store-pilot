@@ -41,13 +41,15 @@ export default function ForgotPassword() {
             // Later this will call:
             // POST /api/auth/forgot-password
 
+            console.log("FORGETTING PASSWORD")
             const result = await forgotPassword({
                 email
             });
-
             if (result.status) {
+                console.log("REQUESTING TOKEN")
                 const { token, status } = await requestToken(result.userId)
                 if (status) {
+                    console.log("REQUESTING MAIL")
                     const { status } = await requestMail(result.userId, token)
                     if (status) {
                         setSuccess(
