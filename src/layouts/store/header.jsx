@@ -4,8 +4,9 @@ import {
     MdNotificationsNone,
     MdMenu
 } from 'react-icons/md'
+import { useStore } from '../../contexts/storeProvider'
 
-export default function SellerHeader({ open, setOpen }) {
+export default function SellerHeader({ open, setOpen, storeData }) {
     return (
         <header className="w-full h-[70px] sticky top-0 z-200 border-b border-gray-200 bg-white px-3 sm:px-5">
 
@@ -65,7 +66,8 @@ export default function SellerHeader({ open, setOpen }) {
 
                         <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-green-700 flex items-center justify-center shrink-0">
                             <span className="text-white text-sm font-semibold">
-                                A
+                                {/* {storeData.ownerName.firstLetter()} */}
+                                {storeData?.name.split("")[0]}
                             </span>
                         </div>
 
@@ -76,7 +78,7 @@ export default function SellerHeader({ open, setOpen }) {
                             </p>
 
                             <p className="text-xs text-gray-500">
-                                Seller
+                                Store
                             </p>
                         </div>
 

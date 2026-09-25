@@ -11,6 +11,7 @@ import {
 
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useStore } from '../../contexts/storeProvider'
+import StoreOnly from '../../components/storeOnly'
 
 export default function EditProduct() {
     const { id } = useParams()
@@ -153,31 +154,32 @@ export default function EditProduct() {
      */
     if (!product) {
         return (
-            <div className="min-h-screen bg-gray-50 p-6">
-                <div className="mx-auto max-w-xl py-20 text-center">
+            <StoreOnly>
+                <div className="min-h-screen bg-gray-50 p-6">
+                    <div className="mx-auto max-w-xl py-20 text-center">
 
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-                        <MdInventory
-                            size={30}
-                            className="text-gray-400"
-                        />
-                    </div>
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                            <MdInventory
+                                size={30}
+                                className="text-gray-400"
+                            />
+                        </div>
 
-                    <h1 className="mt-5 text-xl font-semibold text-gray-900">
-                        Product not found
-                    </h1>
+                        <h1 className="mt-5 text-xl font-semibold text-gray-900">
+                            Product not found
+                        </h1>
 
-                    <p className="mt-2 text-sm text-gray-500">
-                        The product you're trying to edit could not be found.
-                    </p>
+                        <p className="mt-2 text-sm text-gray-500">
+                            The product you're trying to edit could not be found.
+                        </p>
 
-                    <p className="mt-2 text-xs text-gray-400">
-                        Product ID: {id}
-                    </p>
+                        <p className="mt-2 text-xs text-gray-400">
+                            Product ID: {id}
+                        </p>
 
-                    <Link
-                        to="/store/products"
-                        className="
+                        <Link
+                            to="/store/products"
+                            className="
                             mt-6
                             inline-flex
                             items-center
@@ -192,13 +194,14 @@ export default function EditProduct() {
                             transition
                             hover:bg-green-800
                         "
-                    >
-                        <MdArrowBack size={18} />
-                        Back to Products
-                    </Link>
+                        >
+                            <MdArrowBack size={18} />
+                            Back to Products
+                        </Link>
 
+                    </div>
                 </div>
-            </div>
+            </StoreOnly>
         )
     }
 
@@ -819,10 +822,9 @@ export default function EditProduct() {
                                         border
                                         p-3
                                         transition
-                                        ${
-                                            formData.status === status
-                                                ? 'border-green-500 bg-green-50'
-                                                : 'border-gray-200'
+                                        ${formData.status === status
+                                            ? 'border-green-500 bg-green-50'
+                                            : 'border-gray-200'
                                         }
                                     `}
                                 >
@@ -848,8 +850,8 @@ export default function EditProduct() {
                                             {status === 'Active'
                                                 ? 'Visible to customers'
                                                 : status === 'Draft'
-                                                ? 'Not visible to customers'
-                                                : 'Temporarily unavailable'}
+                                                    ? 'Not visible to customers'
+                                                    : 'Temporarily unavailable'}
                                         </p>
 
                                     </div>

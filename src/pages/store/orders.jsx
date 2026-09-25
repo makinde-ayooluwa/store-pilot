@@ -12,6 +12,7 @@ import {
 } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import { useOrders } from '../../contexts/orderProvider'
+import StoreOnly from '../../components/storeOnly'
 
 export default function SellerOrders() {
     const { orders = [] } = useOrders()
@@ -133,6 +134,7 @@ export default function SellerOrders() {
     ).length
 
     return (
+        <StoreOnly>
         <div className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
 
             {/* Header */}
@@ -534,6 +536,7 @@ export default function SellerOrders() {
             </div>
 
         </div>
+        </StoreOnly>
     )
 }
 

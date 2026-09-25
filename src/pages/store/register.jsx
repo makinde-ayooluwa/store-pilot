@@ -12,9 +12,13 @@ import {
 import { Link, useNavigate } from 'react-router-dom'
 import { useResource } from '../../contexts/resourceProvider'
 import { useUser } from "../../contexts/userProvider"
+import { useStore } from '../../contexts/storeProvider'
+import Swal from 'sweetalert2'
 export default function SellerRegister() {
-    const navigate = useNavigate()
-    const { user, data } = useUser()
+    const navigate = useNavigate();
+    const { user, data } = useUser();
+    const { register } = useStore();
+    const [submitting, setSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         storeName: '',
         ownerName: data?.fullname ?? '',
@@ -35,7 +39,7 @@ export default function SellerRegister() {
         if (name == "storeName") {
             setFormData((current) => ({
                 ...current,
-                slug: value.split(" ").join("-")
+                slug: value.toLowerCase().split(" ").join("-")
             }))
             console.log(formData)
         }
@@ -82,16 +86,43 @@ export default function SellerRegister() {
         return Object.keys(newErrors).length === 0
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
+    const handleSubmit = async (e) => {
+        try {
+            e.preventDefault()
+            setSubmitting(true);
 
-        if (!validate()) return
+            if (!validate()) return
 
-        // Temporary frontend flow.
-        // Later this will send the data to:
-        // POST /api/stores
-
-        navigate('/store/dashboard')
+            // Temporary frontend flow.
+            // Later this will send the data to:
+            // POST /api/stores
+            const response = await register(formData);
+            if (response) {
+                console.log(response)
+                if (response.status == false) {
+                    Swal.fire({
+                        title: "Error",
+                        text: response.message,
+                        icon: "error"
+                    })
+                } else {
+                    Swal.fire({
+                        title: "Success",
+                        text: response.message,
+                        icon: "success"
+                    })
+                    setTimeout(() => {
+                        navigate('/store/dashboard')
+                    }, 800);
+                }
+            }
+            
+        } catch (error) {
+console.log(error)
+        }
+        finally{
+            setSubmitting(false);
+        }
     }
 
     return (
@@ -421,10 +452,20 @@ export default function SellerRegister() {
 
                             <button
                                 type="submit"
-                                className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-semibold text-white transition hover:bg-slate-800"
+                                disabled={submitting}
+                                className={`flex h-11 w-full items-center justify-center gap-2 rounded-xl ${submitting ? "bg-slate-400" : "bg-slate-900"} text-sm font-semibold cursor-${submitting ? "not-allowed" : "pointer"} text-white transition hover:bg-slate-800`}
                             >
-                                Create Store
-                                <MdArrowForward size={19} />
+                                {submitting ? (
+                                    <>
+                                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                        Creating store...
+                                    </>
+                                ) : (
+                                    <>
+                                        Create Store
+                                        <MdArrowForward size={18} />
+                                    </>
+                                )}
                             </button>
 
                         </form>

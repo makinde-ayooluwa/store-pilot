@@ -14,6 +14,7 @@ import {
 } from 'react-icons/md'
 import { Link, useParams } from 'react-router-dom'
 import { useStore } from '../../contexts/storeProvider'
+import StoreOnly from '../../components/storeOnly'
 
 export default function SellerProductDetails() {
     const { id } = useParams()
@@ -28,6 +29,7 @@ export default function SellerProductDetails() {
     // -----------------------------
     if (!product) {
         return (
+            <StoreOnly>
             <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
                 <div className="w-full max-w-md bg-white rounded-2xl border border-gray-200 p-8 text-center shadow-sm">
                     <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-red-50 flex items-center justify-center">
@@ -69,6 +71,7 @@ export default function SellerProductDetails() {
                     </Link>
                 </div>
             </div>
+            </StoreOnly>
         )
     }
 

@@ -10,6 +10,7 @@ import {
 } from "react-icons/md"
 import { Link } from "react-router-dom"
 import { useStore } from "../../contexts/storeProvider"
+import StoreOnly from "../../components/storeOnly"
 
 
 export default function SellerAllProducts() {
@@ -32,6 +33,7 @@ export default function SellerAllProducts() {
     })
 
     return (
+        <StoreOnly>
         <div className="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-[calc(100vh-70px)]">
 
             {/* HEADER */}
@@ -591,5 +593,6 @@ export default function SellerAllProducts() {
             </div>
 
         </div>
+        </StoreOnly>
     )
 }

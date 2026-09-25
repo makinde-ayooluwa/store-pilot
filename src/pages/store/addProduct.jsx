@@ -7,6 +7,7 @@ import {
     MdClose
 } from "react-icons/md"
 import { Link } from "react-router-dom"
+import StoreOnly from "../../components/storeOnly"
 
 export default function SellerAddProduct() {
 
@@ -67,6 +68,7 @@ export default function SellerAddProduct() {
     }
 
     return (
+        <StoreOnly>
         <div className="bg-gray-50 min-h-[calc(100vh-70px)] p-4 sm:p-6 lg:p-8">
 
             {/* HEADER */}
@@ -637,5 +639,6 @@ export default function SellerAddProduct() {
             </form>
 
         </div>
+        </StoreOnly>
     )
 }

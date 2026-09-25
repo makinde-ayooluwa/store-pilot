@@ -12,6 +12,7 @@ import {
     MdKeyboardArrowDown
 } from 'react-icons/md'
 import { useStore } from '../../contexts/storeProvider'
+import StoreOnly from '../../components/storeOnly'
 
 export default function SellerCategories() {
     const [search, setSearch] = useState('')
@@ -82,6 +83,7 @@ export default function SellerCategories() {
     }
 
     return (
+        <StoreOnly>
         <div className="min-h-full bg-slate-50 p-4 sm:p-6 lg:p-7">
 
             {/* Header */}
@@ -641,5 +643,6 @@ export default function SellerCategories() {
             )}
 
         </div>
+        </StoreOnly>
     )
 }

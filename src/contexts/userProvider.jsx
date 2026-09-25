@@ -12,6 +12,7 @@ export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [data, setData] = useState(null);
     const [userError, setUserError] = useState({});
+    const [ownStore, setOwnStore] = useState(false);
     const { send } = useSocket();
 
     // useCallback prevents unnecessary re-creations of checkUser
@@ -35,6 +36,15 @@ export const UserProvider = ({ children }) => {
                 setData(userData);
                 setUserError({ status: 200 });
                 console.log("USER ERROR", userError)
+
+                console.log(user)
+                const checkStoreRes = await axios.post(`${backendUrl}/auth/check-store`, { id: userData._id, email: userData.email })
+                const checkRes = checkStoreRes.data;
+                if (checkRes.status) {
+                    localStorage.setItem("store", userData._id)
+                    console.log("USER STORE UPDATED SUCCESSFULLY")
+                    setOwnStore(true);
+                }
             } else {
                 setUser(null);
                 setData(null);
@@ -121,7 +131,7 @@ export const UserProvider = ({ children }) => {
         }
     };
     const forgotPassword = async (data) => {
-        const {email} = data;
+        const { email } = data;
 
         const sendData = {
             email
@@ -188,7 +198,7 @@ export const UserProvider = ({ children }) => {
         const result = user.data;
         if (result) {
             const mailRequest = await axios.post(`${backendUrl}/auth/request-mail`, { to: result.email, subject, message })
-            const {status} = mailRequest.data;
+            const { status } = mailRequest.data;
             return {
                 status
             }
@@ -222,6 +232,8 @@ export const UserProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem("user");
         sessionStorage.removeItem("user");
+        localStorage.removeItem("store");
+        sessionStorage.removeItem("store");
         setUser(null);
         setData(null);
         setUserError({});
@@ -230,38 +242,38 @@ export const UserProvider = ({ children }) => {
 
     return (
         <UserContext.Provider
-            value={{ userLoading, user, requestMail, data, userError, login, register, logout, checkUser, forgotPassword, validateToken, resetPassword, requestToken }}
+            value={{ userLoading, user, requestMail, data, userError, login, register, logout, checkUser, forgotPassword, validateToken, resetPassword, requestToken, ownStore }}
         >
             {userError?.status == 500 && (
                 <>
                     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-            <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-8">
-                {/* Icon Container */}
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600">
-                    <MdErrorOutline size={30} />
-                </div>
+                        <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-8">
+                            {/* Icon Container */}
+                            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600">
+                                <MdErrorOutline size={30} />
+                            </div>
 
-                {/* Main Heading */}
-                <h2 className="text-xl font-bold tracking-tight text-slate-900">
-                    Something went wrong
-                </h2>
+                            {/* Main Heading */}
+                            <h2 className="text-xl font-bold tracking-tight text-slate-900">
+                                Something went wrong
+                            </h2>
 
-                {/* Subtext */}
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                    An error occurred while loading your profile. Please try again.
-                </p>
+                            {/* Subtext */}
+                            <p className="mt-2 text-sm leading-6 text-slate-500">
+                                An error occurred while loading your profile. Please try again.
+                            </p>
 
-                {/* Retry Button */}
-                <button
-                    type="button"
-                    onClick={() => checkUser()}
-                    className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98]"
-                >
-                    <MdRefresh size={18} />
-                    Try again
-                </button>
-            </div>
-        </div>
+                            {/* Retry Button */}
+                            <button
+                                type="button"
+                                onClick={() => checkUser()}
+                                className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98]"
+                            >
+                                <MdRefresh size={18} />
+                                Try again
+                            </button>
+                        </div>
+                    </div>
                 </>
             )}
             {userLoading && <Loading page={"homepage"} />}

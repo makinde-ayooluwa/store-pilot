@@ -19,7 +19,7 @@ export default function Header({
     mobileMenu,
     setMobileMenu,
 }) {
-    const { user } = useUser()
+    const { user, ownStore } = useUser()
     const navigate = useNavigate()
 
     const { cartCount } = useCart()
@@ -94,14 +94,22 @@ export default function Header({
                 <div className="hidden items-center gap-1 sm:flex">
 
                     {/* Sell */}
+                    {ownStore ?
+                        <Link className='mr-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900' to={"/store"}>
+                            <MdStorefront size={18} />
+                            Go to store
+                        </Link>
+                        : (
+                            <Link
+                                to="/sell"
+                                className="mr-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                            >
+                                <MdStorefront size={18} />
+                                Sell on StorePilot
+                            </Link>
+                        )
+                    }
 
-                    <Link
-                        to="/sell"
-                        className="mr-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
-                    >
-                        <MdStorefront size={18} />
-                        Sell on StorePilot
-                    </Link>
 
 
                     {user == null ? (
@@ -237,16 +245,21 @@ export default function Header({
 
                         {/* Sell */}
 
-                        <Link
-                            to="/sell"
-                            onClick={() =>
-                                setMobileMenu(false)
-                            }
-                            className="flex items-center gap-2 rounded-lg px-3 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50"
-                        >
-                            <MdStorefront size={19} />
-                            Sell on StorePilot
+                        {ownStore ?
+                        <Link className='mr-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900' to={"/store"}>
+                            <MdStorefront size={18} />
+                            Go to store
                         </Link>
+                        : (
+                            <Link
+                                to="/sell"
+                                className="mr-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                            >
+                                <MdStorefront size={18} />
+                                Sell on StorePilot
+                            </Link>
+                        )
+                    }
 
 
                         {/* Profile / Login */}
