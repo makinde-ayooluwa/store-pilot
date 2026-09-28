@@ -97,7 +97,7 @@ export const StoreProvider = ({ children }) => {
             console.log(result)
             return result;
         } catch (error) {
-            console.log(error);
+            console.log("FROM STORE PROVIDER",error);
         }
     }
     return (

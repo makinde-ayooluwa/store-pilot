@@ -17,7 +17,7 @@ export default function SellerAddProduct() {
 
     const { addProduct, storeData, store } = useStore();
     const [images, setImages] = useState([])
-    
+
     const [submitting, setSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
@@ -84,7 +84,7 @@ export default function SellerAddProduct() {
                 data.append("images", image.file);
             });
 
-            const result = await addProduct()
+            const result = await addProduct(data)
 
             if (result.status == false) {
                 Swal.fire({
