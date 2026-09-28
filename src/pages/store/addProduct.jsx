@@ -66,8 +66,8 @@ export default function SellerAddProduct() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitting(true);
         try {
+        setSubmitting(true);
             const data = new FormData();
 
             data.append("name", formData.name);
