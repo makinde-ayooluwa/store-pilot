@@ -245,21 +245,28 @@ export default function Header({
 
                         {/* Sell */}
 
-                        {ownStore ?
-                        <Link className='mr-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900' to={"/store"}>
-                            <MdStorefront size={18} />
-                            Go to store
-                        </Link>
-                        : (
-                            <Link
-                                to="/sell"
-                                className="mr-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
-                            >
-                                <MdStorefront size={18} />
-                                Sell on StorePilot
-                            </Link>
-                        )
-                    }
+                        {user != null &&
+                            (
+                                <>
+                                    {
+                                        ownStore ?
+                                            <Link className='mr-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900' to={"/store"}>
+                                                < MdStorefront size={18} />
+                                                Go to store
+                                            </Link>
+                                            : (
+                                                <Link
+                                                    to="/sell"
+                                                    className="mr-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                                                >
+                                                    <MdStorefront size={18} />
+                                                    Sell on StorePilot
+                                                </Link>
+                                            )
+                                    }
+                                </>
+                            )
+                        }
 
 
                         {/* Profile / Login */}
@@ -358,8 +365,9 @@ export default function Header({
                     </div>
 
                 </div>
-            )}
+            )
+            }
 
-        </header>
+        </header >
     )
 }
