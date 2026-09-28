@@ -29,8 +29,6 @@ export default function SellerAddProduct() {
         stock: "",
         lowStockThreshold: "",
         status: "active",
-        images,
-        store: storeData._id
     })
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -79,6 +77,7 @@ export default function SellerAddProduct() {
             data.append("stock", formData.stock);
             data.append("lowStockThreshold", formData.lowStockThreshold);
             data.append("status", formData.status);
+data.append("store", storeData._id);
 
             images.forEach((image) => {
                 data.append("images", image.file);
