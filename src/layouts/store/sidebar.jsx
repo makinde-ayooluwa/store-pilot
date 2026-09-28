@@ -362,7 +362,7 @@ export default function SellerSidebar({ open, setOpen }) {
 
                     <div className="min-w-0">
                         <h1 className="text-white font-semibold text-sm leading-tight truncate">
-                            SELLER DASHBOARD
+                            STORE DASHBOARD
                         </h1>
 
                         <span className="text-green-400 text-xs">

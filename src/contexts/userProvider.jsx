@@ -38,12 +38,16 @@ export const UserProvider = ({ children }) => {
                 console.log("USER ERROR", userError)
 
                 console.log(user)
-                const checkStoreRes = await axios.post(`${backendUrl}/auth/check-store`, { id: userData._id, email: userData.email })
-                const checkRes = checkStoreRes.data;
-                if (checkRes.status) {
-                    localStorage.setItem("store", userData._id)
-                    console.log("USER STORE UPDATED SUCCESSFULLY")
-                    setOwnStore(true);
+                try {
+                    const checkStoreRes = await axios.post(`${backendUrl}/auth/check-store`, { id: userData._id, email: userData.email })
+                    const checkRes = checkStoreRes.data;
+                    if (checkRes.status) {
+                        localStorage.setItem("store", userData._id)
+                        console.log("USER STORE UPDATED SUCCESSFULLY")
+                        setOwnStore(true);
+                    }
+                } catch (error) {
+
                 }
             } else {
                 setUser(null);
