@@ -5,7 +5,7 @@ import { useStore } from '../contexts/storeProvider';
 const StoreOnly = ({ children }) => {
     const navigate = useNavigate();
     const { store, storeData } = useStore();
-    console.log("FROM STORE ONLY", storeData)
+    // console.log("FROM STORE ONLY", storeData)
     useEffect(() => {
         if (!store) {
             navigate('/login', { replace: true });

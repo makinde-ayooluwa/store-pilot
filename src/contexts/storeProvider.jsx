@@ -54,7 +54,7 @@ export const StoreProvider = ({ children }) => {
             if (result.status) {
                 localStorage.setItem("store", result.storeId);
                 sessionStorage.setItem("store", result.storeId);
-                
+
                 // Update state and refresh store details immediately
                 setStore(result.storeId);
                 await checkStore();
@@ -85,17 +85,28 @@ export const StoreProvider = ({ children }) => {
     const login = async (data) => {
         // Implementation ready for login flow
     };
+    const addProduct = async (data)=>{
+        console.log("ADDING PRODUCT")
+        const response = await axios.post(
+            `${backendUrl}/products/add`,
+            data
+        );
 
+        const result = response.data;
+        console.log(result)
+        return result;
+    }
     return (
-        <StoreContext.Provider value={{ 
-            products: storeProducts, 
-            categories: storeCategories, 
-            register, 
-            login, 
-            storeData, 
-            store, 
+        <StoreContext.Provider value={{
+            products: storeProducts,
+            categories: storeCategories,
+            register,
+            login,
+            storeData,
+            store,
             loading,
-            checkStore 
+            checkStore,
+            addProduct
         }}>
             {children}
         </StoreContext.Provider>

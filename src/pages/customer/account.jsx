@@ -22,6 +22,7 @@ import Header from '../../components/header'
 import { useOrders } from '../../contexts/orderProvider'
 import { useUser } from '../../contexts/userProvider'
 import { UserOnly } from '../../components/userOnly'
+import Swal from 'sweetalert2'
 
 export default function Account() {
     const navigate = useNavigate()
@@ -52,8 +53,21 @@ export default function Account() {
     }
 
     const handleLogout = () => {
-        logout();
-        navigate('/login')
+        Swal.fire({
+            title: "Are you sure you want to logout?",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: `No`
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                Swal.fire("Logged out!", "", "success");
+                logout();
+                navigate('/login');
+            }
+            else if (result.isDenied) Swal.fire("Logout cancelled", "", "info");
+        });
     }
 
     const totalSpent = orders.reduce(

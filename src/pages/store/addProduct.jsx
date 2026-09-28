@@ -8,22 +8,30 @@ import {
 } from "react-icons/md"
 import { Link } from "react-router-dom"
 import StoreOnly from "../../components/storeOnly"
+import axios from "axios"
+import { backendUrl } from "../../data/constants"
+import Swal from "sweetalert2"
+import { useStore } from "../../contexts/storeProvider"
 
 export default function SellerAddProduct() {
 
+    const { addProduct, storeData, store } = useStore();
     const [images, setImages] = useState([])
+    
+    const [submitting, setSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
-        sku: "",
+        slug: "",
         category: "",
         description: "",
         price: "",
         comparePrice: "",
         stock: "",
         lowStockThreshold: "",
-        status: "Active"
+        status: "active",
+        images,
+        store: storeData._id
     })
-
     const handleChange = (e) => {
         const { name, value } = e.target
 
@@ -56,29 +64,65 @@ export default function SellerAddProduct() {
         })
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            const data = new FormData();
 
-        console.log({
-            ...formData,
-            images
-        })
+            data.append("name", formData.name);
+            data.append("slug", formData.slug);
+            data.append("category", formData.category);
+            data.append("description", formData.description);
+            data.append("price", formData.price);
+            data.append("comparePrice", formData.comparePrice);
+            data.append("stock", formData.stock);
+            data.append("lowStockThreshold", formData.lowStockThreshold);
+            data.append("status", formData.status);
 
-        // API submission will be added later
-    }
+            images.forEach((image) => {
+                data.append("images", image.file);
+            });
+
+            const result = await addProduct()
+
+            if (result.status == false) {
+                Swal.fire({
+                    title: "Error",
+                    text: result.message,
+                    icon: "error"
+                })
+                return;
+            }
+            Swal.fire({
+                title: "Success",
+                text: result.message,
+                icon: "success"
+            })
+
+        } catch (error) {
+            console.error(
+                "ADD PRODUCT ERROR:",
+                error.response?.data || error.message
+            );
+        }
+        finally {
+            setSubmitting(false);
+        }
+    };
 
     return (
         <StoreOnly>
-        <div className="bg-gray-50 min-h-[calc(100vh-70px)] p-4 sm:p-6 lg:p-8">
+            <div className="bg-gray-50 min-h-[calc(100vh-70px)] p-4 sm:p-6 lg:p-8">
 
-            {/* HEADER */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                {/* HEADER */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
 
-                <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3">
 
-                    <Link
-                        to="/store/products"
-                        className="
+                        <Link
+                            to="/store/products"
+                            className="
                             p-2
                             rounded-xl
                             bg-white
@@ -86,60 +130,60 @@ export default function SellerAddProduct() {
                             hover:bg-gray-100
                             transition
                         "
-                    >
-                        <MdArrowBack size={21} />
-                    </Link>
+                        >
+                            <MdArrowBack size={21} />
+                        </Link>
 
-                    <div>
-                        <h1 className="text-2xl font-semibold text-gray-900">
-                            Add Product
-                        </h1>
+                        <div>
+                            <h1 className="text-2xl font-semibold text-gray-900">
+                                Add Product
+                            </h1>
 
-                        <p className="text-sm text-gray-500 mt-1">
-                            Add a new product to your store.
-                        </p>
+                            <p className="text-sm text-gray-500 mt-1">
+                                Add a new product to your store.
+                            </p>
+                        </div>
+
                     </div>
 
                 </div>
 
-            </div>
+
+                <form onSubmit={handleSubmit}>
+
+                    <div className="grid grid-cols-1 xl:grid-cols-[1fr_350px] gap-6">
 
 
-            <form onSubmit={handleSubmit}>
+                        {/* LEFT SIDE */}
+                        <div className="space-y-6">
 
-                <div className="grid grid-cols-1 xl:grid-cols-[1fr_350px] gap-6">
+                            {/* BASIC INFORMATION */}
+                            <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6">
 
+                                <h2 className="text-lg font-semibold text-gray-900">
+                                    Basic Information
+                                </h2>
 
-                    {/* LEFT SIDE */}
-                    <div className="space-y-6">
-
-                        {/* BASIC INFORMATION */}
-                        <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6">
-
-                            <h2 className="text-lg font-semibold text-gray-900">
-                                Basic Information
-                            </h2>
-
-                            <p className="text-sm text-gray-500 mt-1 mb-6">
-                                Provide the basic details of your product.
-                            </p>
+                                <p className="text-sm text-gray-500 mt-1 mb-6">
+                                    Provide the basic details of your product.
+                                </p>
 
 
-                            {/* PRODUCT NAME */}
-                            <div className="mb-5">
+                                {/* PRODUCT NAME */}
+                                <div className="mb-5">
 
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Product Name
-                                </label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Product Name
+                                    </label>
 
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    placeholder="e.g. Nike Air Max 270"
-                                    required
-                                    className="
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        placeholder="e.g. Nike Air Max 270"
+                                        required
+                                        className="
                                         w-full
                                         px-4
                                         py-3
@@ -151,27 +195,27 @@ export default function SellerAddProduct() {
                                         focus:ring-2
                                         focus:ring-green-100
                                     "
-                                />
+                                    />
 
-                            </div>
+                                </div>
 
 
-                            {/* SKU + CATEGORY */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+                                {/* slug + CATEGORY */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
 
-                                <div>
+                                    <div>
 
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        SKU
-                                    </label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            SLUG
+                                        </label>
 
-                                    <input
-                                        type="text"
-                                        name="sku"
-                                        value={formData.sku}
-                                        onChange={handleChange}
-                                        placeholder="e.g. NIK-001"
-                                        className="
+                                        <input
+                                            type="text"
+                                            name="slug"
+                                            value={formData.slug}
+                                            onChange={handleChange}
+                                            placeholder="e.g. NIK-001"
+                                            className="
                                             w-full
                                             px-4
                                             py-3
@@ -183,23 +227,23 @@ export default function SellerAddProduct() {
                                             focus:ring-2
                                             focus:ring-green-100
                                         "
-                                    />
+                                        />
 
-                                </div>
+                                    </div>
 
 
-                                <div>
+                                    <div>
 
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Category
-                                    </label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Category
+                                        </label>
 
-                                    <select
-                                        name="category"
-                                        value={formData.category}
-                                        onChange={handleChange}
-                                        required
-                                        className="
+                                        <select
+                                            name="category"
+                                            value={formData.category}
+                                            onChange={handleChange}
+                                            required
+                                            className="
                                             w-full
                                             px-4
                                             py-3
@@ -210,56 +254,56 @@ export default function SellerAddProduct() {
                                             bg-white
                                             focus:border-green-600
                                         "
-                                    >
-                                        <option value="">
-                                            Select category
-                                        </option>
+                                        >
+                                            <option value="">
+                                                Select category
+                                            </option>
 
-                                        <option value="Fashion">
-                                            Fashion
-                                        </option>
+                                            <option value="Fashion">
+                                                Fashion
+                                            </option>
 
-                                        <option value="Electronics">
-                                            Electronics
-                                        </option>
+                                            <option value="Electronics">
+                                                Electronics
+                                            </option>
 
-                                        <option value="Shoes">
-                                            Shoes
-                                        </option>
+                                            <option value="Shoes">
+                                                Shoes
+                                            </option>
 
-                                        <option value="Bags">
-                                            Bags
-                                        </option>
+                                            <option value="Bags">
+                                                Bags
+                                            </option>
 
-                                        <option value="Beauty">
-                                            Beauty
-                                        </option>
+                                            <option value="Beauty">
+                                                Beauty
+                                            </option>
 
-                                        <option value="Home">
-                                            Home
-                                        </option>
+                                            <option value="Home">
+                                                Home
+                                            </option>
 
-                                    </select>
+                                        </select>
+
+                                    </div>
 
                                 </div>
 
-                            </div>
 
+                                {/* DESCRIPTION */}
+                                <div>
 
-                            {/* DESCRIPTION */}
-                            <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Description
+                                    </label>
 
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Description
-                                </label>
-
-                                <textarea
-                                    name="description"
-                                    value={formData.description}
-                                    onChange={handleChange}
-                                    rows={6}
-                                    placeholder="Describe your product..."
-                                    className="
+                                    <textarea
+                                        name="description"
+                                        value={formData.description}
+                                        onChange={handleChange}
+                                        rows={6}
+                                        placeholder="Describe your product..."
+                                        className="
                                         w-full
                                         px-4
                                         py-3
@@ -272,47 +316,47 @@ export default function SellerAddProduct() {
                                         focus:ring-2
                                         focus:ring-green-100
                                     "
-                                />
+                                    />
+
+                                </div>
 
                             </div>
 
-                        </div>
+
+                            {/* PRICING */}
+                            <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6">
+
+                                <h2 className="text-lg font-semibold text-gray-900">
+                                    Pricing
+                                </h2>
+
+                                <p className="text-sm text-gray-500 mt-1 mb-6">
+                                    Set the selling price for your product.
+                                </p>
 
 
-                        {/* PRICING */}
-                        <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                            <h2 className="text-lg font-semibold text-gray-900">
-                                Pricing
-                            </h2>
+                                    <div>
 
-                            <p className="text-sm text-gray-500 mt-1 mb-6">
-                                Set the selling price for your product.
-                            </p>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Selling Price
+                                        </label>
 
+                                        <div className="relative">
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500">
+                                                ₦
+                                            </span>
 
-                                <div>
-
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Selling Price
-                                    </label>
-
-                                    <div className="relative">
-
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500">
-                                            ₦
-                                        </span>
-
-                                        <input
-                                            type="number"
-                                            name="price"
-                                            value={formData.price}
-                                            onChange={handleChange}
-                                            placeholder="0.00"
-                                            required
-                                            className="
+                                            <input
+                                                type="number"
+                                                name="price"
+                                                value={formData.price}
+                                                onChange={handleChange}
+                                                placeholder="0.00"
+                                                required
+                                                className="
                                                 w-full
                                                 pl-9
                                                 pr-4
@@ -323,14 +367,14 @@ export default function SellerAddProduct() {
                                                 text-sm
                                                 focus:border-green-600
                                             "
-                                        />
+                                            />
+
+                                        </div>
 
                                     </div>
 
-                                </div>
 
-
-                                <div>
+                                    {/* <div>
 
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Compare-at Price
@@ -363,41 +407,41 @@ export default function SellerAddProduct() {
 
                                     </div>
 
+                                </div> */}
+
                                 </div>
 
                             </div>
 
-                        </div>
+
+                            {/* INVENTORY */}
+                            <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6">
+
+                                <h2 className="text-lg font-semibold text-gray-900">
+                                    Inventory
+                                </h2>
+
+                                <p className="text-sm text-gray-500 mt-1 mb-6">
+                                    Manage your product stock.
+                                </p>
 
 
-                        {/* INVENTORY */}
-                        <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                            <h2 className="text-lg font-semibold text-gray-900">
-                                Inventory
-                            </h2>
+                                    <div>
 
-                            <p className="text-sm text-gray-500 mt-1 mb-6">
-                                Manage your product stock.
-                            </p>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Stock Quantity
+                                        </label>
 
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                                <div>
-
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Stock Quantity
-                                    </label>
-
-                                    <input
-                                        type="number"
-                                        name="stock"
-                                        value={formData.stock}
-                                        onChange={handleChange}
-                                        placeholder="0"
-                                        required
-                                        className="
+                                        <input
+                                            type="number"
+                                            name="stock"
+                                            value={formData.stock}
+                                            onChange={handleChange}
+                                            placeholder="0"
+                                            required
+                                            className="
                                             w-full
                                             px-4
                                             py-3
@@ -407,24 +451,24 @@ export default function SellerAddProduct() {
                                             text-sm
                                             focus:border-green-600
                                         "
-                                    />
+                                        />
 
-                                </div>
+                                    </div>
 
 
-                                <div>
+                                    <div>
 
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Low Stock Alert
-                                    </label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Low Stock Alert
+                                        </label>
 
-                                    <input
-                                        type="number"
-                                        name="lowStockThreshold"
-                                        value={formData.lowStockThreshold}
-                                        onChange={handleChange}
-                                        placeholder="e.g. 5"
-                                        className="
+                                        <input
+                                            type="number"
+                                            name="lowStockThreshold"
+                                            value={formData.lowStockThreshold}
+                                            onChange={handleChange}
+                                            placeholder="e.g. 5"
+                                            className="
                                             w-full
                                             px-4
                                             py-3
@@ -434,7 +478,9 @@ export default function SellerAddProduct() {
                                             text-sm
                                             focus:border-green-600
                                         "
-                                    />
+                                        />
+
+                                    </div>
 
                                 </div>
 
@@ -442,28 +488,28 @@ export default function SellerAddProduct() {
 
                         </div>
 
-                    </div>
+
+                        {/* RIGHT SIDE */}
+                        <div className="space-y-6">
+
+                            {/* PRODUCT IMAGES */}
+                            <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6">
+
+                                <h2 className="text-lg font-semibold text-gray-900">
+                                    Product Images
+                                </h2>
+
+                                <p className="text-sm text-gray-500 mt-1 mb-5">
+                                    Upload images of your product.
+                                    <br></br>
+                                    (First image is the front image)
+                                </p>
 
 
-                    {/* RIGHT SIDE */}
-                    <div className="space-y-6">
-
-                        {/* PRODUCT IMAGES */}
-                        <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6">
-
-                            <h2 className="text-lg font-semibold text-gray-900">
-                                Product Images
-                            </h2>
-
-                            <p className="text-sm text-gray-500 mt-1 mb-5">
-                                Upload images of your product.
-                            </p>
-
-
-                            {/* UPLOAD */}
-                            <label
-                                htmlFor="product-images"
-                                className="
+                                {/* UPLOAD */}
+                                <label
+                                    htmlFor="product-images"
+                                    className="
                                     flex flex-col
                                     items-center
                                     justify-center
@@ -477,55 +523,55 @@ export default function SellerAddProduct() {
                                     hover:bg-green-50/30
                                     transition
                                 "
-                            >
+                                >
 
-                                <MdCloudUpload
-                                    size={40}
-                                    className="text-green-600"
-                                />
+                                    <MdCloudUpload
+                                        size={40}
+                                        className="text-green-600"
+                                    />
 
-                                <p className="text-sm font-medium text-gray-700 mt-3">
-                                    Click to upload images
-                                </p>
+                                    <p className="text-sm font-medium text-gray-700 mt-3">
+                                        Click to upload images
+                                    </p>
 
-                                <p className="text-xs text-gray-400 mt-1">
-                                    PNG, JPG or WEBP
-                                </p>
+                                    <p className="text-xs text-gray-400 mt-1">
+                                        PNG, JPG or WEBP
+                                    </p>
 
-                                <input
-                                    id="product-images"
-                                    type="file"
-                                    accept="image/png,image/jpeg,image/webp"
-                                    multiple
-                                    onChange={handleImageUpload}
-                                    className="hidden"
-                                />
+                                    <input
+                                        id="product-images"
+                                        type="file"
+                                        accept="image/png,image/jpeg,image/webp"
+                                        multiple
+                                        onChange={handleImageUpload}
+                                        className="hidden"
+                                    />
 
-                            </label>
+                                </label>
 
 
-                            {/* IMAGE PREVIEWS */}
-                            {images.length > 0 && (
+                                {/* IMAGE PREVIEWS */}
+                                {images.length > 0 && (
 
-                                <div className="grid grid-cols-2 gap-3 mt-4">
+                                    <div className="grid grid-cols-2 gap-3 mt-4">
 
-                                    {images.map((image, index) => (
+                                        {images.map((image, index) => (
 
-                                        <div
-                                            key={index}
-                                            className="relative aspect-square rounded-xl overflow-hidden bg-gray-100"
-                                        >
+                                            <div
+                                                key={index}
+                                                className="relative aspect-square rounded-xl overflow-hidden bg-gray-100"
+                                            >
 
-                                            <img
-                                                src={image.preview}
-                                                alt={`Product ${index + 1}`}
-                                                className="w-full h-full object-cover"
-                                            />
+                                                <img
+                                                    src={image.preview}
+                                                    alt={`Product ${index + 1}`}
+                                                    className="w-full h-full object-cover"
+                                                />
 
-                                            <button
-                                                type="button"
-                                                onClick={() => removeImage(index)}
-                                                className="
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeImage(index)}
+                                                    className="
                                                     absolute
                                                     top-2
                                                     right-2
@@ -536,33 +582,33 @@ export default function SellerAddProduct() {
                                                     shadow
                                                     hover:bg-red-50
                                                 "
-                                            >
-                                                <MdClose size={18} />
-                                            </button>
+                                                >
+                                                    <MdClose size={18} />
+                                                </button>
 
-                                        </div>
+                                            </div>
 
-                                    ))}
+                                        ))}
 
-                                </div>
+                                    </div>
 
-                            )}
+                                )}
 
-                        </div>
+                            </div>
 
 
-                        {/* STATUS */}
-                        <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6">
+                            {/* STATUS */}
+                            <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6">
 
-                            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                                Product Status
-                            </h2>
+                                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                                    Product Status
+                                </h2>
 
-                            <select
-                                name="status"
-                                value={formData.status}
-                                onChange={handleChange}
-                                className="
+                                <select
+                                    name="status"
+                                    value={formData.status}
+                                    onChange={handleChange}
+                                    className="
                                     w-full
                                     px-4
                                     py-3
@@ -573,25 +619,25 @@ export default function SellerAddProduct() {
                                     text-sm
                                     focus:border-green-600
                                 "
-                            >
-                                <option value="Active">
-                                    Active
-                                </option>
+                                >
+                                    <option value="active">
+                                        Active
+                                    </option>
 
-                                <option value="Draft">
-                                    Draft
-                                </option>
-                            </select>
+                                    <option value="draft">
+                                        Draft
+                                    </option>
+                                </select>
 
-                        </div>
+                            </div>
 
 
-                        {/* ACTIONS */}
-                        <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6">
-
-                            <button
-                                type="submit"
-                                className="
+                            {/* ACTIONS */}
+                            <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6">
+                                <button
+                                    type="submit"
+                                    disabled={submitting}
+                                    className={`
                                     w-full
                                     flex items-center justify-center gap-2
                                     px-4
@@ -603,16 +649,26 @@ export default function SellerAddProduct() {
                                     text-sm
                                     font-medium
                                     transition
-                                "
-                            >
-                                <MdAdd size={20} />
-                                Add Product
-                            </button>
+                                    ${submitting && "cursor-not-allowed"}
+                                `}
+                                >
+                                    {submitting ? (
+                                        <>
+                                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                            Adding product...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <MdAdd size={20} />
+                                            Add Product
+                                        </>
+                                    )}
+                                </button>
 
 
-                            <Link
-                                to="/store/products"
-                                className="
+                                <Link
+                                    to="/store/products"
+                                    className="
                                     w-full
                                     flex items-center justify-center
                                     px-4
@@ -626,19 +682,19 @@ export default function SellerAddProduct() {
                                     hover:bg-gray-50
                                     transition
                                 "
-                            >
-                                Cancel
-                            </Link>
+                                >
+                                    Cancel
+                                </Link>
+
+                            </div>
 
                         </div>
 
                     </div>
 
-                </div>
+                </form>
 
-            </form>
-
-        </div>
+            </div>
         </StoreOnly>
     )
 }

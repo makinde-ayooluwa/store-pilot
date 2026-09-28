@@ -12,6 +12,7 @@ import {
 } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import Header from '../components/header'
+import { categoryIcons } from '../data/categoryIcons'
 
 
 
@@ -120,7 +121,7 @@ const popularCategories = categories.slice(0, 6)
 
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
                             {popularCategories.map((category) => {
-                                const Icon = category.icon
+                                const Icon = categoryIcons[category.icon]
 
                                 return (
                                     <Link
@@ -129,7 +130,7 @@ const popularCategories = categories.slice(0, 6)
                                         className="group rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
                                     >
                                         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition group-hover:bg-emerald-50 group-hover:text-emerald-600">
-                                            <Icon size={22} />
+                                            {Icon ? <Icon size={24} /> : <MdCategory size={24} />}
                                         </div>
 
                                         <h3 className="mt-4 text-sm font-bold text-slate-900">
@@ -182,7 +183,7 @@ const popularCategories = categories.slice(0, 6)
 
                                 return (
                                     <Link
-                                        key={category.id}
+                                        key={category._id}
                                         to={`/categories/${category.slug}`}
                                         className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow-md"
                                     >

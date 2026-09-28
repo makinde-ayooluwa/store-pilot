@@ -1,13 +1,15 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { MdCategory, MdHome, MdLaptop, MdLocalGroceryStore, MdShoppingBag } from "react-icons/md";
 
-import categories, {
-    getCategoryBySlug
-} from '../data/categories'
+// import categories, {
+//     getCategoryBySlug
+// } from '../data/categories'
 import products, {
     getProductsByCategory
 } from '../data/products'
 import stores from "../data/stores";
+import axios from "axios";
+import { backendUrl } from "../data/constants";
 export const ResourceContext = createContext()
 export const ResourceProvider = ({ children }) => {
     // const categories = [
@@ -388,7 +390,42 @@ export const ResourceProvider = ({ children }) => {
     //         ]
     //     }
     // ]
-    return <ResourceContext.Provider value={{ products, stores, getCategoryBySlug, getProductsByCategory, categories }}>
+    const [categories, setCategories] = useState([]);
+    useEffect(() => {
+        checkCategories()
+    }, [])
+    const checkCategories = async () => {
+        try {
+            const response = await axios.post(`${backendUrl}/categories/all`);
+            const result = response.data;
+            console.log("CATEGORIES RESULT", result)
+            setCategories(result);
+        } catch (error) {
+            console.log("ERROR OCCURED WHILE FETCHING CATEGORIES", error);
+        }
+    }
+
+    const getCategoryBySlug = (slug) => {
+    try {
+        const result = categories.find(
+            (category) => category.slug === slug
+        );
+
+        if (!result) {
+            console.log("Category not found:", slug);
+            return null;
+        }
+
+        console.log("CATEGORY DETAILS:", result);
+        return result;
+
+    } catch (error) {
+        console.error("Error getting category:", error);
+        return null;
+    }
+};
+
+    return <ResourceContext.Provider value={{ products, stores, getProductsByCategory, getCategoryBySlug, categories }}>
         {children}
     </ResourceContext.Provider>
 }

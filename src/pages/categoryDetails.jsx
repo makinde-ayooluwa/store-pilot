@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import {
     MdArrowBack,
     MdArrowForward,
+    MdCategory,
     MdCheckCircle,
     MdFavorite,
     MdFavoriteBorder,
@@ -20,12 +21,13 @@ import {
 
 import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
+import { categoryIcons } from '../data/categoryIcons'
 
 export default function CategoryDetails({products, categories, getCategoryBySlug, getProductsByCategory}) {
     const { slug } = useParams()
 
     const category = getCategoryBySlug(slug)
-
+console.log(category)
     const {
         addToCart,
         cartCount
@@ -192,7 +194,7 @@ export default function CategoryDetails({products, categories, getCategoryBySlug
         )
     }
 
-    const CategoryIcon = category.icon
+    const CategoryIcon = categoryIcons[category.icon]
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -237,10 +239,12 @@ export default function CategoryDetails({products, categories, getCategoryBySlug
                         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
                             <div className="flex items-center gap-5">
                                 <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-slate-100">
-                                    <CategoryIcon
+                                    {CategoryIcon ? <CategoryIcon
                                         size={34}
                                         className="text-slate-800"
-                                    />
+                                    /> : <MdCategory size={34}
+                                        className="text-slate-800"
+                                    />}
                                 </div>
 
                                 <div>

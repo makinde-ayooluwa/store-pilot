@@ -380,7 +380,7 @@ console.log(error)
 
                                     {categories.map((category) => (
                                         <option
-                                            key={category.id}
+                                            key={category._id}
                                             value={category.slug}
                                         >
                                             {category.name}
@@ -453,7 +453,7 @@ console.log(error)
                             <button
                                 type="submit"
                                 disabled={submitting}
-                                className={`flex h-11 w-full items-center justify-center gap-2 rounded-xl ${submitting ? "bg-slate-400" : "bg-slate-900"} text-sm font-semibold cursor-${submitting ? "not-allowed" : "pointer"} text-white transition hover:bg-slate-800`}
+                                className={`flex h-11 w-full items-center justify-center gap-2 rounded-xl ${submitting ? "bg-slate-400 cursor-not-allowed" : "bg-slate-900"} text-sm font-semibold text-white transition hover:bg-slate-800`}
                             >
                                 {submitting ? (
                                     <>
