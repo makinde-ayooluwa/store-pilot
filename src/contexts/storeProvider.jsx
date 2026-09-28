@@ -81,10 +81,6 @@ export const StoreProvider = ({ children }) => {
             setLoading(false);
         }
     };
-
-    const login = async (data) => {
-        // Implementation ready for login flow
-    };
     const addProduct = async (data) => {
         try {
             console.log("ADDING PRODUCT")
