@@ -85,16 +85,20 @@ export const StoreProvider = ({ children }) => {
     const login = async (data) => {
         // Implementation ready for login flow
     };
-    const addProduct = async (data)=>{
-        console.log("ADDING PRODUCT")
-        const response = await axios.post(
-            `${backendUrl}/products/add`,
-            data
-        );
+    const addProduct = async (data) => {
+        try {
+            console.log("ADDING PRODUCT")
+            const response = await axios.post(
+                `${backendUrl}/products/add`,
+                data
+            );
 
-        const result = response.data;
-        console.log(result)
-        return result;
+            const result = response.data;
+            console.log(result)
+            return result;
+        } catch (error) {
+            console.log(error);
+        }
     }
     return (
         <StoreContext.Provider value={{
