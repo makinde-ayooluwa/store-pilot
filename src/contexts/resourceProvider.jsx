@@ -4,9 +4,9 @@ import { MdCategory, MdHome, MdLaptop, MdLocalGroceryStore, MdShoppingBag } from
 // import categories, {
 //     getCategoryBySlug
 // } from '../data/categories'
-import products, {
-    getProductsByCategory
-} from '../data/products'
+// import products, {
+//     getProductsByCategory
+// } from '../data/products'
 import stores from "../data/stores";
 import axios from "axios";
 import { backendUrl } from "../data/constants";
@@ -391,8 +391,10 @@ export const ResourceProvider = ({ children }) => {
     //     }
     // ]
     const [categories, setCategories] = useState([]);
+    const [products, setProducts] = useState([]);
     useEffect(() => {
-        checkCategories()
+        checkCategories();
+        checkProducts();
     }, [])
     const checkCategories = async () => {
         try {
@@ -404,26 +406,41 @@ export const ResourceProvider = ({ children }) => {
             console.log("ERROR OCCURED WHILE FETCHING CATEGORIES", error);
         }
     }
-
+    const checkProducts = async () => {
+        try {
+            const response = await axios.post(`${backendUrl}/products/all`);
+            const result = response.data;
+            const data = result.data;
+            console.log("PRODUCTS RESULT", result)
+            setProducts(data);
+        } catch (error) {
+            console.log("ERROR OCCURED WHILE FETCHING PRODUCTS", error);
+        }
+    }
+    const getProductsByCategory = (categorySlug) => {
+        return products.filter(
+            (product) => product.category === categorySlug
+        )
+    }
     const getCategoryBySlug = (slug) => {
-    try {
-        const result = categories.find(
-            (category) => category.slug === slug
-        );
+        try {
+            const result = categories.find(
+                (category) => category.slug === slug
+            );
 
-        if (!result) {
-            console.log("Category not found:", slug);
+            if (!result) {
+                console.log("Category not found:", slug);
+                return null;
+            }
+
+            console.log("CATEGORY DETAILS:", result);
+            return result;
+
+        } catch (error) {
+            console.error("Error getting category:", error);
             return null;
         }
-
-        console.log("CATEGORY DETAILS:", result);
-        return result;
-
-    } catch (error) {
-        console.error("Error getting category:", error);
-        return null;
-    }
-};
+    };
 
     return <ResourceContext.Provider value={{ products, stores, getProductsByCategory, getCategoryBySlug, categories }}>
         {children}

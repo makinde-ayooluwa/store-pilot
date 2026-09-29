@@ -82,25 +82,32 @@ export const StoreProvider = ({ children }) => {
         }
     };
     const addProduct = async (data) => {
-        try {
-            console.log("ADDING PRODUCT")
-            const response = await axios.post(
-                `${backendUrl}/products/add`,
-                data
-            );
-// const response = {
-//     data:{
-//         status: true,
-//         message: "Testing"
-//     }
-// }
-            const result = response.data;
-            console.log(result)
-            return result;
-        } catch (error) {
-            console.log("FROM STORE PROVIDER",error);
-        }
+    try {
+        const response = await axios.post(
+            `${backendUrl}/products/add`,
+            data
+        );
+
+        console.log("PRODUCT RESPONSE:", response.data);
+
+        return response.data;
+
+    } catch (error) {
+        console.log("FROM STORE PROVIDER:", error);
+
+        console.log(
+            "BACKEND ERROR:",
+            error.response?.data
+        );
+
+        return {
+            status: false,
+            message:
+                error.response?.data?.message ||
+                "Failed to add product"
+        };
     }
+};
     return (
         <StoreContext.Provider value={{
             products: storeProducts,

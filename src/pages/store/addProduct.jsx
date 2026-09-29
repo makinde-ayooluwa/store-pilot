@@ -22,7 +22,7 @@ export default function SellerAddProduct() {
     const [formData, setFormData] = useState({
         name: "",
         slug: "",
-        category: "",
+        // category: "",
         description: "",
         price: "",
         comparePrice: "",
@@ -65,19 +65,21 @@ export default function SellerAddProduct() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-        setSubmitting(true);
+            setSubmitting(true);
             const data = new FormData();
 
             data.append("name", formData.name);
             data.append("slug", formData.slug);
-            data.append("category", formData.category);
+            data.append("category", storeData.category);
             data.append("description", formData.description);
             data.append("price", formData.price);
             data.append("comparePrice", formData.comparePrice);
             data.append("stock", formData.stock);
             data.append("lowStockThreshold", formData.lowStockThreshold);
             data.append("status", formData.status);
-data.append("store", storeData._id);
+            data.append("store", storeData._id);
+            data.append("storeName", storeData.name);
+            data.append("storeSlug", storeData.slug);
 
             images.forEach((image) => {
                 data.append("images", image.file);
@@ -93,12 +95,15 @@ data.append("store", storeData._id);
                 })
                 return;
             }
+            const keys = Object.keys(formData);
             Swal.fire({
                 title: "Success",
                 text: result.message,
                 icon: "success"
             })
-
+keys.forEach((key)=>{
+    setFormData({...formData, [key]: ""})
+})
         } catch (error) {
             console.error(
                 "ADD PRODUCT ERROR:",
@@ -231,7 +236,7 @@ data.append("store", storeData._id);
                                     </div>
 
 
-                                    <div>
+                                    {/* <div>
 
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
                                             Category
@@ -284,7 +289,7 @@ data.append("store", storeData._id);
 
                                         </select>
 
-                                    </div>
+                                    </div> */}
 
                                 </div>
 
