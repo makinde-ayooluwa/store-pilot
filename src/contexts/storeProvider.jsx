@@ -101,7 +101,6 @@ export const StoreProvider = ({ children }) => {
             products: storeProducts,
             categories: storeCategories,
             register,
-            login,
             storeData,
             store,
             loading,

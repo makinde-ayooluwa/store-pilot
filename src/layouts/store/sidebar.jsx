@@ -379,6 +379,8 @@ export default function SellerSidebar({ open, setOpen }) {
                         <SellerSidebarNav
                             key={index}
                             data={data}
+                            sidebarOpen={open}
+                            setSidebarOpen={setOpen}
                         />
                     ))}
                 </div>

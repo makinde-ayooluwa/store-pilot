@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { MdKeyboardArrowDown } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 
-export default function SellerSidebarNav({ data }) {
+export default function SellerSidebarNav({setSidebarOpen, sidebarOpen, data }) {
     const [open, setOpen] = useState(false)
 
     return (
@@ -12,6 +12,7 @@ export default function SellerSidebarNav({ data }) {
             {!data.hasDropdown ? (
 
                 <Link
+                 onClick={()=>setSidebarOpen(!sidebarOpen)}
                     to={data.link}
                     className="
                         w-full flex items-center
@@ -85,6 +86,7 @@ export default function SellerSidebarNav({ data }) {
                         ">
                             {data.dropdown.map((item, index) => (
                                 <Link
+                                 onClick={()=>setSidebarOpen(!sidebarOpen)}
                                     key={index}
                                     to={item.link}
                                     className="

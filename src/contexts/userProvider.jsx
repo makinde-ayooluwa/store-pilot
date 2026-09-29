@@ -264,7 +264,7 @@ export const UserProvider = ({ children }) => {
 
                             {/* Subtext */}
                             <p className="mt-2 text-sm leading-6 text-slate-500">
-                                An error occurred while loading your profile. Please try again.
+                                An error occurred while loading the page. Please check your internet connection and try again.
                             </p>
 
                             {/* Retry Button */}
