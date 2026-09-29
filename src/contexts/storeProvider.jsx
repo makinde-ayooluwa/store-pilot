@@ -88,7 +88,12 @@ export const StoreProvider = ({ children }) => {
                 `${backendUrl}/products/add`,
                 data
             );
-
+// const response = {
+//     data:{
+//         status: true,
+//         message: "Testing"
+//     }
+// }
             const result = response.data;
             console.log(result)
             return result;
