@@ -23,7 +23,7 @@ export default function SellerAllProducts() {
 
         const matchesSearch =
             product.name.toLowerCase().includes(search.toLowerCase()) ||
-            product.id.toLowerCase().includes(search.toLowerCase())
+            product._id.toLowerCase().includes(search.toLowerCase())
 
         const matchesFilter =
             filter === "All" ||
@@ -89,7 +89,7 @@ export default function SellerAllProducts() {
                         </p>
 
                         <h2 className="text-2xl font-semibold text-green-700 mt-2">
-                            118
+                            {products.filter((prod)=>prod.status == "active").length}
                         </h2>
                     </div>
 
@@ -100,7 +100,7 @@ export default function SellerAllProducts() {
                         </p>
 
                         <h2 className="text-2xl font-semibold text-orange-500 mt-2">
-                            5
+                            {products.filter((prod)=>prod.stock <= prod.lowStockThreshold).length}
                         </h2>
                     </div>
 
@@ -111,7 +111,7 @@ export default function SellerAllProducts() {
                         </p>
 
                         <h2 className="text-2xl font-semibold text-red-500 mt-2">
-                            3
+                            {products.filter((prod)=>prod.stock < 1).length}
                         </h2>
                     </div>
 
