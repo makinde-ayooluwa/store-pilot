@@ -521,7 +521,7 @@ export default function Products({ products, categories }) {
                                             <div className="relative aspect-square overflow-hidden bg-slate-100">
 
                                                 <Link
-                                                    to={`/products/${product.id}`}
+                                                    to={`/products/${product._id}`}
                                                 >
 
                                                     <img
@@ -585,7 +585,7 @@ export default function Products({ products, categories }) {
                                             <div className="p-3.5">
 
                                                 <Link
-                                                    to={`/products/${product.id}`}
+                                                    to={`/products/${product._id}`}
                                                     className="block"
                                                 >
 

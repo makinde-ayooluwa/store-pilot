@@ -1,5 +1,4 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import storeProducts from '../data/storeProducts';
 import storeCategories from "../data/storeCategories";
 import axios from "axios";
 import { backendUrl } from "../data/constants";
@@ -7,10 +6,12 @@ import { backendUrl } from "../data/constants";
 export const StoreContext = createContext();
 
 export const StoreProvider = ({ children }) => {
+    const [storeProducts, setStoreProducts] = useState([]);
     const [store, setStore] = useState(null);
     const [storeData, setStoreData] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // 1. Fetch store metadata from stored ID
     const checkStore = useCallback(async () => {
         const local = localStorage.getItem("store");
         const session = sessionStorage.getItem("store");
@@ -19,11 +20,10 @@ export const StoreProvider = ({ children }) => {
         if (storedId) {
             setStore(storedId);
             try {
-                // Pass storedId directly instead of the stale 'store' state
                 const response = await axios.post(`${backendUrl}/store/getStore`, { id: storedId });
                 const result = response.data;
 
-                if (result.status) {
+                if (result.status && result.data?.length > 0) {
                     setStoreData(result.data[0]);
                 } else {
                     setStoreData(null);
@@ -40,10 +40,48 @@ export const StoreProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    // Run checkStore ONCE on mount
+    // 2. Fetch products whenever storeData changes and contains an _id
+    const checkProducts = useCallback(async () => {
+    if (!storeData?._id) return;
+
+    try {
+        const response = await axios.post(`${backendUrl}/store/getProducts`, { id: storeData._id });
+        console.log("RAW BACKEND RESPONSE:", response.data);
+
+        // 1. Safely extract the data payload regardless of key naming
+        const payload = response.data?.data || response.data?.products || response.data;
+
+        // 2. Ensure we are strictly working with an Array
+        const rawProducts = Array.isArray(payload) ? payload : [];
+
+        // 3. Format image URLs safely
+        const updatedProducts = rawProducts.map((prod) => ({
+            ...prod,
+            image: prod.image ? `${backendUrl}/${prod.image}` : prod.image,
+            images: Array.isArray(prod.images)
+                ? prod.images.map((img) => `${backendUrl}/${img}`)
+                : prod.images
+        }));
+
+        setStoreProducts(updatedProducts);
+        console.log("INSIDE DATA OBJECT:", response.data.data);
+        console.log("UPDATED STORE PRODUCTS", updatedProducts)
+    } catch (error) {
+        console.error("CHECK PRODUCTS ERROR:", error);
+    }
+}, [storeData]);
+
+    // Initial store verification on mount
     useEffect(() => {
         checkStore();
     }, [checkStore]);
+
+    // Fetch products once storeData is successfully populated
+    useEffect(() => {
+        if (storeData?._id) {
+            checkProducts();
+        }
+    }, [storeData, checkProducts]);
 
     const register = async (data) => {
         try {
@@ -55,7 +93,6 @@ export const StoreProvider = ({ children }) => {
                 localStorage.setItem("store", result.storeId);
                 sessionStorage.setItem("store", result.storeId);
 
-                // Update state and refresh store details immediately
                 setStore(result.storeId);
                 await checkStore();
 
@@ -81,44 +118,40 @@ export const StoreProvider = ({ children }) => {
             setLoading(false);
         }
     };
+
     const addProduct = async (data) => {
-    try {
-        const response = await axios.post(
-            `${backendUrl}/products/add`,
-            data
-        );
+        try {
+            const response = await axios.post(`${backendUrl}/products/add`, data);
+            console.log("PRODUCT RESPONSE:", response.data);
+            
+            // Refresh product list after adding a new item
+            await checkProducts();
 
-        console.log("PRODUCT RESPONSE:", response.data);
+            return response.data;
+        } catch (error) {
+            console.error("ADD PRODUCT ERROR:", error.response?.data || error);
 
-        return response.data;
+            return {
+                status: false,
+                message: error.response?.data?.message || "Failed to add product"
+            };
+        }
+    };
 
-    } catch (error) {
-        console.log("FROM STORE PROVIDER:", error);
-
-        console.log(
-            "BACKEND ERROR:",
-            error.response?.data
-        );
-
-        return {
-            status: false,
-            message:
-                error.response?.data?.message ||
-                "Failed to add product"
-        };
-    }
-};
     return (
-        <StoreContext.Provider value={{
-            products: storeProducts,
-            categories: storeCategories,
-            register,
-            storeData,
-            store,
-            loading,
-            checkStore,
-            addProduct
-        }}>
+        <StoreContext.Provider
+            value={{
+                products: storeProducts,
+                categories: storeCategories,
+                register,
+                storeData,
+                store,
+                loading,
+                checkStore,
+                checkProducts,
+                addProduct
+            }}
+        >
             {children}
         </StoreContext.Provider>
     );

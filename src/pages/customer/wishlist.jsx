@@ -125,7 +125,7 @@ export default function Wishlist() {
                                         {/* Image */}
                                         <div className="relative aspect-square bg-gray-100 overflow-hidden">
                                             <Link
-                                                to={`/products/${product.slug}`}
+                                                to={`/products/${product._id}`}
                                             >
                                                 <img
                                                     src={product.image}
@@ -158,7 +158,7 @@ export default function Wishlist() {
                                         {/* Product Info */}
                                         <div className="p-4">
                                             <Link
-                                                to={`/products/${product.slug}`}
+                                                to={`/products/${product._id}`}
                                                 className="block"
                                             >
                                                 <p className="text-xs text-green-600 font-medium mb-1">

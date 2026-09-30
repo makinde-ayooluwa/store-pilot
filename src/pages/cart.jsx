@@ -171,7 +171,7 @@ export default function Cart() {
                                             {/* Product image */}
 
                                             <Link
-                                                to={`/products/${item.id}`}
+                                                to={`/products/${item._id}`}
                                                 className="h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-slate-100 sm:h-28 sm:w-28"
                                             >
 
@@ -201,7 +201,7 @@ export default function Cart() {
                                                         </p>
 
                                                         <Link
-                                                            to={`/products/${item.id}`}
+                                                            to={`/products/${item._id}`}
                                                             className="line-clamp-2 text-sm font-bold text-slate-900 hover:text-emerald-600 sm:text-base"
                                                         >
                                                             {item.name}

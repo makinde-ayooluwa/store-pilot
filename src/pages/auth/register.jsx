@@ -280,39 +280,34 @@ export default function Register() {
                             </div> */}
 
                             {/* Names */}
-                            <div className="grid gap-5 sm:grid-cols-2">
 
-                                <div>
-                                    <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-                                        Full Name
-                                    </label>
-                                    <div className="relative">
-                                        <MdPerson
-                                            size={19}
-                                            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                                        />
-                                        <input
-                                            type="text"
-                                            name="fullname"
-                                            value={formData.fullname}
-                                            onChange={handleChange}
-                                            placeholder="Full name"
-                                            className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none transition placeholder:text-slate-400 ${errors.fullname
-                                                ? 'border-red-300 focus:border-red-500'
-                                                : 'border-slate-200 focus:border-emerald-500'
-                                                }`}
-                                        />
-                                    </div>
-
-                                    {errors.fullname && (
-                                        <p className="mt-1.5 text-xs text-red-500">
-                                            {errors.fullname}
-                                        </p>
-                                    )}
+                            <div>
+                                <label className="mb-1.5 block text-xs font-semibold text-slate-700">
+                                    Full Name
+                                </label>
+                                <div className="relative">
+                                    <MdPerson
+                                        size={19}
+                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                                    />
+                                    <input
+                                        type="text"
+                                        name="fullname"
+                                        value={formData.fullname}
+                                        onChange={handleChange}
+                                        placeholder="Full name"
+                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none transition placeholder:text-slate-400 ${errors.email
+                                            ? 'border-red-300 focus:border-red-500'
+                                            : 'border-slate-200 focus:border-emerald-500'
+                                            }`}
+                                    />
                                 </div>
 
-
-
+                                {errors.fullname && (
+                                    <p className="mt-1.5 text-xs text-red-500">
+                                        {errors.fullname}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Email */}
@@ -538,7 +533,7 @@ export default function Register() {
                     </div>
 
                     {/* Seller CTA */}
-                    <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 text-center">
+                    {/* <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 text-center">
                         <p className="text-xs text-slate-500">
                             Want to start selling without creating a customer
                             account first?
@@ -551,12 +546,12 @@ export default function Register() {
                             Go to Seller Registration
                             <MdArrowForward size={15} />
                         </Link>
-                    </div>
+                    </div> */}
 
-                    <p className="mt-6 text-center text-[11px] leading-5 text-slate-400">
+                    {/* <p className="mt-6 text-center text-[11px] leading-5 text-slate-400">
                         StorePilot accounts will later be securely connected
                         to the platform authentication system.
-                    </p>
+                    </p> */}
 
                 </div>
 

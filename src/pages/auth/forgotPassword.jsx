@@ -14,15 +14,10 @@ import Swal from 'sweetalert2'
 export default function ForgotPassword() {
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
-    const [error, setError] = useState('')
-    const [success, setSuccess] = useState('')
     const [loading, setLoading] = useState(false)
     const { forgotPassword, user, requestToken, requestMail } = useUser()
     const handleSubmit = async (e) => {
         e.preventDefault()
-
-        setError('')
-        setSuccess('')
 
         if (!email.trim()) {
             Swal.fire({ text: 'Email address is required', title: "Error", icon: "error" })
@@ -52,25 +47,31 @@ export default function ForgotPassword() {
                     console.log("REQUESTING MAIL")
                     const { status } = await requestMail(result.userId, token)
                     if (status) {
-                        setSuccess(
-                            'If an account exists with this email, a password reset link has been sent.'
-                        )
+                        Swal.fire({
+                            title: "Success",
+                            text: "If an account exists with this email, a password reset link has been sent.",
+                            icon: "success",
+                        })
                         setEmail('')
                         console.log(result)
                     }
                 }
             } else {
-                setError(
-                    error?.response?.data?.message ||
-                    'Something went wrong. Please try again.'
-                )
+                Swal.fire({
+                    title: "Error",
+                    text: `${'Something went wrong. Please try again.'}`,
+                    icon: "error",
+                })
                 setEmail('')
             }
         } catch (error) {
-            setError(
-                error?.response?.data?.message ||
-                'Something went wrong. Please try again.'
-            )
+            Swal.fire({
+                title: "Error",
+                text: `${error?.response?.data?.message ||
+                    'Something went wrong. Please try again.'}`,
+                icon: "error",
+            })
+            setEmail('')
             console.log(error)
         } finally {
             setLoading(false)
@@ -138,7 +139,7 @@ export default function ForgotPassword() {
                     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
 
                         {/* Success */}
-                        {success && (
+                        {/* {success && (
                             <div className="mb-5 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-3.5">
 
                                 <MdCheckCircle
@@ -151,10 +152,10 @@ export default function ForgotPassword() {
                                 </p>
 
                             </div>
-                        )}
+                        )} */}
 
                         {/* Error */}
-                        {error && (
+                        {/* {error && (
                             <div className="mb-5 rounded-xl border border-red-200 bg-red-50 p-3.5">
 
                                 <p className="text-xs leading-5 text-red-600">
@@ -162,7 +163,7 @@ export default function ForgotPassword() {
                                 </p>
 
                             </div>
-                        )}
+                        )} */}
 
                         <form
                             onSubmit={handleSubmit}
@@ -188,15 +189,10 @@ export default function ForgotPassword() {
                                         value={email}
                                         onChange={(e) => {
                                             setEmail(e.target.value)
-                                            setError('')
-                                            setSuccess('')
                                         }}
                                         placeholder="you@example.com"
                                         autoComplete="email"
-                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none transition placeholder:text-slate-400 ${error
-                                            ? 'border-red-300 focus:border-red-500'
-                                            : 'border-slate-200 focus:border-emerald-500'
-                                            }`}
+                                        className={`h-11 w-full rounded-xl border bg-white pl-10 pr-3 text-sm outline-none transition placeholder:text-slate-400`}
                                     />
 
                                 </div>

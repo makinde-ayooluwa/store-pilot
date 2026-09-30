@@ -70,7 +70,7 @@ const {stores} = useResource();
 
 
     const product = products.find(
-        item => item.id === id
+        item => item._id === id
     )
 
 
@@ -172,7 +172,7 @@ const {stores} = useResource();
     }
 
 
-    const store = stores[product.store]
+    const store = stores.find((store)=> store._id == product.store)
 
 
     return (
@@ -417,7 +417,7 @@ const {stores} = useResource();
                                             <div className="flex items-center gap-1">
 
                                                 <p className="truncate text-sm font-bold">
-                                                    {product.store}
+                                                    {store?.name}
                                                 </p>
 
                                                 <MdVerified
@@ -867,7 +867,7 @@ const {stores} = useResource();
 
                                 <Link
                                     key={item.id}
-                                    to={`/products/${item.id}`}
+                                    to={`/products/${item._id}`}
                                     className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-lg"
                                 >
 

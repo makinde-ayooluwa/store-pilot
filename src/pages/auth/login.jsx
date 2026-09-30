@@ -303,7 +303,7 @@ export default function Login() {
                     </div>
 
                     {/* Seller */}
-                    <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 text-center">
+                    {/* <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 text-center">
                         <p className="text-xs text-slate-500">
                             Want to sell products?
                         </p>
@@ -315,7 +315,7 @@ export default function Login() {
                             Start selling on StorePilot
                             <MdArrowForward size={15} />
                         </Link>
-                    </div>
+                    </div> */}
 
                     <p className="mt-6 text-center text-[11px] leading-5 text-slate-400">
                         By continuing, you agree to StorePilot's terms and

@@ -34,24 +34,24 @@ export default function SellerAllProducts() {
 
     return (
         <StoreOnly>
-        <div className="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-[calc(100vh-70px)]">
+            <div className="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-[calc(100vh-70px)]">
 
-            {/* HEADER */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                {/* HEADER */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
 
-                <div>
-                    <h1 className="text-2xl font-semibold text-gray-900">
-                        All Products
-                    </h1>
+                    <div>
+                        <h1 className="text-2xl font-semibold text-gray-900">
+                            All Products
+                        </h1>
 
-                    <p className="text-sm text-gray-500 mt-1">
-                        Manage all the products in your store.
-                    </p>
-                </div>
+                        <p className="text-sm text-gray-500 mt-1">
+                            Manage all the products in your store.
+                        </p>
+                    </div>
 
-                <Link
-                    to="/store/products/add"
-                    className="
+                    <Link
+                        to="/store/products/add"
+                        className="
                         inline-flex items-center justify-center gap-2
                         px-4 py-2.5
                         rounded-xl
@@ -61,91 +61,91 @@ export default function SellerAllProducts() {
                         text-sm font-medium
                         transition
                     "
-                >
-                    <MdAdd size={20} />
-                    Add Product
-                </Link>
+                    >
+                        <MdAdd size={20} />
+                        Add Product
+                    </Link>
 
-            </div>
-
-
-            {/* SUMMARY CARDS */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-
-                <div className="bg-white border border-gray-200 rounded-2xl p-4">
-                    <p className="text-sm text-gray-500">
-                        Total Products
-                    </p>
-
-                    <h2 className="text-2xl font-semibold mt-2">
-                        126
-                    </h2>
                 </div>
 
 
-                <div className="bg-white border border-gray-200 rounded-2xl p-4">
-                    <p className="text-sm text-gray-500">
-                        Active
-                    </p>
+                {/* SUMMARY CARDS */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
-                    <h2 className="text-2xl font-semibold text-green-700 mt-2">
-                        118
-                    </h2>
+                    <div className="bg-white border border-gray-200 rounded-2xl p-4">
+                        <p className="text-sm text-gray-500">
+                            Total Products
+                        </p>
+
+                        <h2 className="text-2xl font-semibold mt-2">
+                            {products.length}
+                        </h2>
+                    </div>
+
+
+                    <div className="bg-white border border-gray-200 rounded-2xl p-4">
+                        <p className="text-sm text-gray-500">
+                            Active
+                        </p>
+
+                        <h2 className="text-2xl font-semibold text-green-700 mt-2">
+                            118
+                        </h2>
+                    </div>
+
+
+                    <div className="bg-white border border-gray-200 rounded-2xl p-4">
+                        <p className="text-sm text-gray-500">
+                            Low Stock
+                        </p>
+
+                        <h2 className="text-2xl font-semibold text-orange-500 mt-2">
+                            5
+                        </h2>
+                    </div>
+
+
+                    <div className="bg-white border border-gray-200 rounded-2xl p-4">
+                        <p className="text-sm text-gray-500">
+                            Out of Stock
+                        </p>
+
+                        <h2 className="text-2xl font-semibold text-red-500 mt-2">
+                            3
+                        </h2>
+                    </div>
+
                 </div>
 
 
-                <div className="bg-white border border-gray-200 rounded-2xl p-4">
-                    <p className="text-sm text-gray-500">
-                        Low Stock
-                    </p>
+                {/* PRODUCTS CONTAINER */}
+                <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
 
-                    <h2 className="text-2xl font-semibold text-orange-500 mt-2">
-                        5
-                    </h2>
-                </div>
+                    {/* TOOLBAR */}
+                    <div className="p-4 border-b border-gray-200">
 
+                        <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
 
-                <div className="bg-white border border-gray-200 rounded-2xl p-4">
-                    <p className="text-sm text-gray-500">
-                        Out of Stock
-                    </p>
+                            {/* SEARCH */}
+                            <div className="relative w-full lg:max-w-md">
 
-                    <h2 className="text-2xl font-semibold text-red-500 mt-2">
-                        3
-                    </h2>
-                </div>
-
-            </div>
-
-
-            {/* PRODUCTS CONTAINER */}
-            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-
-                {/* TOOLBAR */}
-                <div className="p-4 border-b border-gray-200">
-
-                    <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
-
-                        {/* SEARCH */}
-                        <div className="relative w-full lg:max-w-md">
-
-                            <MdSearch
-                                size={21}
-                                className="
+                                <MdSearch
+                                    size={21}
+                                    className="
                                     absolute
                                     left-3
                                     top-1/2
                                     -translate-y-1/2
                                     text-gray-400
                                 "
-                            />
+                                />
 
-                            <input
-                                type="text"
-                                placeholder="Search products..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="
+                                <input
+                                    type="text"
+                                    placeholder="Search products..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    className="
                                     w-full
                                     pl-10
                                     pr-4
@@ -156,23 +156,23 @@ export default function SellerAllProducts() {
                                     outline-none
                                     focus:border-green-600
                                 "
-                            />
+                                />
 
-                        </div>
+                            </div>
 
 
-                        {/* FILTER */}
-                        <div className="flex items-center gap-2">
+                            {/* FILTER */}
+                            <div className="flex items-center gap-2">
 
-                            <MdFilterList
-                                size={20}
-                                className="text-gray-500"
-                            />
+                                <MdFilterList
+                                    size={20}
+                                    className="text-gray-500"
+                                />
 
-                            <select
-                                value={filter}
-                                onChange={(e) => setFilter(e.target.value)}
-                                className="
+                                <select
+                                    value={filter}
+                                    onChange={(e) => setFilter(e.target.value)}
+                                    className="
                                     border border-gray-200
                                     rounded-xl
                                     px-3
@@ -181,135 +181,135 @@ export default function SellerAllProducts() {
                                     outline-none
                                     bg-white
                                 "
-                            >
-                                <option value="All">
-                                    All Products
-                                </option>
+                                >
+                                    <option value="All">
+                                        All Products
+                                    </option>
 
-                                <option value="Active">
-                                    Active
-                                </option>
+                                    <option value="Active">
+                                        Active
+                                    </option>
 
-                                <option value="Low stock">
-                                    Low Stock
-                                </option>
+                                    <option value="Low stock">
+                                        Low Stock
+                                    </option>
 
-                                <option value="Out of stock">
-                                    Out of Stock
-                                </option>
-                            </select>
+                                    <option value="Out of stock">
+                                        Out of Stock
+                                    </option>
+                                </select>
+
+                            </div>
 
                         </div>
 
                     </div>
 
-                </div>
+
+                    {/* DESKTOP TABLE */}
+                    <div className="hidden md:block overflow-x-auto">
+
+                        <table className="w-full">
+
+                            <thead className="bg-gray-50 border-b border-gray-200">
+
+                                <tr>
+
+                                    <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                                        Product
+                                    </th>
+
+                                    <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                                        Category
+                                    </th>
+
+                                    <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                                        Price
+                                    </th>
+
+                                    <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                                        Stock
+                                    </th>
+
+                                    <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                                        Status
+                                    </th>
+
+                                    <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
 
 
-                {/* DESKTOP TABLE */}
-                <div className="hidden md:block overflow-x-auto">
+                            <tbody className="divide-y divide-gray-100">
 
-                    <table className="w-full">
+                                {filteredProducts.map((product) => (
 
-                        <thead className="bg-gray-50 border-b border-gray-200">
+                                    <tr
+                                        key={product.id}
+                                        className="hover:bg-gray-50 transition"
+                                    >
 
-                            <tr>
+                                        {/* PRODUCT */}
+                                        <td className="px-5 py-4">
 
-                                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
-                                    Product
-                                </th>
+                                            <div className="flex items-center gap-3">
 
-                                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
-                                    Category
-                                </th>
-
-                                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
-                                    Price
-                                </th>
-
-                                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
-                                    Stock
-                                </th>
-
-                                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
-                                    Status
-                                </th>
-
-                                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
-                                    Actions
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody className="divide-y divide-gray-100">
-
-                            {filteredProducts.map((product) => (
-
-                                <tr
-                                    key={product.id}
-                                    className="hover:bg-gray-50 transition"
-                                >
-
-                                    {/* PRODUCT */}
-                                    <td className="px-5 py-4">
-
-                                        <div className="flex items-center gap-3">
-
-                                            <div className="
+                                                <div className="
                                                 w-11 h-11
                                                 rounded-xl
                                                 bg-gray-100
                                                 flex items-center justify-center
                                             ">
-                                                <MdInventory
-                                                    size={22}
-                                                    className="text-gray-400"
-                                                />
+                                                    <MdInventory
+                                                        size={22}
+                                                        className="text-gray-400"
+                                                    />
+                                                </div>
+
+                                                <div>
+
+                                                    <p className="text-sm font-semibold text-gray-900">
+                                                        {product.name}
+                                                    </p>
+
+                                                    <p className="text-xs text-gray-400">
+                                                        {product.id}
+                                                    </p>
+
+                                                </div>
+
                                             </div>
 
-                                            <div>
-
-                                                <p className="text-sm font-semibold text-gray-900">
-                                                    {product.name}
-                                                </p>
-
-                                                <p className="text-xs text-gray-400">
-                                                    {product.id}
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-
-                                    </td>
+                                        </td>
 
 
-                                    {/* CATEGORY */}
-                                    <td className="px-5 py-4 text-sm text-gray-600">
-                                        {product.category}
-                                    </td>
+                                        {/* CATEGORY */}
+                                        <td className="px-5 py-4 text-sm text-gray-600">
+                                            {product.category}
+                                        </td>
 
 
-                                    {/* PRICE */}
-                                    <td className="px-5 py-4 text-sm font-medium text-gray-900">
-                                        ₦{product.price.toLocaleString()}
-                                    </td>
+                                        {/* PRICE */}
+                                        <td className="px-5 py-4 text-sm font-medium text-gray-900">
+                                            ₦{product.price.toLocaleString()}
+                                        </td>
 
 
-                                    {/* STOCK */}
-                                    <td className="px-5 py-4 text-sm text-gray-600">
-                                        {product.stock}
-                                    </td>
+                                        {/* STOCK */}
+                                        <td className="px-5 py-4 text-sm text-gray-600">
+                                            {product.stock}
+                                        </td>
 
 
-                                    {/* STATUS */}
-                                    <td className="px-5 py-4">
+                                        {/* STATUS */}
+                                        <td className="px-5 py-4">
 
-                                        <span
-                                            className={`
+                                            <span
+                                                className={`
                                                 inline-flex
                                                 px-2.5
                                                 py-1
@@ -317,33 +317,33 @@ export default function SellerAllProducts() {
                                                 text-xs
                                                 font-medium
                                                 ${product.status === "Active"
-                                                    ? "bg-green-50 text-green-700"
-                                                    : product.status === "Low stock"
-                                                        ? "bg-orange-50 text-orange-600"
-                                                        : "bg-red-50 text-red-600"
-                                                }
+                                                        ? "bg-green-50 text-green-700"
+                                                        : product.status === "Low stock"
+                                                            ? "bg-orange-50 text-orange-600"
+                                                            : "bg-red-50 text-red-600"
+                                                    }
                                             `}
-                                        >
-                                            {product.status}
-                                        </span>
+                                            >
+                                                {product.status}
+                                            </span>
 
-                                    </td>
+                                        </td>
 
 
-                                    {/* ACTIONS */}
-                                    <td className="px-5 py-4 relative">
-                                        <div className="relative inline-block">
+                                        {/* ACTIONS */}
+                                        <td className="px-5 py-4 relative">
+                                            <div className="relative inline-block">
 
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    setOpenMenu(
-                                                        openMenu === product.id
-                                                            ? null
-                                                            : product.id
-                                                    )
-                                                }
-                                                className="
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setOpenMenu(
+                                                            openMenu === product.id
+                                                                ? null
+                                                                : product.id
+                                                        )
+                                                    }
+                                                    className="
                 w-9
                 h-9
                 flex
@@ -355,14 +355,14 @@ export default function SellerAllProducts() {
                 hover:text-gray-700
                 transition
             "
-                                            >
-                                                <MdMoreVert size={21} />
-                                            </button>
+                                                >
+                                                    <MdMoreVert size={21} />
+                                                </button>
 
 
-                                            {openMenu === product.id && (
-                                                <div
-                                                    className="
+                                                {openMenu === product.id && (
+                                                    <div
+                                                        className="
                     absolute
                     right-0
                     top-11
@@ -375,36 +375,24 @@ export default function SellerAllProducts() {
                     shadow-lg
                     p-1
                 "
-                                                >
-
-                                                    {/* View */}
-                                                    <Link
-                                                        to={`/store/products/${product.id}`}
-                                                        onClick={() => setOpenMenu(null)}
-                                                        className="
-                        flex
-                        items-center
-                        gap-2
-                        w-full
-                        px-3
-                        py-2.5
-                        rounded-lg
-                        text-sm
-                        text-gray-700
-                        hover:bg-gray-50
-                        transition
-                    "
                                                     >
-                                                        <MdVisibility size={18} />
-                                                        View
-                                                    </Link>
+
+                                                        {/* View */}
+                                                        <Link
+                                                            to={`/store/products/${product.slug}`}
+                                                            onClick={() => setOpenMenu(null)}
+                                                            className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition"
+                                                        >
+                                                            <MdVisibility size={18} />
+                                                            View
+                                                        </Link>
 
 
-                                                    {/* Edit */}
-                                                    <Link
-                                                        to={`/store/products/${product.id}/edit`}
-                                                        onClick={() => setOpenMenu(null)}
-                                                        className="
+                                                        {/* Edit */}
+                                                        <Link
+                                                            to={`/store/products/${product.slug}/edit`}
+                                                            onClick={() => setOpenMenu(null)}
+                                                            className="
                         flex
                         items-center
                         gap-2
@@ -417,71 +405,71 @@ export default function SellerAllProducts() {
                         hover:bg-green-50
                         transition
                     "
-                                                    >
-                                                        <MdEdit size={18} />
-                                                        Edit
-                                                    </Link>
+                                                        >
+                                                            <MdEdit size={18} />
+                                                            Edit
+                                                        </Link>
 
-                                                </div>
-                                            )}
+                                                    </div>
+                                                )}
 
-                                        </div>
-                                    </td>
+                                            </div>
+                                        </td>
 
-                                </tr>
+                                    </tr>
 
-                            ))}
+                                ))}
 
-                        </tbody>
+                            </tbody>
 
-                    </table>
+                        </table>
 
-                </div>
+                    </div>
 
 
-                {/* MOBILE PRODUCTS */}
-                <div className="md:hidden divide-y divide-gray-100">
+                    {/* MOBILE PRODUCTS */}
+                    <div className="md:hidden divide-y divide-gray-100">
 
-                    {filteredProducts.map((product) => (
+                        {filteredProducts.map((product) => (
 
-                        <div
-                            key={product.id}
-                            className="p-4"
-                        >
+                            <div
+                                key={product.id}
+                                className="p-4"
+                            >
 
-                            <div className="flex items-start justify-between gap-3">
+                                <div className="flex items-start justify-between gap-3">
 
-                                <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-3">
 
-                                    <div className="
+                                        <div className="
                                         w-11 h-11
                                         rounded-xl
                                         bg-gray-100
                                         flex items-center justify-center
                                     ">
-                                        <MdInventory
-                                            size={22}
-                                            className="text-gray-400"
-                                        />
+                                            <MdInventory
+                                                size={22}
+                                                className="text-gray-400"
+                                            />
+                                        </div>
+
+                                        <div>
+
+                                            <p className="text-sm font-semibold text-gray-900">
+                                                {product.name}
+                                            </p>
+
+                                            <p className="text-xs text-gray-400">
+                                                {product.id}
+                                            </p>
+
+                                        </div>
+
                                     </div>
 
-                                    <div>
-
-                                        <p className="text-sm font-semibold text-gray-900">
-                                            {product.name}
-                                        </p>
-
-                                        <p className="text-xs text-gray-400">
-                                            {product.id}
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-                                <Link
-                                    to={`/store/products/${product.id}/edit`}
-                                    className="
+                                    <Link
+                                        to={`/store/products/${product.slug}/edit`}
+                                        className="
                                         inline-flex
                                         items-center
                                         gap-1.5
@@ -493,55 +481,55 @@ export default function SellerAllProducts() {
                                         text-green-700
                                         bg-green-50
                                     "
-                                >
-                                    <MdEdit size={17} />
-                                    Edit
-                                </Link>
+                                    >
+                                        <MdEdit size={17} />
+                                        Edit
+                                    </Link>
 
-                            </div>
-
-
-                            <div className="grid grid-cols-3 gap-3 mt-4">
-
-                                <div>
-                                    <p className="text-xs text-gray-400">
-                                        Category
-                                    </p>
-
-                                    <p className="text-sm mt-1">
-                                        {product.category}
-                                    </p>
                                 </div>
 
 
-                                <div>
-                                    <p className="text-xs text-gray-400">
-                                        Price
-                                    </p>
+                                <div className="grid grid-cols-3 gap-3 mt-4">
 
-                                    <p className="text-sm font-medium mt-1">
-                                        ₦{product.price.toLocaleString()}
-                                    </p>
+                                    <div>
+                                        <p className="text-xs text-gray-400">
+                                            Category
+                                        </p>
+
+                                        <p className="text-sm mt-1">
+                                            {product.category}
+                                        </p>
+                                    </div>
+
+
+                                    <div>
+                                        <p className="text-xs text-gray-400">
+                                            Price
+                                        </p>
+
+                                        <p className="text-sm font-medium mt-1">
+                                            ₦{product.price.toLocaleString()}
+                                        </p>
+                                    </div>
+
+
+                                    <div>
+                                        <p className="text-xs text-gray-400">
+                                            Stock
+                                        </p>
+
+                                        <p className="text-sm mt-1">
+                                            {product.stock}
+                                        </p>
+                                    </div>
+
                                 </div>
 
 
-                                <div>
-                                    <p className="text-xs text-gray-400">
-                                        Stock
-                                    </p>
+                                <div className="mt-3">
 
-                                    <p className="text-sm mt-1">
-                                        {product.stock}
-                                    </p>
-                                </div>
-
-                            </div>
-
-
-                            <div className="mt-3">
-
-                                <span
-                                    className={`
+                                    <span
+                                        className={`
                                         inline-flex
                                         px-2.5
                                         py-1
@@ -549,50 +537,50 @@ export default function SellerAllProducts() {
                                         text-xs
                                         font-medium
                                         ${product.status === "Active"
-                                            ? "bg-green-50 text-green-700"
-                                            : product.status === "Low stock"
-                                                ? "bg-orange-50 text-orange-600"
-                                                : "bg-red-50 text-red-600"
-                                        }
+                                                ? "bg-green-50 text-green-700"
+                                                : product.status === "Low stock"
+                                                    ? "bg-orange-50 text-orange-600"
+                                                    : "bg-red-50 text-red-600"
+                                            }
                                     `}
-                                >
-                                    {product.status}
-                                </span>
+                                    >
+                                        {product.status}
+                                    </span>
+
+                                </div>
 
                             </div>
 
-                        </div>
-
-                    ))}
-
-                </div>
-
-
-                {/* EMPTY STATE */}
-                {filteredProducts.length === 0 && (
-
-                    <div className="py-16 text-center">
-
-                        <MdInventory
-                            size={40}
-                            className="mx-auto text-gray-300"
-                        />
-
-                        <h3 className="mt-3 font-semibold text-gray-800">
-                            No products found
-                        </h3>
-
-                        <p className="text-sm text-gray-500 mt-1">
-                            Try changing your search or filter.
-                        </p>
+                        ))}
 
                     </div>
 
-                )}
+
+                    {/* EMPTY STATE */}
+                    {filteredProducts.length === 0 && (
+
+                        <div className="py-16 text-center">
+
+                            <MdInventory
+                                size={40}
+                                className="mx-auto text-gray-300"
+                            />
+
+                            <h3 className="mt-3 font-semibold text-gray-800">
+                                No products found
+                            </h3>
+
+                            <p className="text-sm text-gray-500 mt-1">
+                                Try changing your search or filter.
+                            </p>
+
+                        </div>
+
+                    )}
+
+                </div>
 
             </div>
-
-        </div>
         </StoreOnly>
     )
 }

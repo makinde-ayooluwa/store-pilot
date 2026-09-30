@@ -7,7 +7,7 @@ import { MdCategory, MdHome, MdLaptop, MdLocalGroceryStore, MdShoppingBag } from
 // import products, {
 //     getProductsByCategory
 // } from '../data/products'
-import stores from "../data/stores";
+// import stores from "../data/stores";
 import axios from "axios";
 import { backendUrl } from "../data/constants";
 export const ResourceContext = createContext()
@@ -390,11 +390,13 @@ export const ResourceProvider = ({ children }) => {
     //         ]
     //     }
     // ]
+    const [stores, setStores] = useState([]);
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     useEffect(() => {
         checkCategories();
         checkProducts();
+        checkStores()
     }, [])
     const checkCategories = async () => {
         try {
@@ -406,15 +408,54 @@ export const ResourceProvider = ({ children }) => {
             console.log("ERROR OCCURED WHILE FETCHING CATEGORIES", error);
         }
     }
-    const checkProducts = async () => {
+const formatImageUrl = (url) => {
+    if (!url) return url;
+    if (url.startsWith("http://") || url.startsWith("https://")) return url; // Already full URL
+    
+    const cleanBase = backendUrl.replace(/\/$/, "");
+    const cleanPath = url.replace(/^\//, "");
+    return `${cleanBase}/${cleanPath}`;
+};
+
+const checkProducts = async () => {
+    try {
+        const response = await axios.post(`${backendUrl}/products/all`);
+        const result = response.data;
+
+        // Ensure result.data is an array (or wrap a single object in an array)
+        const rawData = Array.isArray(result.data)
+            ? result.data
+            : result.data
+            ? [result.data]
+            : [];
+
+        // 1. Filter to include ONLY active products
+        const activeProducts = rawData.filter(
+            (product) => product.status === "active" || product.status === true
+        );
+
+        // 2. Format image URLs for the active products
+        const updatedProducts = activeProducts.map((product) => ({
+            ...product,
+            image: product.image ? `${backendUrl}/${product.image}` : product.image,
+            images: Array.isArray(product.images)
+                ? product.images.map((img) => `${backendUrl}/${img}`)
+                : product.images
+        }));
+
+        setProducts(updatedProducts);
+    } catch (error) {
+        console.log("ERROR OCCURRED WHILE FETCHING PRODUCTS", error);
+    }
+};
+    const checkStores = async () => {
         try {
-            const response = await axios.post(`${backendUrl}/products/all`);
+            const response = await axios.post(`${backendUrl}/store/all`);
             const result = response.data;
-            const data = result.data;
-            console.log("PRODUCTS RESULT", result)
-            setProducts(data);
+            console.log("STORES RESULT", result)
+            setStores(result);
         } catch (error) {
-            console.log("ERROR OCCURED WHILE FETCHING PRODUCTS", error);
+            console.log("ERROR OCCURED WHILE FETCHING STORES", error);
         }
     }
     const getProductsByCategory = (categorySlug) => {

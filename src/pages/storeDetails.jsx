@@ -404,7 +404,7 @@ export default function StoreDetails() {
                                             {/* Product image */}
                                             <div className="relative aspect-square overflow-hidden bg-slate-100">
                                                 <Link
-                                                    to={`/products/${product.slug}`}
+                                                    to={`/products/${product._id}`}
                                                 >
                                                     <img
                                                         src={
@@ -452,7 +452,7 @@ export default function StoreDetails() {
                                             {/* Product information */}
                                             <div className="p-4">
                                                 <Link
-                                                    to={`/products/${product.slug}`}
+                                                    to={`/products/${product._id}`}
                                                 >
                                                     <h3 className="line-clamp-2 min-h-[40px] text-sm font-semibold text-slate-900 hover:text-slate-600">
                                                         {

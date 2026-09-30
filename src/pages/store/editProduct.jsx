@@ -14,13 +14,13 @@ import { useStore } from '../../contexts/storeProvider'
 import StoreOnly from '../../components/storeOnly'
 
 export default function EditProduct() {
-    const { id } = useParams()
+    const { slug } = useParams()
     const navigate = useNavigate()
 
-    const { products = [] } = useStore()
+    const { products } = useStore()
 
     const product = products.find(
-        (item) => String(item.id) === String(id)
+        (item) => item.slug === slug
     )
 
     const [formData, setFormData] = useState(null)

@@ -24,14 +24,17 @@ export default function Homepage({ products, categories, stores }) {
     const navigate = useNavigate()
     const [search, setSearch] = useState("")
     const handleSearch = () => {
-        if(search.trim() == "") return;
+        if (search.trim() == "") return;
         navigate(`/search?q=${encodeURIComponent(
             search.trim()
         )}`)
     }
     const formatPrice = price =>
         `₦${price}`
-
+const getStoreName = id => {
+    const store = stores.find((store)=>store._id == id)
+    if(store) return store.name;
+    }
     return (
 
         <div className="min-h-screen w-full overflow-hidden bg-white text-slate-900">
@@ -238,8 +241,8 @@ export default function Homepage({ products, categories, stores }) {
 
                         {products.filter((product, index) => index < 8).map(product => (
                             <Link
-                                key={product.id}
-                                to={`/products/${product.id}`}
+                                key={product._id}
+                                to={`/products/${product._id}`}
                                 className="group overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/60"
                             >
 
@@ -268,7 +271,8 @@ export default function Homepage({ products, categories, stores }) {
                                 <div className="p-4">
 
                                     <p className="text-[10px] text-slate-400">
-                                        {product.store}
+                                        {getStoreName(product.store)}
+
                                     </p>
 
                                     <h3 className="mt-1 truncate text-sm font-semibold text-slate-700">
@@ -282,9 +286,15 @@ export default function Homepage({ products, categories, stores }) {
                                                 {formatPrice(product.price)}
                                             </p>
 
-                                            <p className="mt-0.5 text-[10px] text-slate-400 line-through">
-                                                {formatPrice(product.oldPrice)}
-                                            </p>
+                                            {product.oldPrice &&
+                                                (
+                                                    <>
+                                                        <p className="mt-0.5 text-[10px] text-slate-400 line-through">
+                                                            {formatPrice(product.oldPrice)}
+                                                        </p>
+                                                    </>
+                                                )
+                                            }
                                         </div>}
 
                                         <button
