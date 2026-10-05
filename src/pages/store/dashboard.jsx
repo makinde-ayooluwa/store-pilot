@@ -22,7 +22,7 @@ import {
 import { useSocket } from '../../contexts/socketProvider'
 import StoreOnly from '../../components/storeOnly'
 import { useStore } from '../../contexts/storeProvider'
-export default function SellerDashboard() {
+export default function StoreDashboard() {
     const salesData = [
         { day: "Mon", sales: 85000 },
         { day: "Tue", sales: 120000 },
@@ -121,7 +121,7 @@ export default function SellerDashboard() {
 
                     <div>
                         <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
-                            Seller Dashboard
+                            Store Dashboard
                         </h2>
 
                         <p className="text-sm text-gray-500 mt-1">

@@ -15,7 +15,7 @@ import {
 } from 'react-icons/md'
 import {useStore} from "../../contexts/storeProvider"
 import StoreOnly from '../../components/storeOnly'
-export default function SellerStockOverview() {
+export default function StoreStockOverview() {
     const [search, setSearch] = useState('')
     const [stockFilter, setStockFilter] = useState('All')
     const [openMenu, setOpenMenu] = useState(null)

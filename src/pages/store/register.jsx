@@ -87,9 +87,9 @@ export default function SellerRegister() {
     }
 
     const handleSubmit = async (e) => {
+        setSubmitting(true);
         try {
             e.preventDefault()
-            setSubmitting(true);
 
             if (!validate()) return
 
@@ -97,30 +97,29 @@ export default function SellerRegister() {
             // Later this will send the data to:
             // POST /api/stores
             const response = await register(formData);
-            if (response) {
-                console.log(response)
-                if (response.status == false) {
-                    Swal.fire({
-                        title: "Error",
-                        text: response.message,
-                        icon: "error"
-                    })
-                } else {
-                    Swal.fire({
-                        title: "Success",
-                        text: response.message,
-                        icon: "success"
-                    })
-                    setTimeout(() => {
-                        navigate('/store/dashboard')
-                    }, 800);
-                }
+
+            if (response.status == false) {
+                Swal.fire({
+                    title: "Error",
+                    text: response.message,
+                    icon: "error"
+                })
+            } else {
+                Swal.fire({
+                    title: "Success",
+                    text: response.message,
+                    icon: "success"
+                })
+                setTimeout(() => {
+                    navigate('/store/dashboard')
+                }, 800);
             }
-            
+
         } catch (error) {
-console.log(error)
+            console.log(error);
+            setSubmitting(false);
         }
-        finally{
+        finally {
             setSubmitting(false);
         }
     }

@@ -1,6 +1,6 @@
 import React from 'react'
 import LOGO2 from "../../assets/images/logo-2.png"
-import SellerSidebarNav from '../../components/store/storeSidebarNav'
+import StoreSidebarNav from '../../components/store/storeSidebarNav'
 
 import {
     MdDashboard,
@@ -18,7 +18,7 @@ import {
     MdSettings
 } from "react-icons/md"
 
-export default function SellerSidebar({ open, setOpen }) {
+export default function StoreSidebar({ open, setOpen }) {
 
     const sidebarNavs = [
     // MAIN
@@ -262,15 +262,15 @@ export default function SellerSidebar({ open, setOpen }) {
         dropdown: [
             {
                 title: "Store Profile",
-                link: "/store/store"
+                link: "/store/profile"
             },
             {
                 title: "Store Appearance",
-                link: "/store/store/appearance"
+                link: "/store/appearance"
             },
             {
                 title: "Store Information",
-                link: "/store/store/information"
+                link: "/store/information"
             }
         ]
     },
@@ -376,7 +376,7 @@ export default function SellerSidebar({ open, setOpen }) {
             <div className="h-[calc(100vh-75px)] overflow-y-auto scrollbar-none p-1">
                 <div className="grid gap-5">
                     {sidebarNavs.map((data, index) => (
-                        <SellerSidebarNav
+                        <StoreSidebarNav
                             key={index}
                             data={data}
                             sidebarOpen={open}

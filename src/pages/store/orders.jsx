@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
 import { useOrders } from '../../contexts/orderProvider'
 import StoreOnly from '../../components/storeOnly'
 
-export default function SellerOrders() {
+export default function StoreOrders() {
     const { orders = [] } = useOrders()
 
     const [search, setSearch] = useState('')

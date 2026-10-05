@@ -14,7 +14,7 @@ import {
 import { useStore } from '../../contexts/storeProvider'
 import StoreOnly from '../../components/storeOnly'
 
-export default function SellerCategories() {
+export default function StoreCategories() {
     const [search, setSearch] = useState('')
     const [statusFilter, setStatusFilter] = useState('All')
     const [showModal, setShowModal] = useState(false)

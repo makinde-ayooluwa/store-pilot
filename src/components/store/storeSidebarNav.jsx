@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { MdKeyboardArrowDown } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 
-export default function SellerSidebarNav({setSidebarOpen, sidebarOpen, data }) {
+export default function StoreSidebarNav({setSidebarOpen, sidebarOpen, data }) {
     const [open, setOpen] = useState(false)
 
     return (

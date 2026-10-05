@@ -48,7 +48,7 @@ return (
                         <p>
                             StorePilot is a marketplace platform that allows
                             customers to discover stores and products and
-                            allows sellers to manage and sell their products
+                            allows stores to manage and sell their products
                             online.
                         </p>
                     </section>
@@ -80,11 +80,11 @@ return (
 
                     <section>
                         <h2 className="mb-2 text-lg font-semibold text-slate-900">
-                            4. Sellers
+                            4. Stores
                         </h2>
 
                         <p>
-                            Sellers are responsible for the accuracy of their
+                            Stores are responsible for the accuracy of their
                             product information, pricing, inventory and
                             fulfillment of customer orders.
                         </p>
@@ -152,7 +152,7 @@ return (
                             Stores
                         </p>
                         <p className="mt-1 text-xs text-slate-500">
-                            Discover businesses and sellers.
+                            Discover businesses and stores.
                         </p>
                     </div>
 

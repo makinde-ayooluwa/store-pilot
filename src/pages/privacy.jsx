@@ -85,7 +85,7 @@ return (
 
                         <p>
                             Information connected to orders may be stored so
-                            that customers and sellers can view order
+                            that customers and stores can view order
                             history, process purchases and provide customer
                             service.
                         </p>

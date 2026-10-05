@@ -265,7 +265,7 @@ export default function Homepage({ products = [], categories = [], stores = [] }
                         {stores.map(store => (
                             <Link
                                 key={store._id || store.name}
-                                to={`/stores/${store.name.toLowerCase().replaceAll(' ', '-')}`}
+                                to={`/stores/${store.slug}`}
                                 className="group overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-slate-300 hover:shadow-md"
                             >
                                 <div className="flex">
@@ -318,7 +318,7 @@ export default function Homepage({ products = [], categories = [], stores = [] }
                             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">Business</h3>
                             <div className="mt-4 space-y-3">
                                 {user && <Link to="/sell" className="block text-xs text-slate-400 hover:text-slate-700">Sell on StorePilot</Link>}
-                                <Link to="/login" className="block text-xs text-slate-400 hover:text-slate-700">Seller Login</Link>
+                                <Link to="/login" className="block text-xs text-slate-400 hover:text-slate-700">Store Login</Link>
                                 <Link to="/register" className="block text-xs text-slate-400 hover:text-slate-700">Create account</Link>
                             </div>
                         </div>

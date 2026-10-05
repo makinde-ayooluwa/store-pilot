@@ -16,7 +16,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useStore } from '../../contexts/storeProvider'
 import StoreOnly from '../../components/storeOnly'
 
-export default function SellerProductDetails() {
+export default function StoreProductDetails() {
     const { slug } = useParams()
     const { products } = useStore()
 
@@ -156,7 +156,7 @@ const [defaultImage, setDefaultImage] = useState(images[0])
 
                             <div>
                                 <p className="text-xs text-gray-500 mb-1">
-                                    Seller / Products
+                                   Store / Products
                                 </p>
 
                                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900">

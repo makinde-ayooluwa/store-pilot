@@ -302,7 +302,7 @@ export default function Login() {
 
                     </div>
 
-                    {/* Seller */}
+                    {/* Store */}
                     {/* <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 text-center">
                         <p className="text-xs text-slate-500">
                             Want to sell products?

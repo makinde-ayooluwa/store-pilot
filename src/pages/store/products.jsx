@@ -15,7 +15,7 @@ import StoreOnly from "../../components/storeOnly"
 import Swal from "sweetalert2"
 
 
-export default function SellerAllProducts() {
+export default function StoreAllProducts() {
     const { products, deleteProduct } = useStore()
     const [openMenu, setOpenMenu] = useState(null)
     const [search, setSearch] = useState("")

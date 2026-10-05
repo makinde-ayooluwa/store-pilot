@@ -559,7 +559,7 @@ export default function StoreDetails() {
                                 </h2>
 
                                 <p className="mt-2 max-w-xl text-sm leading-6 text-slate-400">
-                                    Find more sellers and explore
+                                    Find more stores and explore
                                     products across different
                                     categories.
                                 </p>

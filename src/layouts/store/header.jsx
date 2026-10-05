@@ -6,7 +6,7 @@ import {
 } from 'react-icons/md'
 import { useStore } from '../../contexts/storeProvider'
 
-export default function SellerHeader({ open, setOpen, storeData }) {
+export default function StoreHeader({ open, setOpen, storeData }) {
     return (
         <header className="w-full h-[70px] sticky top-0 z-200 border-b border-gray-200 bg-white px-3 sm:px-5">
 

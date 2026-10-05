@@ -9,7 +9,7 @@ import {
 } from 'react-icons/md'
 import StoreOnly from '../../components/storeOnly'
 
-export default function SellerWallet() {
+export default function StoreWallet() {
 
     const transactions = [
         {

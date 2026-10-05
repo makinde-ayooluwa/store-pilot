@@ -18,7 +18,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useOrders } from '../../contexts/orderProvider'
 import StoreOnly from '../../components/storeOnly'
 
-export default function SellerOrderDetails() {
+export default function StoreOrderDetails() {
     const { id } = useParams()
     const navigate = useNavigate()
 
@@ -343,7 +343,7 @@ export default function SellerOrderDetails() {
                                     text-gray-500
                                     mb-1
                                 ">
-                                        Seller / Orders
+                                        Store / Orders
                                     </p>
 
                                     <h1 className="

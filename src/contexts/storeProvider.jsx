@@ -20,6 +20,7 @@ export const StoreProvider = ({ children }) => {
         if (storedId) {
             setStore(storedId);
             try {
+                console.log("CHECKING STORE")
                 const response = await axios.post(`${backendUrl}/store/getStore`, { id: storedId });
                 const result = response.data;
 
@@ -86,6 +87,7 @@ export const StoreProvider = ({ children }) => {
     const register = async (data) => {
         try {
             setLoading(true);
+            console.log("REGISTERING STORE")
             const response = await axios.post(`${backendUrl}/store/register`, data);
             const result = response.data;
 

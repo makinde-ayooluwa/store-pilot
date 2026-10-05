@@ -9,22 +9,25 @@ import { ResourceProvider } from './contexts/resourceProvider.jsx'
 import { WishlistProvider } from './contexts/wishlistProvider.jsx'
 import { StoreProvider } from './contexts/storeProvider.jsx'
 import { SocketProvider } from './contexts/socketProvider.jsx'
+import { UtilityProvider } from './contexts/utilityProvider.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <SocketProvider>
-      <UserProvider>
-        <StoreProvider>
-          <WishlistProvider>
-            <ResourceProvider>
-              <CartProvider>
-                <OrderProvider>
-                  <App />
-                </OrderProvider>
-              </CartProvider>
-            </ResourceProvider>
-          </WishlistProvider>
-        </StoreProvider>
-      </UserProvider>
-    </SocketProvider>
+    <UtilityProvider>
+      <SocketProvider>
+        <UserProvider>
+          <StoreProvider>
+            <WishlistProvider>
+              <ResourceProvider>
+                <CartProvider>
+                  <OrderProvider>
+                    <App />
+                  </OrderProvider>
+                </CartProvider>
+              </ResourceProvider>
+            </WishlistProvider>
+          </StoreProvider>
+        </UserProvider>
+      </SocketProvider>
+    </UtilityProvider>
   </StrictMode>,
 )

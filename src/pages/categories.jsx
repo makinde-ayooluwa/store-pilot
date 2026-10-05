@@ -242,7 +242,7 @@ const popularCategories = categories.slice(0, 6)
 
                 </section>
 
-                {/* Seller CTA */}
+                {/* Store CTA */}
                 <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 lg:px-8">
 
                     <div className="overflow-hidden rounded-2xl bg-slate-900 px-5 py-7 sm:px-8 sm:py-8">

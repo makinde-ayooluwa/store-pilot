@@ -111,7 +111,7 @@ export default function Stores() {
                             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
                                 Explore trusted stores on
                                 StorePilot and discover
-                                products from sellers across
+                                products from stores across
                                 different categories.
                             </p>
 

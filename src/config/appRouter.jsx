@@ -1,12 +1,12 @@
 import React from 'react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
-import SellerLayout from '../layouts/storeLayout'
-import SellerDashboard from '../pages/store/dashboard'
-import SellerWallet from '../pages/store/wallet'
-import SellerAllProducts from '../pages/store/products'
-import SellerAddProduct from '../pages/store/addProduct'
-import SellerCategories from '../pages/store/categories'
-import SellerStockOverview from '../pages/store/stockOverview'
+import StoreLayout from '../layouts/storeLayout'
+import StoreDashboard from '../pages/store/dashboard'
+import StoreWallet from '../pages/store/wallet'
+import StoreAllProducts from '../pages/store/products'
+import StoreAddProduct from '../pages/store/addProduct'
+import StoreCategories from '../pages/store/categories'
+import StoreStockOverview from '../pages/store/stockOverview'
 import Homepage from '../pages/homepage'
 import Sell from '../pages/sell'
 import Products from '../pages/products'
@@ -31,14 +31,15 @@ import Settings from '../pages/customer/settings'
 import Terms from '../pages/terms'
 import Privacy from '../pages/privacy'
 import NotFound from '../pages/notFound'
-import SellerRegister from '../pages/store/register'
+import StoreRegister from '../pages/store/register'
 import EditProduct from '../pages/store/editProduct'
-import SellerProductDetails from '../pages/store/productDetails'
-import SellerOrders from '../pages/store/orders'
-import SellerCustomers from '../pages/store/customers'
-import SellerOrderDetails from '../pages/store/orderDetails'
+import StoreProductDetails from '../pages/store/productDetails'
+import StoreOrders from '../pages/store/orders'
+import StoreCustomers from '../pages/store/customers'
+import StoreOrderDetails from '../pages/store/orderDetails'
 import ForgotPassword from '../pages/auth/forgotPassword'
 import ResetPassword from '../pages/auth/resetPassword'
+import StoreProfile from '../pages/store/profile'
 export default function AppRouter() {
     const { products, categories, getProductsByCategory, getCategoryBySlug, stores } = useResource();
     return (
@@ -85,57 +86,60 @@ export default function AppRouter() {
                         element={<Settings />}
                     />
                 </Route>
-                {/* SELLER */}
+                {/* Store */}
                 <Route
                     path="/store/register"
-                    element={<SellerRegister />}
+                    element={<StoreRegister />}
                 />
                 <Route path='/store' element={
-                    <SellerLayout />
+                    <StoreLayout />
                 }
                 >
                     <Route
                         index
                         element={
-                            <SellerDashboard />
+                            <StoreDashboard />
                         }
                     />
                     <Route
                         path='dashboard'
                         element={
-                            <SellerDashboard />
+                            <StoreDashboard />
                         }
                     />
                     <Route path='products' element={<Outlet />}>
-                        <Route index element={<SellerAllProducts />} />
-                        <Route path='add' element={<SellerAddProduct />} />
-                        <Route path='categories' element={<SellerCategories />} />
+                        <Route index element={<StoreAllProducts />} />
+                        <Route path='add' element={<StoreAddProduct />} />
+                        <Route path='categories' element={<StoreCategories />} />
                         <Route
                             path=":slug/edit"
                             element={<EditProduct />}
                         />
                         <Route
                             path=":slug"
-                            element={<SellerProductDetails />}
+                            element={<StoreProductDetails />}
                         />
                     </Route>
                     <Route
                         path="orders"
                         element={<Outlet />}
                     >
-                        <Route index element={<SellerOrders />} />
-                        <Route path=':id' element={<SellerOrderDetails />} />
+                        <Route index element={<StoreOrders />} />
+                        <Route path=':id' element={<StoreOrderDetails />} />
                     </Route>
 
                     <Route path='inventory' element={<Outlet />}>
-                        <Route index element={<SellerStockOverview />} />
+                        <Route index element={<StoreStockOverview />} />
                     </Route>
 
                     <Route
                         path="customers"
-                        element={<SellerCustomers />}
+                        element={<StoreCustomers />}
                     />
-                    <Route path='wallet' element={<SellerWallet />} />
+                    <Route path='wallet' element={<StoreWallet />} />
+                    <Route path="profile" element={<>
+                        <StoreProfile categories={categories} />
+                        </>} />
                     <Route path='*' element={<h1>Not Found</h1>} />
                 </Route>
             </Routes>

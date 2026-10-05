@@ -13,7 +13,7 @@ import { backendUrl } from "../../data/constants"
 import Swal from "sweetalert2"
 import { useStore } from "../../contexts/storeProvider"
 
-export default function SellerAddProduct() {
+export default function StoreAddProduct() {
 
     const { addProduct, storeData, store } = useStore();
     const [images, setImages] = useState([])
