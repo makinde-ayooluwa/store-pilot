@@ -12,12 +12,13 @@ import {
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useStore } from '../../contexts/storeProvider'
 import StoreOnly from '../../components/storeOnly'
+import Swal from 'sweetalert2'
 
 export default function EditProduct() {
     const { slug } = useParams()
     const navigate = useNavigate()
 
-    const { products } = useStore()
+    const { products, editProduct } = useStore()
 
     const product = products.find(
         (item) => item.slug === slug
@@ -26,7 +27,6 @@ export default function EditProduct() {
     const [formData, setFormData] = useState(null)
     const [previewImages, setPreviewImages] = useState([])
     const [saving, setSaving] = useState(false)
-
     /*
      * Load the selected product
      */
@@ -35,15 +35,15 @@ export default function EditProduct() {
 
         const productData = {
             ...product,
-
+            _id: product._id,
             name: product.name ?? '',
             description: product.description ?? '',
             category: product.category ?? '',
             price: product.price ?? '',
-            oldPrice: product.oldPrice ?? '',
+            discount: product.discount ?? 0,
             stock: product.stock ?? '',
-            sku: product.sku ?? '',
-            status: product.status ?? 'Active'
+            slug: product.slug ?? '',
+            status: product.status ?? 'active'
         }
 
         setFormData(productData)
@@ -114,11 +114,58 @@ export default function EditProduct() {
      * Actual update logic can be connected to your storeProvider
      * when you are ready.
      */
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
         setSaving(true)
+        try {
+            const data = new FormData();
+            data.append("_id", formData._id);
+            data.append("name", formData.name);
+            data.append("description", formData.description);
+            data.append("price", formData.price);
+            data.append("stock", formData.stock);
+            data.append("slug", formData.slug);
+            data.append("status", formData.status);
+            previewImages.forEach((image) => {
+                data.append("images", image.file);
+            });
 
+            const result = await editProduct(data);
+
+            if (result.status == false) {
+                Swal.fire({
+                    title: "Error",
+                    text: result.message,
+                    icon: "error"
+                })
+                return;
+            }
+            const keys = Object.keys(formData);
+            Swal.fire({
+                title: "Success",
+                text: result.message,
+                icon: "success"
+            })
+            // 1. Copy current form state
+            const updatedForm = { ...formData };
+
+            // 2. Clear the specific keys in the loop
+            keys.forEach((key) => {
+                updatedForm[key] = "";
+            });
+
+            // 3. Update state ONCE
+            setFormData(updatedForm);
+        } catch (error) {
+            console.error(
+                "EDIT PRODUCT ERROR:",
+                error.response?.data || error.message
+            );
+        }
+        finally {
+            setSaving(false)
+        }
         /*
          * Example when your provider has an update function:
          *
@@ -128,10 +175,10 @@ export default function EditProduct() {
          * })
          */
 
-        setTimeout(() => {
-            setSaving(false)
-            navigate('/store/products')
-        }, 800)
+        // setTimeout(() => {
+        //     setSaving(false)
+        //     navigate('/store/products')
+        // }, 800)
     }
 
     /*
@@ -384,7 +431,7 @@ export default function EditProduct() {
                             </div>
 
                             {/* CATEGORY */}
-                            <div>
+                            {/* <div>
 
                                 <label className="mb-2 block text-sm font-medium text-gray-700">
                                     Category
@@ -464,7 +511,7 @@ export default function EditProduct() {
                                     </option>
                                 </select>
 
-                            </div>
+                            </div> */}
 
                         </div>
                     </div>
@@ -530,7 +577,7 @@ export default function EditProduct() {
 
 
                             {/* PREVIOUS PRICE */}
-                            <div>
+                            {/* <div>
 
                                 <label className="mb-2 block text-sm font-medium text-gray-700">
                                     Previous Price
@@ -567,7 +614,7 @@ export default function EditProduct() {
 
                                 </div>
 
-                            </div>
+                            </div> */}
 
 
                             {/* STOCK */}
@@ -603,19 +650,19 @@ export default function EditProduct() {
                             </div>
 
 
-                            {/* SKU */}
+                            {/* SLUG */}
                             <div>
 
                                 <label className="mb-2 block text-sm font-medium text-gray-700">
-                                    SKU
+                                    SLUG
                                 </label>
 
                                 <input
                                     type="text"
-                                    name="sku"
-                                    value={formData.sku}
+                                    name="slug"
+                                    value={formData.slug}
                                     onChange={handleChange}
-                                    placeholder="Product SKU"
+                                    placeholder="Product SLUG"
                                     className="
                                         w-full
                                         rounded-lg
@@ -806,9 +853,8 @@ export default function EditProduct() {
                         <div className="space-y-3">
 
                             {[
-                                'Active',
-                                'Draft',
-                                'Inactive'
+                                'active',
+                                'draft'
                             ].map((status) => (
 
                                 <label
@@ -847,9 +893,9 @@ export default function EditProduct() {
                                         </p>
 
                                         <p className="text-xs text-gray-400">
-                                            {status === 'Active'
+                                            {status === 'active'
                                                 ? 'Visible to customers'
-                                                : status === 'Draft'
+                                                : status === 'draft'
                                                     ? 'Not visible to customers'
                                                     : 'Temporarily unavailable'}
                                         </p>
@@ -964,7 +1010,7 @@ export default function EditProduct() {
                             text-xs
                             text-gray-500
                         ">
-                            {id}
+                            {slug}
                         </p>
 
                     </div>

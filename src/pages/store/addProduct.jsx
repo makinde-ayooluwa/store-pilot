@@ -101,9 +101,16 @@ export default function SellerAddProduct() {
                 text: result.message,
                 icon: "success"
             })
-keys.forEach((key)=>{
-    setFormData({...formData, [key]: ""})
-})
+            // 1. Copy current form state
+            const updatedForm = { ...formData };
+
+            // 2. Clear the specific keys in the loop
+            keys.forEach((key) => {
+                updatedForm[key] = "";
+            });
+
+            // 3. Update state ONCE
+            setFormData(updatedForm);
         } catch (error) {
             console.error(
                 "ADD PRODUCT ERROR:",

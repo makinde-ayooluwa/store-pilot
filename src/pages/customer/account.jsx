@@ -62,8 +62,8 @@ export default function Account() {
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                Swal.fire("Logged out!", "", "success");
                 logout();
+                Swal.fire("Logged out!", "", "success");
                 navigate('/login');
             }
             else if (result.isDenied) Swal.fire("Logout cancelled", "", "info");

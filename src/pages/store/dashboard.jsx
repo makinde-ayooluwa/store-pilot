@@ -21,6 +21,7 @@ import {
 } from "recharts"
 import { useSocket } from '../../contexts/socketProvider'
 import StoreOnly from '../../components/storeOnly'
+import { useStore } from '../../contexts/storeProvider'
 export default function SellerDashboard() {
     const salesData = [
         { day: "Mon", sales: 85000 },
@@ -31,32 +32,33 @@ export default function SellerDashboard() {
         { day: "Sat", sales: 250000 },
         { day: "Sun", sales: 175000 }
     ]
+    const {products} = useStore();
     const stats = [
         {
             title: "Total Sales",
             value: "₦1,245,000",
-            change: "+12.5%",
+            // change: "+12.5%",
             positive: true,
             icon: <MdTrendingUp size={22} />
         },
         {
             title: "Total Orders",
             value: "248",
-            change: "+8.2%",
+            // change: "+8.2%",
             positive: true,
             icon: <MdShoppingCart size={22} />
         },
         {
             title: "Products",
-            value: "126",
-            change: "+6 this month",
+            value: products.length,
+            // change: "+6 this month",
             positive: true,
             icon: <MdInventory size={22} />
         },
         {
             title: "Customers",
             value: "384",
-            change: "+15.4%",
+            // change: "+15.4%",
             positive: true,
             icon: <MdPeople size={22} />
         }

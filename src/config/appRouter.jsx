@@ -115,7 +115,7 @@ export default function AppRouter() {
                             element={<EditProduct />}
                         />
                         <Route
-                            path=":id"
+                            path=":slug"
                             element={<SellerProductDetails />}
                         />
                     </Route>

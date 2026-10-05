@@ -42,34 +42,34 @@ export const StoreProvider = ({ children }) => {
 
     // 2. Fetch products whenever storeData changes and contains an _id
     const checkProducts = useCallback(async () => {
-    if (!storeData?._id) return;
+        if (!storeData?._id) return;
 
-    try {
-        const response = await axios.post(`${backendUrl}/store/getProducts`, { id: storeData._id });
-        console.log("RAW BACKEND RESPONSE:", response.data);
+        try {
+            const response = await axios.post(`${backendUrl}/store/getProducts`, { id: storeData._id });
+            console.log("RAW BACKEND RESPONSE:", response.data);
 
-        // 1. Safely extract the data payload regardless of key naming
-        const payload = response.data?.data || response.data?.products || response.data;
+            // 1. Safely extract the data payload regardless of key naming
+            const payload = response.data?.data || response.data?.products || response.data;
 
-        // 2. Ensure we are strictly working with an Array
-        const rawProducts = Array.isArray(payload) ? payload : [];
+            // 2. Ensure we are strictly working with an Array
+            const rawProducts = Array.isArray(payload) ? payload : [];
 
-        // 3. Format image URLs safely
-        const updatedProducts = rawProducts.map((prod) => ({
-            ...prod,
-            image: prod.image ? `${backendUrl}/${prod.image}` : prod.image,
-            images: Array.isArray(prod.images)
-                ? prod.images.map((img) => `${backendUrl}/${img}`)
-                : prod.images
-        }));
+            // 3. Format image URLs safely
+            const updatedProducts = rawProducts.map((prod) => ({
+                ...prod,
+                image: prod.image ? `${backendUrl}/${prod.image}` : prod.image,
+                images: Array.isArray(prod.images)
+                    ? prod.images.map((img) => `${backendUrl}/${img}`)
+                    : prod.images
+            }));
 
-        setStoreProducts(updatedProducts);
-        console.log("INSIDE DATA OBJECT:", response.data.data);
-        console.log("UPDATED STORE PRODUCTS", updatedProducts)
-    } catch (error) {
-        console.error("CHECK PRODUCTS ERROR:", error);
-    }
-}, [storeData]);
+            setStoreProducts(updatedProducts);
+            console.log("INSIDE DATA OBJECT:", response.data.data);
+            console.log("UPDATED STORE PRODUCTS", updatedProducts)
+        } catch (error) {
+            console.error("CHECK PRODUCTS ERROR:", error);
+        }
+    }, [storeData]);
 
     // Initial store verification on mount
     useEffect(() => {
@@ -123,7 +123,7 @@ export const StoreProvider = ({ children }) => {
         try {
             const response = await axios.post(`${backendUrl}/products/add`, data);
             console.log("PRODUCT RESPONSE:", response.data);
-            
+
             // Refresh product list after adding a new item
             await checkProducts();
 
@@ -137,7 +137,37 @@ export const StoreProvider = ({ children }) => {
             };
         }
     };
+    const editProduct = async (data) => {
+        try {
+            const response = await axios.post(`${backendUrl}/products/edit`, data);
+            console.log("PRODUCT EDIT RESPONSE:", response.data);
 
+            // Refresh product list after editing a new item
+            await checkProducts();
+
+            return response.data;
+        } catch (error) {
+            console.error("EDIT PRODUCT ERROR:", error.response?.data || error);
+
+            return {
+                status: false,
+                message: error.response?.data?.message || "Failed to edit product"
+            };
+        }
+    }
+
+    const deleteProduct = async(id)=>{
+        try {
+            const response = await axios.post(`${backendUrl}/products/delete`, {id})
+            const result = response.data;
+            // Refresh product list after editing a new item
+            await checkProducts();
+
+            return result;
+        } catch (error) {
+            
+        }
+    }
     return (
         <StoreContext.Provider
             value={{
@@ -149,7 +179,9 @@ export const StoreProvider = ({ children }) => {
                 loading,
                 checkStore,
                 checkProducts,
-                addProduct
+                addProduct,
+                editProduct,
+                 deleteProduct
             }}
         >
             {children}

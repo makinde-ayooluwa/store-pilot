@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
     MdArrowBack,
     MdEdit,
@@ -17,11 +17,11 @@ import { useStore } from '../../contexts/storeProvider'
 import StoreOnly from '../../components/storeOnly'
 
 export default function SellerProductDetails() {
-    const { id } = useParams()
+    const { slug } = useParams()
     const { products } = useStore()
 
     const product = products.find(
-        (item) => item.id === id
+        (item) => item.slug === slug
     )
 
     // -----------------------------
@@ -83,16 +83,16 @@ export default function SellerProductDetails() {
         : product.image
             ? [product.image]
             : []
-
+const [defaultImage, setDefaultImage] = useState(images[0])
     const stock = Number(product.stock ?? 0)
     const price = Number(product.price ?? 0)
-    const oldPrice = Number(product.oldPrice ?? 0)
+    // const oldPrice = Number(product.oldPrice ?? 0)
 
     const status =
         product.status ??
         (stock === 0
             ? 'Out of stock'
-            : stock <= 5
+            : stock <= product.lowStockThreshold
                 ? 'Low stock'
                 : 'Active')
 
@@ -104,6 +104,9 @@ export default function SellerProductDetails() {
         if (status === 'Low stock') {
             return 'bg-yellow-50 text-yellow-700 border-yellow-100'
         }
+        if (status === 'draft') {
+            return 'bg-red-50 text-red-700 border-red-100'
+        }
 
         return 'bg-green-50 text-green-700 border-green-100'
     }
@@ -113,7 +116,7 @@ export default function SellerProductDetails() {
             return 'text-red-600'
         }
 
-        if (stock <= 5) {
+        if (stock <= product.lowStockThreshold) {
             return 'text-yellow-600'
         }
 
@@ -270,7 +273,7 @@ export default function SellerProductDetails() {
                                         ">
                                             {images.length > 0 ? (
                                                 <img
-                                                    src={images[0]}
+                                                    src={defaultImage}
                                                     alt={product.name}
                                                     className="w-full h-full object-cover"
                                                 />
@@ -295,16 +298,16 @@ export default function SellerProductDetails() {
 
                                                 {images.map((image, index) => (
                                                     <div
+                                                    onClick={()=>setDefaultImage(image)}
                                                         key={index}
-                                                        className="
+                                                        className={`
                                                             w-16
                                                             h-16
                                                             shrink-0
                                                             rounded-lg
                                                             overflow-hidden
-                                                            border
-                                                            border-gray-200
-                                                        "
+                                                            ${defaultImage == image ? "border-2 border-blue-700" : "border border-gray-200"}
+                                                        `}
                                                     >
                                                         <img
                                                             src={image}
@@ -344,12 +347,12 @@ export default function SellerProductDetails() {
                                             <div className="flex items-center gap-3">
 
                                                 <span className="text-2xl font-bold text-green-600">
-                                                    ₦{price.toLocaleString()}
+                                                    ₦{product.discount > 0 ? (product.discount / 100) * price.toLocaleString() : price.toLocaleString()}
                                                 </span>
 
-                                                {oldPrice > price && (
+                                                {product.discount > 0 && (
                                                     <span className="text-sm text-gray-400 line-through">
-                                                        ₦{oldPrice.toLocaleString()}
+                                                        ₦{price.toLocaleString()}
                                                     </span>
                                                 )}
 
@@ -374,7 +377,7 @@ export default function SellerProductDetails() {
                                                         Category
                                                     </p>
 
-                                                    <p className="text-sm font-medium text-gray-800">
+                                                    <p className="text-sm font-medium capitalize text-gray-800">
                                                         {product.category || 'Uncategorized'}
                                                     </p>
                                                 </div>
@@ -391,11 +394,11 @@ export default function SellerProductDetails() {
 
                                                 <div>
                                                     <p className="text-xs text-gray-400">
-                                                        SKU
+                                                        SLUG
                                                     </p>
 
                                                     <p className="text-sm font-medium text-gray-800">
-                                                        {product.sku || 'Not set'}
+                                                        {product.slug || 'Not set'}
                                                     </p>
                                                 </div>
                                             </div>
@@ -415,7 +418,7 @@ export default function SellerProductDetails() {
                                                     </p>
 
                                                     <p className="text-sm font-medium text-gray-800">
-                                                        {product.id}
+                                                        {product._id}
                                                     </p>
                                                 </div>
                                             </div>
@@ -634,7 +637,7 @@ export default function SellerProductDetails() {
                                 <p className="text-xs text-gray-400 mt-3">
                                     {stock === 0
                                         ? 'This product is currently out of stock.'
-                                        : stock <= 5
+                                        : stock <= product.lowStockThreshold
                                             ? 'Stock is running low. Consider restocking soon.'
                                             : 'Stock level is currently healthy.'}
                                 </p>
@@ -648,11 +651,11 @@ export default function SellerProductDetails() {
                         <div className="bg-gray-900 rounded-2xl p-5 text-white">
 
                             <p className="text-xs text-gray-400">
-                                Product ID
+                                Product SLUG
                             </p>
 
                             <p className="text-sm font-semibold mt-2 break-all">
-                                {product.id}
+                                {product.slug}
                             </p>
 
                         </div>

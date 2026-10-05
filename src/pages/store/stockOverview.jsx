@@ -46,7 +46,7 @@ export default function SellerStockOverview() {
     const filteredProducts = products.filter(product => {
         const searchMatch =
             product.name.toLowerCase().includes(search.toLowerCase()) ||
-            product.sku.toLowerCase().includes(search.toLowerCase()) ||
+            product.slug.toLowerCase().includes(search.toLowerCase()) ||
             product.category.toLowerCase().includes(search.toLowerCase())
 
         const filterMatch =
@@ -412,7 +412,7 @@ export default function SellerStockOverview() {
                                                 </p>
 
                                                 <p className="mt-0.5 text-[10px] text-slate-400">
-                                                    SKU: {product.sku}
+                                                    SLUG: {product.slug}
                                                 </p>
 
                                             </div>
