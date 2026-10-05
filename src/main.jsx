@@ -12,22 +12,22 @@ import { SocketProvider } from './contexts/socketProvider.jsx'
 import { UtilityProvider } from './contexts/utilityProvider.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <UtilityProvider>
-      <SocketProvider>
-        <UserProvider>
-          <StoreProvider>
-            <WishlistProvider>
-              <ResourceProvider>
-                <CartProvider>
-                  <OrderProvider>
-                    <App />
-                  </OrderProvider>
-                </CartProvider>
-              </ResourceProvider>
-            </WishlistProvider>
-          </StoreProvider>
-        </UserProvider>
-      </SocketProvider>
-    </UtilityProvider>
+    {/* <UtilityProvider> */}
+    <SocketProvider>
+      <UserProvider>
+        <StoreProvider>
+          <WishlistProvider>
+            <ResourceProvider>
+              <CartProvider>
+                <OrderProvider>
+                  <App />
+                </OrderProvider>
+              </CartProvider>
+            </ResourceProvider>
+          </WishlistProvider>
+        </StoreProvider>
+      </UserProvider>
+    </SocketProvider>
+    {/* </UtilityProvider> */}
   </StrictMode>,
 )

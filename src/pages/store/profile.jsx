@@ -779,7 +779,7 @@ const {countries} = useUtility();
                                 
                             />
 
-                            <select className="
+                            {/* <select className="
                     w-full
                     px-4
                     py-3
@@ -800,7 +800,7 @@ const {countries} = useUtility();
             {country.name}
         </option>
     ))}
-                            </select>
+                            </select> */}
 
                         </div>
                     </div>
