@@ -939,11 +939,13 @@ export default function EditProduct() {
                                     />
 
                                 ) : (
-
-                                    <MdImage
-                                        size={50}
-                                        className="text-gray-300"
-                                    />
+                                    <>
+                                        {/* // <MdImage
+                                    //     size={50}
+                                    //     className="text-gray-300"
+                                    // /> */}
+                                        <img src={`${product.image}`} alt="" />
+                                    </>
 
                                 )}
 

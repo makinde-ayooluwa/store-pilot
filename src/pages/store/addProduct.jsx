@@ -106,9 +106,11 @@ export default function SellerAddProduct() {
 
             // 2. Clear the specific keys in the loop
             keys.forEach((key) => {
-                updatedForm[key] = "";
+                if(key !== "status"){
+                    updatedForm[key] = "";
+                }
             });
-
+setImages([]);
             // 3. Update state ONCE
             setFormData(updatedForm);
         } catch (error) {
