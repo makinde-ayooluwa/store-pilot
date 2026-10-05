@@ -11,16 +11,14 @@ import {
 import { Link, useSearchParams } from 'react-router-dom'
 
 import Header from '../components/header'
-import products from '../data/products'
-import stores from '../data/stores'
-import categories from '../data/categories'
+import { useResource } from "../contexts/resourceProvider"
 
 import { useCart } from '../contexts/cartProvider'
 import { useWishlist } from '../contexts/wishlistProvider'
 
 export default function Search() {
     const [searchParams, setSearchParams] = useSearchParams()
-
+    const { products, stores, categories } = useResource()
     const initialQuery = searchParams.get('q') || ''
 
     const [search, setSearch] = useState(initialQuery)

@@ -152,9 +152,9 @@ export default function SellerDashboard() {
                                     {stat.icon}
                                 </div>
 
-                                <span className="text-xs text-gray-400">
+                                {/* <span className="text-xs text-gray-400">
                                     This month
-                                </span>
+                                </span> */}
 
                             </div>
 
