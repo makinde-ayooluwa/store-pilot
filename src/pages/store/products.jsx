@@ -37,7 +37,7 @@ export default function StoreAllProducts() {
     const handleDelete = async (productId, name) => {
 
         Swal.fire({
-            title: `Are you sure you want to delete this product: ${name.bold()}?`,
+            title: `Are you sure you want to delete ${name.bold()}?`,
             showDenyButton: true,
             showCancelButton: true,
             confirmButtonText: "Yes",

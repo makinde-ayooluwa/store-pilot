@@ -17,7 +17,7 @@ import {useStore} from "../../contexts/storeProvider"
 import StoreOnly from '../../components/storeOnly'
 export default function StoreStockOverview() {
     const [search, setSearch] = useState('')
-    const [stockFilter, setStockFilter] = useState('All')
+    const [stockFilter, setStockFilter] = useState('all')
     const [openMenu, setOpenMenu] = useState(null)
 
     const {products} = useStore() 
@@ -30,11 +30,11 @@ export default function StoreStockOverview() {
     )
 
     const lowStock = products.filter(
-        product => product.status === 'Low Stock'
+        product => product.stock <= product.lowStockThreshold
     ).length
 
     const outOfStock = products.filter(
-        product => product.status === 'Out of Stock'
+        product => product.stock < 1
     ).length
 
     const stockValue = products.reduce(
@@ -44,17 +44,28 @@ export default function StoreStockOverview() {
     )
 
     const filteredProducts = products.filter(product => {
-        const searchMatch =
-            product.name.toLowerCase().includes(search.toLowerCase()) ||
-            product.slug.toLowerCase().includes(search.toLowerCase()) ||
-            product.category.toLowerCase().includes(search.toLowerCase())
+    // 1. Search filter: Check if search query matches name, slug, or category
+    const searchMatch = 
+        !search || 
+        product.name?.toLowerCase().includes(search.toLowerCase()) ||
+        product.slug?.toLowerCase().includes(search.toLowerCase()) ||
+        product.category?.toLowerCase().includes(search.toLowerCase());
 
-        const filterMatch =
-            stockFilter === 'All' ||
-            product.status === stockFilter
+    // 2. Stock filter: Return true/false for the current product based on stockFilter
+    let filterMatch = true;
 
-        return searchMatch && filterMatch
-    })
+    if (stockFilter === "in-stock") {
+        filterMatch = product.stock > product.lowStockThreshold;
+    } else if (stockFilter === "low-stock") {
+        // Must have stock, but be at or below the threshold
+        filterMatch = product.stock > 0 && product.stock <= product.lowStockThreshold;
+    } else if (stockFilter === "out-of-stock") {
+        filterMatch = product.stock < 1;
+    }
+
+    // Combine both boolean conditions
+    return searchMatch && filterMatch;
+});
 
     const formatCurrency = value => {
         return `₦${value.toLocaleString('en-NG')}`
@@ -317,19 +328,19 @@ export default function StoreStockOverview() {
                                 }
                                 className="h-10 w-full appearance-none rounded-lg border border-slate-200 bg-white pl-9 pr-8 text-xs text-slate-600 outline-none focus:border-slate-400 sm:w-36"
                             >
-                                <option value="All">
+                                <option value="all">
                                     All Stock
                                 </option>
 
-                                <option value="In Stock">
+                                <option value="in-stock">
                                     In Stock
                                 </option>
 
-                                <option value="Low Stock">
+                                <option value="low-stock">
                                     Low Stock
                                 </option>
 
-                                <option value="Out of Stock">
+                                <option value="out-of-stock">
                                     Out of Stock
                                 </option>
 
@@ -392,7 +403,7 @@ export default function StoreStockOverview() {
                             {filteredProducts.map(product => (
 
                                 <tr
-                                    key={product.id}
+                                    key={product._id}
                                     className="border-b border-slate-100 transition hover:bg-slate-50/60"
                                 >
 

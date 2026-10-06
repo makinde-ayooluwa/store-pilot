@@ -157,17 +157,34 @@ export const StoreProvider = ({ children }) => {
             };
         }
     }
-
-    const deleteProduct = async(id)=>{
+    const updateStore = async (data) => {
         try {
-            const response = await axios.post(`${backendUrl}/products/delete`, {id})
+            const response = await axios.post(
+                `${backendUrl}/store/update`,
+                data
+            );
+            return {
+                status: response.data.status,
+                message: response.data.message
+            }
+        } catch (error) {
+            console.log("STORE UPDATE ERROR", error)
+            return {
+                status: false,
+                message: "Error occured while updating store"
+            }
+        }
+    }
+    const deleteProduct = async (id) => {
+        try {
+            const response = await axios.post(`${backendUrl}/products/delete`, { id })
             const result = response.data;
             // Refresh product list after editing a new item
             await checkProducts();
 
             return result;
         } catch (error) {
-            
+
         }
     }
     return (
@@ -183,7 +200,8 @@ export const StoreProvider = ({ children }) => {
                 checkProducts,
                 addProduct,
                 editProduct,
-                 deleteProduct
+                deleteProduct,
+                updateStore
             }}
         >
             {children}

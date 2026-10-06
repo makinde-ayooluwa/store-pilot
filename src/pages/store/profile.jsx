@@ -19,22 +19,25 @@ import axios from "axios";
 
 import { useStore } from "../../contexts/storeProvider";
 import { backendUrl } from "../../data/constants";
-import { useUtility } from "../../contexts/utilityProvider";
+import Swal from "sweetalert2";
 
-export default function StoreProfile() {
+export default function StoreProfile({ categories }) {
     const {
         storeData,
         loading,
         checkStore,
+        updateStore
     } = useStore();
-const {countries} = useUtility();
+    const countries = [
+
+    ]
     const [editing, setEditing] = useState(false);
     const [saving, setSaving] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
-        // ownerName: "",
-        // ownerEmail: "",
+        ownerName: "",
+        ownerEmail: "",
         phone: "",
         category: "",
         location: "",
@@ -83,6 +86,7 @@ const {countries} = useUtility();
         if (!storeData) return;
 
         setFormData({
+            _id: storeData._id || "",
             name: storeData.name || "",
             ownerName: storeData.ownerName || "",
             ownerEmail: storeData.ownerEmail || "",
@@ -239,17 +243,14 @@ const {countries} = useUtility();
                 data.append("banner", bannerFile);
             }
 
-            const response = await axios.put(
-                `${backendUrl}/store/update`,
-                data
-            );
 
+            const response = await updateStore(data);
             console.log(
                 "UPDATE STORE RESPONSE:",
-                response.data
+                response
             );
 
-            if (response.data.status) {
+            if (response.status) {
                 await checkStore();
 
                 setEditing(false);
@@ -257,15 +258,23 @@ const {countries} = useUtility();
                 setLogoFile(null);
                 setBannerFile(null);
 
-                alert(
-                    response.data.message ||
-                    "Store updated successfully"
-                );
+
+                Swal.fire({
+                    title: "Success",
+                    text: response.message ||
+                        "Store updated successfully",
+                    icon: "success"
+                })
+                console.log(response)
             } else {
-                alert(
-                    response.data.message ||
-                    "Failed to update store"
-                );
+
+                Swal.fire({
+                    title: "Error",
+                    text: response.message ||
+                        "Failed to update store",
+                    icon: "error"
+                })
+                console.log(response)
             }
         } catch (error) {
             console.error(
@@ -278,10 +287,13 @@ const {countries} = useUtility();
                 error.response?.data
             );
 
-            alert(
-                error.response?.data?.message ||
-                "Failed to update store"
-            );
+
+            Swal.fire({
+                title: "Error",
+                text: error.response?.data?.message ||
+                    "Failed to update store",
+                icon: "error"
+            })
         } finally {
             setSaving(false);
         }
@@ -606,13 +618,40 @@ const {countries} = useUtility();
                                 required
                             />
 
-                            <Input
+                            {/* <Input
                                 label="Category"
                                 name="category"
                                 value={formData.category}
                                 onChange={handleChange}
                                 placeholder="e.g. Fashion"
-                            />
+                            /> */}
+                            <label className="
+                block
+                text-sm
+                font-medium
+                text-gray-700
+                mb-2
+            ">
+                                Category
+                            </label>
+                            <select className="
+                    w-full
+                    px-4
+                    py-3
+                    border
+                    border-gray-200
+                    rounded-xl
+                    outline-none
+                    text-sm
+                    focus:border-green-700
+                    focus:ring-2
+                    focus:ring-green-100
+                " name="" value={formData.category}
+                                onChange={handleChange} id="">
+                                {categories.map((category) => (
+                                    <option value={category.slug}>{category.name}</option>
+                                ))}
+                            </select>
 
                             <Input
                                 label="Currency"
@@ -776,7 +815,8 @@ const {countries} = useUtility();
                             <Input
                                 label="Country"
                                 name="country"
-                                
+                                value={formData.country}
+                                onChange={handleChange}
                             />
 
                             {/* <select className="
@@ -1429,10 +1469,9 @@ function StatusBadge({
                 rounded-lg
                 text-xs
                 font-medium
-                ${
-                    active
-                        ? "bg-green-50 text-green-700"
-                        : "bg-gray-100 text-gray-500"
+                ${active
+                    ? "bg-green-50 text-green-700"
+                    : "bg-gray-100 text-gray-500"
                 }
             `}
         >
@@ -1442,10 +1481,9 @@ function StatusBadge({
                     w-2
                     h-2
                     rounded-full
-                    ${
-                        active
-                            ? "bg-green-500"
-                            : "bg-gray-400"
+                    ${active
+                        ? "bg-green-500"
+                        : "bg-gray-400"
                     }
                 `}
             />
