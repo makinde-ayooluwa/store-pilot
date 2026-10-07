@@ -413,19 +413,18 @@ export default function StoreStockOverview() {
 
                                             <div className="flex items-center gap-3">
 
+
                                                 {product.image ? (
-    <img
-        src={product.image}
-        alt={product.name}
-        className="h-10 w-10 shrink-0 rounded-lg object-cover"
-    />
-) : (
-    <img
-        src={productPlaceholder}
-        alt="No product image"
-        className="h-10 w-10 shrink-0 rounded-lg object-cover"
-    />
-)}
+                                                    <img
+                                                        src={product.image}
+                                                        alt={product.name}
+                                                        className="h-10 w-10 shrink-0 rounded-lg object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
+                                                        <MdInventory2 size={19} />
+                                                    </div>
+                                                )}
 
                                                 <div>
 
@@ -475,10 +474,10 @@ export default function StoreStockOverview() {
 
                                                     <div
                                                         className={`h-full rounded-full ${product.stock < 1
-                                                                ? 'w-0 bg-red-500'
-                                                                : product.stock < product.lowStockThreshold
-                                                                    ? 'bg-orange-400'
-                                                                    : 'bg-emerald-500'
+                                                            ? 'w-0 bg-red-500'
+                                                            : product.stock < product.lowStockThreshold
+                                                                ? 'bg-orange-400'
+                                                                : 'bg-emerald-500'
                                                             }`}
                                                         style={{
                                                             width:
@@ -539,19 +538,19 @@ export default function StoreStockOverview() {
 
                                             <span
                                                 className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold ${product.status === 'In Stock'
-                                                        ? 'bg-emerald-50 text-emerald-600'
-                                                        : product.status === 'Low Stock'
-                                                            ? 'bg-orange-50 text-orange-600'
-                                                            : 'bg-red-50 text-red-500'
+                                                    ? 'bg-emerald-50 text-emerald-600'
+                                                    : product.status === 'Low Stock'
+                                                        ? 'bg-orange-50 text-orange-600'
+                                                        : 'bg-red-50 text-red-500'
                                                     }`}
                                             >
 
                                                 <span
                                                     className={`h-1.5 w-1.5 rounded-full ${product.status === 'In Stock'
-                                                            ? 'bg-emerald-500'
-                                                            : product.status === 'Low Stock'
-                                                                ? 'bg-orange-500'
-                                                                : 'bg-red-500'
+                                                        ? 'bg-emerald-500'
+                                                        : product.status === 'Low Stock'
+                                                            ? 'bg-orange-500'
+                                                            : 'bg-red-500'
                                                         }`}
                                                 />
 
