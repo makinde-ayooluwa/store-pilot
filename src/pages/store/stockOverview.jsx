@@ -16,6 +16,7 @@ import {
 } from 'react-icons/md'
 import { useStore } from "../../contexts/storeProvider"
 import StoreOnly from '../../components/storeOnly'
+import { Link } from 'react-router-dom'
 export default function StoreStockOverview() {
     const [search, setSearch] = useState('')
     const [stockFilter, setStockFilter] = useState('all')
@@ -89,12 +90,12 @@ export default function StoreStockOverview() {
                         </p>
                     </div>
 
-                    <button
+                    {/* <button
                         className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 lg:w-auto"
                     >
                         <MdAdd size={20} />
                         Add Stock
-                    </button>
+                    </button> */}
 
                 </div>
 
@@ -537,19 +538,15 @@ export default function StoreStockOverview() {
                                         <td className="px-5 py-4">
 
                                             <span
-                                                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold ${product.status === 'In Stock'
+                                                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold ${product.status == "active"
                                                     ? 'bg-emerald-50 text-emerald-600'
-                                                    : product.status === 'Low Stock'
-                                                        ? 'bg-orange-50 text-orange-600'
                                                         : 'bg-red-50 text-red-500'
                                                     }`}
                                             >
 
                                                 <span
-                                                    className={`h-1.5 w-1.5 rounded-full ${product.status === 'In Stock'
+                                                    className={`h-1.5 w-1.5 rounded-full ${product.status == "active"
                                                         ? 'bg-emerald-500'
-                                                        : product.status === 'Low Stock'
-                                                            ? 'bg-orange-500'
                                                             : 'bg-red-500'
                                                         }`}
                                                 />
@@ -569,9 +566,9 @@ export default function StoreStockOverview() {
                                                 <button
                                                     onClick={() =>
                                                         setOpenMenu(
-                                                            openMenu === product.id
+                                                            openMenu === product._id
                                                                 ? null
-                                                                : product.id
+                                                                : product._id
                                                         )
                                                     }
                                                     className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700"
@@ -579,17 +576,17 @@ export default function StoreStockOverview() {
                                                     <MdMoreVert size={19} />
                                                 </button>
 
-                                                {openMenu === product.id && (
+                                                {openMenu === product._id && (
 
-                                                    <div className="absolute right-0 top-10 z-30 w-36 rounded-lg border border-slate-200 bg-white p-1.5 shadow-lg">
+                                                    <div className="absolute right-0 top-10 z-30 w-36 rounded-lg border border-slate-200 bg-white p-1.5 shadow-lg z-30">
 
-                                                        <button className="w-full rounded-md px-3 py-2 text-left text-xs text-slate-600 hover:bg-slate-50">
+                                                        {/* <Link to={"/store/inventory/edit"} className="w-full rounded-md px-3 py-2 text-left text-xs text-slate-600 hover:bg-slate-50">
                                                             Update Stock
-                                                        </button>
+                                                        </Link> */}
 
-                                                        <button className="w-full rounded-md px-3 py-2 text-left text-xs text-slate-600 hover:bg-slate-50">
+                                                        <Link to={`/store/products/${product.slug}`} className="w-full rounded-md px-3 py-2 text-left text-xs text-slate-600 hover:bg-slate-50">
                                                             View Product
-                                                        </button>
+                                                        </Link>
 
                                                     </div>
 

@@ -41,7 +41,7 @@ export default function EditProduct() {
             category: product.category ?? '',
             price: product.price ?? '',
             discount: product.discount ?? 0,
-            stock: product.stock ?? '',
+            lowStockThreshold: product.lowStockThreshold ?? '',
             slug: product.slug ?? '',
             status: product.status ?? 'active'
         }
@@ -124,7 +124,7 @@ export default function EditProduct() {
             data.append("name", formData.name);
             data.append("description", formData.description);
             data.append("price", formData.price);
-            data.append("stock", formData.stock);
+            data.append("lowStockThreshold", formData.lowStockThreshold);
             data.append("slug", formData.slug);
             data.append("status", formData.status);
             previewImages.forEach((image) => {
@@ -527,7 +527,7 @@ export default function EditProduct() {
                             </h2>
 
                             <p className="mt-1 text-sm text-gray-500">
-                                Manage product pricing and stock
+                                Manage product pricing and low stock alert
                             </p>
 
                         </div>
@@ -621,13 +621,13 @@ export default function EditProduct() {
                             <div>
 
                                 <label className="mb-2 block text-sm font-medium text-gray-700">
-                                    Stock Quantity
+                                    Low Stock Threshold
                                 </label>
 
                                 <input
                                     type="number"
-                                    name="stock"
-                                    value={formData.stock}
+                                    name="lowStockThreshold"
+                                    value={formData.lowStockThreshold}
                                     onChange={handleChange}
                                     min="0"
                                     className="
