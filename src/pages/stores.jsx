@@ -11,10 +11,12 @@ import {
 import { Link } from 'react-router-dom'
 
 import Header from '../components/header'
-import stores from '../data/stores'
+// import stores from '../data/stores'
 import categories from '../data/categories'
+import { useResource } from '../contexts/resourceProvider'
 
 export default function Stores() {
+    const {stores} = useResource()
     const [mobileMenu, setMobileMenu] = useState(false)
     const [search, setSearch] = useState('')
     const [category, setCategory] = useState('all')
@@ -39,7 +41,10 @@ export default function Stores() {
                         .includes(searchValue) ||
                     store.location
                         .toLowerCase()
-                        .includes(searchValue)
+                        .includes(searchValue)||
+                    store.slug
+                        .toLowerCase()
+                        .includes(searchValue) 
             )
         }
 
@@ -168,7 +173,7 @@ export default function Stores() {
                                         <div className="relative h-32 overflow-hidden bg-slate-100">
                                             <img
                                                 src={
-                                                    store.cover
+                                                    store.banner
                                                 }
                                                 alt={
                                                     store.name
@@ -357,7 +362,7 @@ export default function Stores() {
                                                 <div className="relative h-40 overflow-hidden bg-slate-100">
                                                     <img
                                                         src={
-                                                            store.cover
+                                                            store.banner
                                                         }
                                                         alt={
                                                             store.name

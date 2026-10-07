@@ -14,15 +14,14 @@ import { Link, useParams } from 'react-router-dom'
 
 import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
-import { getStoreBySlug } from '../data/stores'
-import { getProductsByCategory } from '../data/products'
-import products from '../data/products'
+import { useResource } from '../contexts/resourceProvider'
+
 
 export default function StoreDetails() {
     const { slug } = useParams()
-
+    const { products, getStoreBySlug } = useResource()
     const store = getStoreBySlug(slug)
-
+    console.log("SINGLE STORE DATA", store)
     const {
         addToCart,
         cartCount
@@ -142,8 +141,8 @@ export default function StoreDetails() {
         setFavorites((current) =>
             current.includes(productId)
                 ? current.filter(
-                      (id) => id !== productId
-                  )
+                    (id) => id !== productId
+                )
                 : [...current, productId]
         )
     }
@@ -201,7 +200,7 @@ export default function StoreDetails() {
                         {/* Cover */}
                         <div className="relative h-52 overflow-hidden rounded-b-3xl bg-slate-100 sm:h-64">
                             <img
-                                src={store.cover}
+                                src={store.banner}
                                 alt={store.name}
                                 className="h-full w-full object-cover"
                             />
@@ -505,12 +504,11 @@ export default function StoreDetails() {
                                                                 product
                                                             )
                                                         }
-                                                        className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${
-                                                            addedProduct ===
+                                                        className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${addedProduct ===
                                                             product.id
-                                                                ? 'bg-green-600 text-white'
-                                                                : 'bg-slate-900 text-white hover:bg-slate-700'
-                                                        }`}
+                                                            ? 'bg-green-600 text-white'
+                                                            : 'bg-slate-900 text-white hover:bg-slate-700'
+                                                            }`}
                                                     >
                                                         <MdShoppingCart
                                                             size={

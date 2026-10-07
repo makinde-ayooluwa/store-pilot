@@ -192,9 +192,7 @@ const stores = [
 
 export default stores
 
-export const getStoreBySlug = (slug) => {
-    return stores.find((store) => store.slug === slug)
-}
+
 
 export const getStoreById = (id) => {
     return stores.find((store) => store.id === id)

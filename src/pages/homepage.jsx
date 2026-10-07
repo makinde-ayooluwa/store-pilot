@@ -15,7 +15,7 @@ import { useUser } from '../contexts/userProvider'
 export default function Homepage({ products = [], categories = [], stores = [] }) {
     const [mobileMenu, setMobileMenu] = useState(false)
     const [search, setSearch] = useState("")
-    
+
     const { isWishlisted, toggleWishlist } = useWishlist()
     const { user } = useUser()
     const navigate = useNavigate()
@@ -27,8 +27,8 @@ export default function Homepage({ products = [], categories = [], stores = [] }
     }
 
     const formatPrice = price => `₦${price?.toLocaleString() || price}`
-    
-    const formatDiscount = (price, discount) => 
+
+    const formatDiscount = (price, discount) =>
         `₦${((discount / 100) * price).toLocaleString()}`
 
     const getStoreName = id => {
@@ -169,9 +169,8 @@ export default function Homepage({ products = [], categories = [], stores = [] }
                                             e.stopPropagation();
                                             toggleWishlist(product);
                                         }}
-                                        className={`absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur hover:text-red-500 ${
-                                            isWishlisted(product._id) ? 'text-red-500' : 'text-gray-400'
-                                        }`}
+                                        className={`absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur hover:text-red-500 ${isWishlisted(product._id) ? 'text-red-500' : 'text-gray-400'
+                                            }`}
                                     >
                                         <MdFavorite size={17} />
                                     </button>
@@ -269,11 +268,17 @@ export default function Homepage({ products = [], categories = [], stores = [] }
                                 className="group overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-slate-300 hover:shadow-md"
                             >
                                 <div className="flex">
-                                    <img
-                                        src={store.image || 'https://via.placeholder.com/150'}
-                                        alt={store.name}
-                                        className="h-28 w-28 shrink-0 object-cover transition group-hover:scale-105"
-                                    />
+                                    {store.logo ? (
+                                        <img
+                                            src={store.logo}
+                                            alt={store.name}
+                                            className="h-28 w-28 shrink-0 object-cover transition group-hover:scale-105"
+                                        />
+                                    ) : (
+                                        <div className="h-28 w-28 shrink-0 bg-green-50 flex items-center justify-center transition group-hover:scale-105">
+                                            <MdStorefront className="text-green-300 text-5xl" />
+                                        </div>
+                                    )}
                                     <div className="flex flex-1 flex-col justify-center p-4">
                                         <p className="text-sm font-bold text-slate-800">{store.name}</p>
                                         <p className="mt-1 text-[10px] text-slate-400">{store.category}</p>

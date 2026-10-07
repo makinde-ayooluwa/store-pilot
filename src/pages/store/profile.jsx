@@ -171,6 +171,7 @@ export default function StoreProfile({ categories }) {
         if (!storeData) return;
 
         setFormData({
+            _id: storeData._id || "",
             name: storeData.name || "",
             ownerName: storeData.ownerName || "",
             ownerEmail: storeData.ownerEmail || "",
@@ -227,7 +228,7 @@ export default function StoreProfile({ categories }) {
 
             const data = new FormData();
 
-            data.append("id", storeData._id);
+            data.append("_id", storeData._id);
 
             Object.entries(formData).forEach(
                 ([key, value]) => {
@@ -236,12 +237,12 @@ export default function StoreProfile({ categories }) {
             );
 
             if (logoFile) {
-                data.append("logo", logoFile);
-            }
+    data.append("images", logoFile);
+}
 
-            if (bannerFile) {
-                data.append("banner", bannerFile);
-            }
+if (bannerFile) {
+    data.append("images", bannerFile);
+}
 
 
             const response = await updateStore(data);

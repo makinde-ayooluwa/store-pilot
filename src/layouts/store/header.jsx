@@ -4,7 +4,7 @@ import {
     MdNotificationsNone,
     MdMenu
 } from 'react-icons/md'
-import { useStore } from '../../contexts/storeProvider'
+import { backendUrl } from '../../data/constants'
 
 export default function StoreHeader({ open, setOpen, storeData }) {
     return (
@@ -64,12 +64,23 @@ export default function StoreHeader({ open, setOpen, storeData }) {
                     {/* Profile */}
                     <div className="flex items-center gap-2 sm:gap-3">
 
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-green-700 flex items-center justify-center shrink-0">
-                            <span className="text-white text-sm font-semibold">
-                                {/* {storeData.ownerName.firstLetter()} */}
-                                {storeData?.name.split("")[0]}
-                            </span>
-                        </div>
+                        {storeData?.logo ? (
+    <img
+        src={
+            storeData.logo.startsWith("http")
+                ? storeData.logo
+                : `${backendUrl}/${storeData.logo}`
+        }
+        alt={storeData?.name || "Store logo"}
+        className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover shrink-0"
+    />
+) : (
+    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-green-700 flex items-center justify-center shrink-0">
+        <span className="text-white text-sm font-semibold uppercase">
+            {storeData?.name?.charAt(0) || "S"}
+        </span>
+    </div>
+)}
 
                         {/* Hide text on mobile */}
                         <div className="hidden sm:block">

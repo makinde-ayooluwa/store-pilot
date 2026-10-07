@@ -408,61 +408,104 @@ export const ResourceProvider = ({ children }) => {
             console.log("ERROR OCCURED WHILE FETCHING CATEGORIES", error);
         }
     }
-const formatImageUrl = (url) => {
-    if (!url) return url;
-    if (url.startsWith("http://") || url.startsWith("https://")) return url; // Already full URL
-    
-    const cleanBase = backendUrl.replace(/\/$/, "");
-    const cleanPath = url.replace(/^\//, "");
-    return `${cleanBase}/${cleanPath}`;
-};
+    const formatImageUrl = (url) => {
+        if (!url) return url;
+        if (url.startsWith("http://") || url.startsWith("https://")) return url; // Already full URL
 
-const checkProducts = async () => {
-    try {
-        const response = await axios.post(`${backendUrl}/products/all`);
-        const result = response.data;
+        const cleanBase = backendUrl.replace(/\/$/, "");
+        const cleanPath = url.replace(/^\//, "");
+        return `${cleanBase}/${cleanPath}`;
+    };
 
-        // Ensure result.data is an array (or wrap a single object in an array)
-        const rawData = Array.isArray(result.data)
-            ? result.data
-            : result.data
-            ? [result.data]
-            : [];
+    const checkProducts = async () => {
+        try {
+            const response = await axios.post(`${backendUrl}/products/all`);
+            const result = response.data;
 
-        // 1. Filter to include ONLY active products
-        const activeProducts = rawData.filter(
-            (product) => product.status === "active" || product.status === true
-        );
+            // Ensure result.data is an array (or wrap a single object in an array)
+            const rawData = Array.isArray(result.data)
+                ? result.data
+                : result.data
+                    ? [result.data]
+                    : [];
 
-        // 2. Format image URLs for the active products
-        const updatedProducts = activeProducts.map((product) => ({
-            ...product,
-            image: product.image ? `${backendUrl}/${product.image}` : product.image,
-            images: Array.isArray(product.images)
-                ? product.images.map((img) => `${backendUrl}/${img}`)
-                : product.images
-        }));
+            // 1. Filter to include ONLY active products
+            const activeProducts = rawData.filter(
+                (product) => product.status === "active" || product.status === true
+            );
 
-        setProducts(updatedProducts);
-    } catch (error) {
-        console.log("ERROR OCCURRED WHILE FETCHING PRODUCTS", error);
-    }
-};
+            // 2. Format image URLs for the active products
+            const updatedProducts = activeProducts.map((product) => ({
+                ...product,
+                image: product.image ? `${backendUrl}/${product.image}` : product.image,
+                images: Array.isArray(product.images)
+                    ? product.images.map((img) => `${backendUrl}/${img}`)
+                    : product.images
+            }));
+
+            setProducts(updatedProducts);
+        } catch (error) {
+            console.log("ERROR OCCURRED WHILE FETCHING PRODUCTS", error);
+        }
+    };
+    const getImageUrl = (image) => {
+        if (image == undefined) return null;
+
+        // // Convert Windows path separators to URL separators
+        // const normalizedImage = image.replace(/\\/g, "/");
+
+        // // Already a full URL
+        // if (
+        //     normalizedImage.startsWith("http://") ||
+        //     normalizedImage.startsWith("https://")
+        // ) {
+        //     return normalizedImage;
+        // }
+
+        return `${backendUrl}/${image}`;
+    };
+
     const checkStores = async () => {
         try {
             const response = await axios.post(`${backendUrl}/store/all`);
+
             const result = response.data;
-            console.log("STORES RESULT", result)
-            setStores(result);
+
+            console.log("STORES RESULT", result);
+
+            const rawStores = Array.isArray(result) ? result : [];
+
+            const updatedStores = rawStores.map((store) => ({
+                ...store,
+
+                logo: getImageUrl(store.logo),
+
+                banner: getImageUrl(store.banner),
+
+                // images: Array.isArray(store.images)
+                //     ? store.images.map(getImageUrl)
+                //     : store.images
+            }));
+
+            console.log("UPDATED STORES", updatedStores);
+
+            setStores(updatedStores);
+
         } catch (error) {
-            console.log("ERROR OCCURED WHILE FETCHING STORES", error);
+            console.error(
+                "ERROR OCCURRED WHILE FETCHING STORES:",
+                error.response?.data || error
+            );
         }
-    }
+    };
     const getProductsByCategory = (categorySlug) => {
         return products.filter(
             (product) => product.category === categorySlug
         )
     }
+    const getStoreBySlug = (slug) => 
+        stores.find((store) => store.slug === slug)
+    
     const getCategoryBySlug = (slug) => {
         try {
             const result = categories.find(
@@ -482,8 +525,9 @@ const checkProducts = async () => {
             return null;
         }
     };
+    
 
-    return <ResourceContext.Provider value={{ products, stores, getProductsByCategory, getCategoryBySlug, categories }}>
+    return <ResourceContext.Provider value={{ products, stores, getProductsByCategory, getCategoryBySlug, getStoreBySlug, categories }}>
         {children}
     </ResourceContext.Provider>
 }
