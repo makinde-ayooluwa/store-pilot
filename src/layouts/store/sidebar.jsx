@@ -264,14 +264,14 @@ export default function StoreSidebar({ open, setOpen }) {
                 title: "Store Profile",
                 link: "/store/profile"
             },
-            {
-                title: "Store Appearance",
-                link: "/store/appearance"
-            },
-            {
-                title: "Store Information",
-                link: "/store/information"
-            }
+            // {
+            //     title: "Store Appearance",
+            //     link: "/store/appearance"
+            // },
+            // {
+            //     title: "Store Information",
+            //     link: "/store/information"
+            // }
         ]
     },
 
