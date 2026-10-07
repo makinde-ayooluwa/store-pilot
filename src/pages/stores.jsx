@@ -11,12 +11,10 @@ import {
 import { Link } from 'react-router-dom'
 
 import Header from '../components/header'
-// import stores from '../data/stores'
-import categories from '../data/categories'
 import { useResource } from '../contexts/resourceProvider'
 
 export default function Stores() {
-    const {stores} = useResource()
+    const {stores, categories} = useResource()
     const [mobileMenu, setMobileMenu] = useState(false)
     const [search, setSearch] = useState('')
     const [category, setCategory] = useState('all')

@@ -40,6 +40,7 @@ import StoreOrderDetails from '../pages/store/orderDetails'
 import ForgotPassword from '../pages/auth/forgotPassword'
 import ResetPassword from '../pages/auth/resetPassword'
 import StoreProfile from '../pages/store/profile'
+import StoreStockSettings from '../pages/store/stockSettings'
 export default function AppRouter() {
     const { products, categories, getProductsByCategory, getCategoryBySlug, stores } = useResource();
     return (
@@ -130,6 +131,7 @@ export default function AppRouter() {
 
                     <Route path='inventory' element={<Outlet />}>
                         <Route index element={<StoreStockOverview />} />
+                        <Route path="edit" element={<StoreStockSettings />} />
                     </Route>
 
                     <Route

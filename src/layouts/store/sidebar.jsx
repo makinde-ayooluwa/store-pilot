@@ -83,10 +83,10 @@ export default function StoreSidebar({ open, setOpen }) {
                 title: "Stock Overview",
                 link: "/store/inventory"
             },
-            // {
-            //     title: "Low Stock",
-            //     link: "/store/inventory/low-stock"
-            // },
+            {
+                title: "Stock Settings",
+                link: "/store/inventory/edit"
+            },
             // {
             //     title: "Stock History",
             //     link: "/store/inventory/history"
