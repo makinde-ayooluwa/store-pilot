@@ -62,10 +62,10 @@ export default function StoreSidebar({ open, setOpen }) {
                 title: "Add Product",
                 link: "/store/products/add"
             },
-            {
-                title: "Categories",
-                link: "/store/products/categories"
-            }
+            // {
+            //     title: "Categories",
+            //     link: "/store/products/categories"
+            // }
         ]
     },
 

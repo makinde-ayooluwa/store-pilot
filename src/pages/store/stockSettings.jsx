@@ -33,7 +33,7 @@ const StoreStockSettings = () => {
                 product.name
                     ?.toLowerCase()
                     .includes(search.toLowerCase()) ||
-                product.sku
+                product.slug
                     ?.toLowerCase()
                     .includes(search.toLowerCase());
 
@@ -179,13 +179,13 @@ const StoreStockSettings = () => {
                                 type="text"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                placeholder="Search product name or SKU..."
+                                placeholder="Search product name or slug..."
                                 className="w-full h-11 pl-10 pr-4 border border-gray-200 rounded-lg outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 text-sm"
                             />
                         </div>
 
                         {/* Category */}
-                        <select
+                        {/* <select
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
                             className="h-11 px-4 border border-gray-200 rounded-lg outline-none focus:border-green-600 text-sm bg-white"
@@ -195,7 +195,7 @@ const StoreStockSettings = () => {
                                     {item === "all" ? "All Categories" : item}
                                 </option>
                             ))}
-                        </select>
+                        </select> */}
 
                     </div>
                 </div>
@@ -310,9 +310,9 @@ const StoreStockSettings = () => {
                                                         {product.name}
                                                     </p>
 
-                                                    {product.sku && (
+                                                    {product.slug && (
                                                         <p className="text-xs text-gray-400">
-                                                            SKU: {product.sku}
+                                                            SLUG: {product.slug}
                                                         </p>
                                                     )}
                                                 </div>
@@ -416,8 +416,8 @@ const StoreStockSettings = () => {
                                                     </p>
 
                                                     <p className="text-xs text-gray-400">
-                                                        {product.sku
-                                                            ? `SKU: ${product.sku}`
+                                                        {product.slug
+                                                            ? `SLUG: ${product.slug}`
                                                             : product.category}
                                                     </p>
                                                 </div>
