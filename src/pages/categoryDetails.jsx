@@ -23,11 +23,11 @@ import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
 import { categoryIcons } from '../data/categoryIcons'
 
-export default function CategoryDetails({products, categories, getCategoryBySlug, getProductsByCategory}) {
+export default function CategoryDetails({ products, categories, getCategoryBySlug, getProductsByCategory, stores }) {
     const { slug } = useParams()
 
     const category = getCategoryBySlug(slug)
-console.log(category)
+    console.log(category)
     const {
         addToCart,
         cartCount
@@ -125,8 +125,8 @@ console.log(category)
         setFavorites((current) =>
             current.includes(productId)
                 ? current.filter(
-                      (id) => id !== productId
-                  )
+                    (id) => id !== productId
+                )
                 : [...current, productId]
         )
     }
@@ -238,13 +238,24 @@ console.log(category)
                     <div className="mx-auto max-w-7xl px-4 py-10">
                         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
                             <div className="flex items-center gap-5">
-                                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-slate-100">
-                                    {CategoryIcon ? <CategoryIcon
-                                        size={34}
-                                        className="text-slate-800"
-                                    /> : <MdCategory size={34}
-                                        className="text-slate-800"
-                                    />}
+                                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-100">
+                                    {category?.image ? (
+                                        <img
+                                            src={category.image}
+                                            alt={category.name || "Category"}
+                                            className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                                        />
+                                    ) : CategoryIcon ? (
+                                        <CategoryIcon
+                                            size={34}
+                                            className="text-slate-800"
+                                        />
+                                    ) : (
+                                        <MdCategory
+                                            size={34}
+                                            className="text-slate-800"
+                                        />
+                                    )}
                                 </div>
 
                                 <div>
@@ -380,14 +391,13 @@ console.log(category)
                                                             1
                                                         )
                                                     }}
-                                                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition ${
-                                                        minRating ===
-                                                        String(
-                                                            rating
-                                                        )
+                                                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition ${minRating ===
+                                                            String(
+                                                                rating
+                                                            )
                                                             ? 'bg-slate-100 text-slate-900'
                                                             : 'text-slate-500 hover:bg-slate-50'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     <span className="flex items-center gap-1">
                                                         {rating}
@@ -406,8 +416,8 @@ console.log(category)
                                                         String(
                                                             rating
                                                         ) && (
-                                                        <MdCheckCircle />
-                                                    )}
+                                                            <MdCheckCircle />
+                                                        )}
                                                 </button>
                                             )
                                         )}
@@ -487,7 +497,7 @@ console.log(category)
                                             return (
                                                 <div
                                                     key={
-                                                        product.id
+                                                        product._id
                                                     }
                                                     className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-lg"
                                                 >
@@ -614,15 +624,14 @@ console.log(category)
                                                                     product.stock <=
                                                                     0
                                                                 }
-                                                                className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${
-                                                                    addedProduct ===
-                                                                    product.id
+                                                                className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${addedProduct ===
+                                                                        product.id
                                                                         ? 'bg-green-600 text-white'
                                                                         : 'bg-slate-900 text-white hover:bg-slate-700'
-                                                                } disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400`}
+                                                                    } disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400`}
                                                             >
                                                                 {addedProduct ===
-                                                                product.id ? (
+                                                                    product.id ? (
                                                                     <MdCheckCircle
                                                                         size={
                                                                             20
@@ -709,12 +718,11 @@ console.log(category)
                                                     page
                                                 )
                                             }
-                                            className={`h-10 w-10 rounded-xl text-sm font-semibold transition ${
-                                                currentPage ===
-                                                page
+                                            className={`h-10 w-10 rounded-xl text-sm font-semibold transition ${currentPage ===
+                                                    page
                                                     ? 'bg-slate-900 text-white'
                                                     : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                                            }`}
+                                                }`}
                                         >
                                             {page}
                                         </button>
