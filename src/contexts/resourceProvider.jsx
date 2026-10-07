@@ -402,12 +402,45 @@ export const ResourceProvider = ({ children }) => {
         try {
             const response = await axios.post(`${backendUrl}/categories/all`);
             const result = response.data;
-            console.log("CATEGORIES RESULT", result)
-            setCategories(result);
+
+            console.log("CATEGORIES RESULT", result);
+
+            const categories = Array.isArray(result?.data)
+                ? result.data
+                : Array.isArray(result)
+                    ? result
+                    : [];
+
+            const updatedCategories = categories.map((category) => {
+                let image = category.image;
+
+                if (image) {
+                    // Already a full URL
+                    try {
+                        new URL(image);
+                    } catch {
+                        // Local/backend path
+                        image = `${backendUrl}/${image.replace(/\\/g, "/")}`;
+                    }
+                }
+
+                return {
+                    ...category,
+                    image
+                };
+            });
+
+            setCategories(updatedCategories);
+
+            console.log("UPDATED CATEGORIES", updatedCategories);
+
         } catch (error) {
-            console.log("ERROR OCCURED WHILE FETCHING CATEGORIES", error);
+            console.log(
+                "ERROR OCCURED WHILE FETCHING CATEGORIES",
+                error
+            );
         }
-    }
+    };
     const formatImageUrl = (url) => {
         if (!url) return url;
         if (url.startsWith("http://") || url.startsWith("https://")) return url; // Already full URL
@@ -503,9 +536,9 @@ export const ResourceProvider = ({ children }) => {
             (product) => product.category === categorySlug
         )
     }
-    const getStoreBySlug = (slug) => 
+    const getStoreBySlug = (slug) =>
         stores.find((store) => store.slug === slug)
-    
+
     const getCategoryBySlug = (slug) => {
         try {
             const result = categories.find(
@@ -525,7 +558,7 @@ export const ResourceProvider = ({ children }) => {
             return null;
         }
     };
-    
+
 
     return <ResourceContext.Provider value={{ products, stores, getProductsByCategory, getCategoryBySlug, getStoreBySlug, categories }}>
         {children}
