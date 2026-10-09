@@ -13,8 +13,8 @@ export const SocketProvider = ({ children }) => {
 
         ws.current = socket;
 
-        socket.onopen = () => {
-            console.log("WebSocket connected");
+        socket.onopen = (e) => {
+            console.log("WebSocket connected", e);
             setIsConnected(true);
         };
 

@@ -11,14 +11,16 @@ import { Link, useNavigate } from 'react-router-dom'
 import Header from '../components/header'
 import { useWishlist } from '../contexts/wishlistProvider'
 import { useUser } from '../contexts/userProvider'
+import { useSocket } from '../contexts/socketProvider'
 
 export default function Homepage({ products = [], categories = [], stores = [] }) {
     const [mobileMenu, setMobileMenu] = useState(false)
     const [search, setSearch] = useState("")
-
+const {send} = useSocket()
     const { isWishlisted, toggleWishlist } = useWishlist()
     const { user } = useUser()
     const navigate = useNavigate()
+
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -40,7 +42,7 @@ export default function Homepage({ products = [], categories = [], stores = [] }
         <div className="min-h-screen w-full overflow-hidden bg-white text-slate-900">
             {/* Navbar */}
             <Header mobileMenu={mobileMenu} setMobileMenu={setMobileMenu} />
-
+{/* <button onClick={()=>send({})}>Send Message</button> */}
             {/* Hero */}
             <section className="bg-slate-50">
                 <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-2 lg:px-8 lg:py-20">
@@ -93,7 +95,7 @@ export default function Homepage({ products = [], categories = [], stores = [] }
                                 alt="Shopping"
                                 className="h-[300px] w-full rounded-xl object-cover sm:h-[380px]"
                             />
-                            <div className="absolute bottom-7 left-7 right-7 rounded-xl border border-white/50 bg-white/90 p-4 shadow-lg backdrop-blur">
+                            {/* <div className="absolute bottom-7 left-7 right-7 rounded-xl border border-white/50 bg-white/90 p-4 shadow-lg backdrop-blur">
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-[10px] text-slate-400">Featured store</p>
@@ -101,7 +103,7 @@ export default function Homepage({ products = [], categories = [], stores = [] }
                                     </div>
                                     <MdArrowForward size={19} className="text-slate-500" />
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
