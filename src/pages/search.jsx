@@ -181,7 +181,7 @@ export default function Search() {
 
                                 {categories.map((item) => (
                                     <option
-                                        key={item.id}
+                                        key={item._id}
                                         value={item.slug}
                                     >
                                         {item.name}
@@ -298,7 +298,7 @@ export default function Search() {
                                     {filteredStores.slice(0, 6).map(
                                         (store) => (
                                             <Link
-                                                key={store.id}
+                                                key={store._id}
                                                 to={`/stores/${store.slug}`}
                                                 className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-4 hover:shadow-md transition"
                                             >
@@ -376,7 +376,7 @@ export default function Search() {
                                     {filteredProducts.map(
                                         (product) => (
                                             <div
-                                                key={product.id}
+                                                key={product._id}
                                                 className="bg-white rounded-xl border border-gray-100 overflow-hidden group"
                                             >
                                                 {/* Image */}
@@ -401,7 +401,7 @@ export default function Search() {
                                                         aria-label="Toggle wishlist"
                                                     >
                                                         {isWishlisted(
-                                                            product.id
+                                                            product._id
                                                         ) ? (
                                                             <MdFavorite
                                                                 size={20}
@@ -493,7 +493,7 @@ export default function Search() {
                                                         to={`/stores/${product.storeSlug}`}
                                                         className="block text-xs text-gray-500 mt-3 hover:text-green-600"
                                                     >
-                                                        {product.store}
+                                                        {stores.find((x)=>x._id == product.store).name}
                                                     </Link>
                                                 </div>
                                             </div>
