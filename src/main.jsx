@@ -9,7 +9,7 @@ import { ResourceProvider } from "./contexts/resourceProvider.jsx";
 import { WishlistProvider } from "./contexts/wishlistProvider.jsx";
 import { StoreProvider } from "./contexts/storeProvider.jsx";
 import { SocketProvider } from "./contexts/socketProvider.jsx";
-import { UtilityProvider } from "./contexts/utilityProvider.jsx";
+// import { UtilityProvider } from "./contexts/utilityProvider.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     {/* <UtilityProvider> */}
