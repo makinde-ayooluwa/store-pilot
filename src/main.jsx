@@ -13,21 +13,23 @@ import { SocketProvider } from "./contexts/socketProvider.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     {/* <UtilityProvider> */}
-    <SocketProvider>
-      <ResourceProvider>
-        <UserProvider>
-          <StoreProvider>
-            <WishlistProvider>
-              <CartProvider>
-                <OrderProvider>
-                  <App />
-                </OrderProvider>
-              </CartProvider>
-            </WishlistProvider>
-          </StoreProvider>
-        </UserProvider>
-      </ResourceProvider>
-    </SocketProvider>
+    <UserProvider>
+      <SocketProvider>
+        <ResourceProvider>
+          <UserProvider>
+            <StoreProvider>
+              <WishlistProvider>
+                <CartProvider>
+                  <OrderProvider>
+                    <App />
+                  </OrderProvider>
+                </CartProvider>
+              </WishlistProvider>
+            </StoreProvider>
+          </UserProvider>
+        </ResourceProvider>
+      </SocketProvider>
+    </UserProvider>
     {/* </UtilityProvider> */}
   </StrictMode>,
 );

@@ -1,13 +1,13 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { useUser } from "./userProvider";
 
 export const SocketContext = createContext(null);
 
 export const SocketProvider = ({ children }) => {
     const ws = useRef(null);
-
     const [isConnected, setIsConnected] = useState(false);
     const [lastMessage, setLastMessage] = useState(null);
-
+const {user} = useUser();
     useEffect(() => {
         const socket = new WebSocket("ws://localhost:5000");
 
@@ -15,6 +15,9 @@ export const SocketProvider = ({ children }) => {
 
         socket.onopen = (e) => {
             console.log("WebSocket connected", e);
+            socket.send({
+                userId: user ?? ""
+            })
             setIsConnected(true);
         };
 

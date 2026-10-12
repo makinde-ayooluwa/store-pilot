@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { backendUrl } from "../data/constants";
-import { useSocket } from "./socketProvider";
 import axios from "axios";
 import { MdErrorOutline, MdRefresh } from "react-icons/md";
 import Loading from "../components/loading";
@@ -13,7 +12,6 @@ export const UserProvider = ({ children }) => {
     const [data, setData] = useState(null);
     const [userError, setUserError] = useState({});
     const [ownStore, setOwnStore] = useState(false);
-    const { send } = useSocket();
 
     // useCallback prevents unnecessary re-creations of checkUser
     const checkUser = useCallback(async () => {
