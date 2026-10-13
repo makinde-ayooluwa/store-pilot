@@ -15,7 +15,7 @@ export const UserProvider = ({ children }) => {
     const [ownStore, setOwnStore] = useState(false);
     const {sendToSocket} = useSocket();
     useEffect(() => {
-        if (user != null && data._id != "") {
+        if (user != null && data != null && data._id != "") {
             sendToSocket({
                 userId: data._id,
                 type: "join"
