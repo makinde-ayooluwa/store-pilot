@@ -13,8 +13,8 @@ import { SocketProvider } from "./contexts/socketProvider.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     {/* <UtilityProvider> */}
-      <SocketProvider>
-    <UserProvider>
+    <SocketProvider>
+      <UserProvider>
         <ResourceProvider>
           <UserProvider>
             <StoreProvider>
@@ -28,8 +28,8 @@ createRoot(document.getElementById("root")).render(
             </StoreProvider>
           </UserProvider>
         </ResourceProvider>
-    </UserProvider>
-      </SocketProvider>
+      </UserProvider>
+    </SocketProvider>
     {/* </UtilityProvider> */}
   </StrictMode>,
 );
