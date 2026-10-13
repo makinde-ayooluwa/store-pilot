@@ -7,7 +7,6 @@ export const SocketProvider = ({ children }) => {
     const ws = useRef(null);
     const [isConnected, setIsConnected] = useState(false);
     const [lastMessage, setLastMessage] = useState(null);
-const {user} = useUser();
     useEffect(() => {
         const socket = new WebSocket("ws://localhost:5000");
 
@@ -15,9 +14,7 @@ const {user} = useUser();
 
         socket.onopen = (e) => {
             console.log("WebSocket connected", e);
-            socket.send({
-                userId: user ?? ""
-            })
+            
             setIsConnected(true);
         };
 
@@ -41,7 +38,7 @@ const {user} = useUser();
         };
     }, []);
 
-    const send = (message) => {
+    const sendToSocket = (message) => {
         if (!ws.current) {
             console.warn("WebSocket is not initialized");
             return;
@@ -62,7 +59,7 @@ const {user} = useUser();
     return (
         <SocketContext.Provider
             value={{
-                send,
+                sendToSocket,
                 isConnected,
                 lastMessage
             }}

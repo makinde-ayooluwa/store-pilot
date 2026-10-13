@@ -3,6 +3,7 @@ import { backendUrl } from "../data/constants";
 import axios from "axios";
 import { MdErrorOutline, MdRefresh } from "react-icons/md";
 import Loading from "../components/loading";
+import { useSocket } from "./socketProvider";
 
 export const UserContext = createContext();
 
@@ -12,7 +13,15 @@ export const UserProvider = ({ children }) => {
     const [data, setData] = useState(null);
     const [userError, setUserError] = useState({});
     const [ownStore, setOwnStore] = useState(false);
-
+    const {sendToSocket} = useSocket();
+    useEffect(() => {
+        if (user != null && data._id != "") {
+            sendToSocket({
+                userId: data._id,
+                type: "join"
+            })
+        }
+    }, [user, data])
     // useCallback prevents unnecessary re-creations of checkUser
     const checkUser = useCallback(async () => {
         try {
