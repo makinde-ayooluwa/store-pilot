@@ -49,11 +49,7 @@ export const SocketProvider = ({ children }) => {
             return;
         }
 
-        ws.current.send(
-            typeof message === "string"
-                ? message
-                : JSON.stringify(message)
-        );
+        ws.current.send(JSON.stringify(message) ?? message);
     };
 
     return (

@@ -13,15 +13,15 @@ export const UserProvider = ({ children }) => {
     const [data, setData] = useState(null);
     const [userError, setUserError] = useState({});
     const [ownStore, setOwnStore] = useState(false);
-    const {sendToSocket} = useSocket();
+    const { sendToSocket } = useSocket();
     useEffect(() => {
-        if (user != null && data != null && data._id != "") {
+        if (user != null && data != null && data._id !== "") {
             sendToSocket({
                 userId: data._id,
                 type: "join"
-            })
+            });
         }
-    }, [user, data])
+    }, [user, data]); // Add sendToSocket to dependencies if it's defined inside the component scope
     // useCallback prevents unnecessary re-creations of checkUser
     const checkUser = useCallback(async () => {
         try {
