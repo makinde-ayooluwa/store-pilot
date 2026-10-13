@@ -15,7 +15,7 @@ export function CartProvider({ children }) {
             if (result.status) {
                 setCartItems(result.data.items)
                 console.log("CART FETCHING MESSAGE", result.message)
-console.log("CART", result.data.items)
+                console.log("CART", result.data.items)
             } else {
                 setCartItems([]);
                 console.log("CART FETCHING MESSAGE", result.message)
@@ -23,10 +23,10 @@ console.log("CART", result.data.items)
         } catch (error) {
             console.log("Error occured while fetching cart", error)
         }
-    }, [user])
-    useEffect(()=>{
+    }, [user, cartItems])
+    useEffect(() => {
         checkCart();
-    },[checkCart])
+    }, [checkCart])
     const addToCart = (product, quantity = 1) => {
         setCartItems((currentItems) => {
             const existingItem = currentItems.find(
