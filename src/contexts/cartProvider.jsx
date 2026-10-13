@@ -1,10 +1,32 @@
-import React, { createContext, useContext, useMemo, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useUser } from './userProvider'
+import axios from 'axios';
+import { backendUrl } from '../data/constants';
 
 const CartContext = createContext()
 
 export function CartProvider({ children }) {
     const [cartItems, setCartItems] = useState([])
-    
+    const { user, data } = useUser();
+    const checkCart = useCallback(async () => {
+        try {
+            const response = await axios.post(`${backendUrl}/cart/get`, { user: data._id })
+            const result = response.data;
+            if (result.status) {
+                setCartItems(result.data.items)
+                console.log("CART FETCHING MESSAGE", result.message)
+console.log("CART", result.data.items)
+            } else {
+                setCartItems([]);
+                console.log("CART FETCHING MESSAGE", result.message)
+            }
+        } catch (error) {
+            console.log("Error occured while fetching cart", error)
+        }
+    }, [user])
+    useEffect(()=>{
+        checkCart();
+    },[checkCart])
     const addToCart = (product, quantity = 1) => {
         setCartItems((currentItems) => {
             const existingItem = currentItems.find(
@@ -15,9 +37,9 @@ export function CartProvider({ children }) {
                 return currentItems.map((item) =>
                     item.id === product.id
                         ? {
-                              ...item,
-                              quantity: item.quantity + quantity
-                          }
+                            ...item,
+                            quantity: item.quantity + quantity
+                        }
                         : item
                 )
             }
@@ -42,9 +64,9 @@ export function CartProvider({ children }) {
             currentItems.map((item) =>
                 item.id === productId
                     ? {
-                          ...item,
-                          quantity
-                      }
+                        ...item,
+                        quantity
+                    }
                     : item
             )
         )
@@ -61,7 +83,7 @@ export function CartProvider({ children }) {
     }
 
     const cartCount = useMemo(() => {
-        return cartItems.reduce(
+        return cartItems.length > 0 && cartItems.reduce(
             (total, item) => total + item.quantity,
             0
         )

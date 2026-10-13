@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     MdStorefront,
     MdPerson,
@@ -17,7 +17,7 @@ import Swal from 'sweetalert2'
 export default function SellerRegister() {
     const navigate = useNavigate();
     const { user, data } = useUser();
-    const { register } = useStore();
+    const { register, storeData, store } = useStore();
     const [submitting, setSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         storeName: '',
@@ -29,7 +29,9 @@ export default function SellerRegister() {
         description: '',
         slug: ""
     })
-
+    useEffect(() => {
+        if (store != null) navigate("/store");
+    }, [storeData, store])
     const [errors, setErrors] = useState({})
 
     const { categories } = useResource();

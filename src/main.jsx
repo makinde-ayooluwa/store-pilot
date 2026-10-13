@@ -16,7 +16,6 @@ createRoot(document.getElementById("root")).render(
     <SocketProvider>
       <UserProvider>
         <ResourceProvider>
-          <UserProvider>
             <StoreProvider>
               <WishlistProvider>
                 <CartProvider>
@@ -26,7 +25,6 @@ createRoot(document.getElementById("root")).render(
                 </CartProvider>
               </WishlistProvider>
             </StoreProvider>
-          </UserProvider>
         </ResourceProvider>
       </UserProvider>
     </SocketProvider>
