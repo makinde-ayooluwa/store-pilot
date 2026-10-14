@@ -15,17 +15,17 @@ createRoot(document.getElementById("root")).render(
     {/* <UtilityProvider> */}
     <SocketProvider>
       <UserProvider>
-        <ResourceProvider>
+        <CartProvider>
+          <ResourceProvider>
             <StoreProvider>
               <WishlistProvider>
-                <CartProvider>
-                  <OrderProvider>
-                    <App />
-                  </OrderProvider>
-                </CartProvider>
+                <OrderProvider>
+                  <App />
+                </OrderProvider>
               </WishlistProvider>
             </StoreProvider>
-        </ResourceProvider>
+          </ResourceProvider>
+        </CartProvider>
       </UserProvider>
     </SocketProvider>
     {/* </UtilityProvider> */}

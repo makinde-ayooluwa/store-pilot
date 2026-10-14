@@ -11,7 +11,7 @@ import {
     MdStorefront
 } from 'react-icons/md'
 import { Link, useParams } from 'react-router-dom'
-
+import Swal from "sweetalert2"
 import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
 import { useResource } from '../contexts/resourceProvider'
@@ -32,7 +32,7 @@ export default function StoreDetails() {
     const [sort, setSort] = useState('featured')
     const [favorites, setFavorites] = useState([])
     const [addedProduct, setAddedProduct] = useState(null)
-
+    const [adding, setAdding] = useState(null);
     if (!store) {
         return (
             <div className="min-h-screen bg-slate-50">
@@ -147,14 +147,24 @@ export default function StoreDetails() {
         )
     }
 
-    const handleAddToCart = (product) => {
-        addToCart(product)
+    const handleAddToCart = async (product) => {
+        setAdding(product._id)
+        const result = await addToCart(product)
 
-        setAddedProduct(product.id)
-
-        setTimeout(() => {
-            setAddedProduct(null)
-        }, 1500)
+        if (result.status) {
+            setAddedProduct(product._id)
+            setAdding(null)
+            setTimeout(() => {
+                setAddedProduct(null)
+            }, 1500)
+        } else {
+            Swal.fire({
+                title: "Error",
+                text: "Failed to add product to cart",
+                icon: "error"
+            })
+            setAdding(null)
+        }
     }
 
     return (
@@ -283,7 +293,7 @@ export default function StoreDetails() {
                                     <div className="rounded-xl bg-slate-50 px-5 py-3 text-center">
                                         <p className="font-bold text-slate-900">
                                             {
-                                                store.productsCount
+                                                filteredProducts.length ?? 0
                                             }
                                         </p>
 
@@ -390,13 +400,13 @@ export default function StoreDetails() {
                                 (product) => {
                                     const isFavorite =
                                         favorites.includes(
-                                            product.id
+                                            product._id
                                         )
 
                                     return (
                                         <div
                                             key={
-                                                product.id
+                                                product._id
                                             }
                                             className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-lg"
                                         >
@@ -425,7 +435,7 @@ export default function StoreDetails() {
                                                 <button
                                                     onClick={() =>
                                                         toggleFavorite(
-                                                            product.id
+                                                            product._id
                                                         )
                                                     }
                                                     className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow-sm transition hover:scale-105"
@@ -505,7 +515,7 @@ export default function StoreDetails() {
                                                             )
                                                         }
                                                         className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${addedProduct ===
-                                                            product.id
+                                                            product._id
                                                             ? 'bg-green-600 text-white'
                                                             : 'bg-slate-900 text-white hover:bg-slate-700'
                                                             }`}

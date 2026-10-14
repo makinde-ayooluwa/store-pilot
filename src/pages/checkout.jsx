@@ -94,7 +94,7 @@ export default function Checkout() {
             },
 
             items: cartItems.map((item) => ({
-                id: item.id,
+                id: item._id,
                 name: item.name,
                 image: item.image,
                 price: item.price,
@@ -120,7 +120,7 @@ export default function Checkout() {
         setTimeout(() => {
             setPlacingOrder(false)
 
-            navigate(`/orders/${order.id}`)
+            navigate(`/orders/${order._id}`)
         }, 800)
     }
 
@@ -771,7 +771,7 @@ export default function Checkout() {
 
                                         {cartItems.map((item) => (
                                             <div
-                                                key={item.id}
+                                                key={item._id}
                                                 className="flex gap-3"
                                             >
 
@@ -816,7 +816,7 @@ export default function Checkout() {
                                                                 type="button"
                                                                 onClick={() =>
                                                                     updateQuantity(
-                                                                        item.id,
+                                                                        item._id,
                                                                         item.quantity - 1
                                                                     )
                                                                 }
@@ -833,7 +833,7 @@ export default function Checkout() {
                                                                 type="button"
                                                                 onClick={() =>
                                                                     updateQuantity(
-                                                                        item.id,
+                                                                        item._id,
                                                                         item.quantity + 1
                                                                     )
                                                                 }
@@ -857,7 +857,7 @@ export default function Checkout() {
                                                                 type="button"
                                                                 onClick={() =>
                                                                     removeFromCart(
-                                                                        item.id
+                                                                        item._id
                                                                     )
                                                                 }
                                                                 className="text-slate-300 transition hover:text-red-500"

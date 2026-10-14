@@ -69,7 +69,7 @@ export default function AppRouter() {
                 <Route path='/wishlist' element={<Wishlist />} />
                 <Route path="/sell" element={<Sell />} />
                 <Route path="/categories" element={<Categories categories={categories} />} />
-                <Route path="/categories/:slug" element={<CategoryDetails products={products} categories={categories} getCategoryBySlug={getCategoryBySlug} getProductsByCategory={getProductsByCategory} />} />
+                <Route path="/categories/:slug" element={<CategoryDetails products={products} categories={categories} getCategoryBySlug={getCategoryBySlug} getProductsByCategory={getProductsByCategory} stores={stores} />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/orders" element={<Outlet />}>

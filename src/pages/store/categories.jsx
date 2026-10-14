@@ -76,7 +76,7 @@ export default function StoreCategories() {
 
     const handleDelete = (id) => {
         setCategories(prev =>
-            prev.filter(category => category.id !== id)
+            prev.filter(category => category._id !== id)
         )
 
         setOpenMenu(null)
@@ -281,7 +281,7 @@ export default function StoreCategories() {
                                 filteredCategories.map(category => (
 
                                     <tr
-                                        key={category.id}
+                                        key={category._id}
                                         className="border-b border-slate-100 transition hover:bg-slate-50/60"
                                     >
 
@@ -300,7 +300,7 @@ export default function StoreCategories() {
                                                     </p>
 
                                                     <p className="mt-0.5 text-[10px] text-slate-400">
-                                                        ID #{category.id}
+                                                        ID #{category._id}
                                                     </p>
                                                 </div>
 
@@ -370,9 +370,9 @@ export default function StoreCategories() {
                                                 <button
                                                     onClick={() =>
                                                         setOpenMenu(
-                                                            openMenu === category.id
+                                                            openMenu === category._id
                                                                 ? null
-                                                                : category.id
+                                                                : category._id
                                                         )
                                                     }
                                                     className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
@@ -381,7 +381,7 @@ export default function StoreCategories() {
                                                 </button>
 
 
-                                                {openMenu === category.id && (
+                                                {openMenu === category._id && (
 
                                                     <div className="absolute right-0 top-10 z-30 w-32 rounded-lg border border-slate-200 bg-white p-1.5 shadow-lg">
 
@@ -394,7 +394,7 @@ export default function StoreCategories() {
 
                                                         <button
                                                             onClick={() =>
-                                                                handleDelete(category.id)
+                                                                handleDelete(category._id)
                                                             }
                                                             className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs text-red-500 transition hover:bg-red-50"
                                                         >

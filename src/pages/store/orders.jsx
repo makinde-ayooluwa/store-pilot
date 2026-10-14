@@ -39,7 +39,7 @@ export default function StoreOrders() {
 
             const orderNumber =
                 order.orderNumber ||
-                order.id ||
+                order._id ||
                 ''
 
             const matchesSearch =
@@ -292,14 +292,14 @@ export default function StoreOrders() {
                             {filteredOrders.map((order) => (
 
                                 <tr
-                                    key={order.id}
+                                    key={order._id}
                                     className="transition hover:bg-slate-50"
                                 >
 
                                     <td className="px-5 py-4">
 
                                         <p className="text-sm font-bold text-slate-900">
-                                            {order.orderNumber || order.id}
+                                            {order.orderNumber || order._id}
                                         </p>
 
                                         <p className="mt-1 text-xs text-slate-400">
@@ -367,9 +367,9 @@ export default function StoreOrders() {
                                                 type="button"
                                                 onClick={() =>
                                                     setOpenMenu(
-                                                        openMenu === order.id
+                                                        openMenu === order._id
                                                             ? null
-                                                            : order.id
+                                                            : order._id
                                                     )
                                                 }
                                                 className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
@@ -377,11 +377,11 @@ export default function StoreOrders() {
                                                 <MdMoreVert size={21} />
                                             </button>
 
-                                            {openMenu === order.id && (
+                                            {openMenu === order._id && (
                                                 <div className="absolute right-0 top-11 z-50 w-40 rounded-xl border border-slate-200 bg-white p-1 text-left shadow-lg">
 
                                                     <Link
-                                                        to={`/store/orders/${order.id}`}
+                                                        to={`/store/orders/${order._id}`}
                                                         onClick={() =>
                                                             setOpenMenu(null)
                                                         }
@@ -440,7 +440,7 @@ export default function StoreOrders() {
                 {filteredOrders.map((order) => (
 
                     <div
-                        key={order.id}
+                        key={order._id}
                         className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                     >
 
@@ -449,7 +449,7 @@ export default function StoreOrders() {
                             <div>
 
                                 <p className="text-sm font-bold text-slate-900">
-                                    {order.orderNumber || order.id}
+                                    {order.orderNumber || order._id}
                                 </p>
 
                                 <p className="mt-1 text-xs text-slate-400">
@@ -499,7 +499,7 @@ export default function StoreOrders() {
                         </div>
 
                         <Link
-                            to={`/store/orders/${order.id}`}
+                            to={`/store/orders/${order._id}`}
                             className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-xs font-bold text-white transition hover:bg-slate-800"
                         >
                             <MdVisibility size={17} />

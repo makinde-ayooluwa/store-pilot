@@ -119,7 +119,7 @@ export default function Wishlist() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                                 {wishlistItems.map((product) => (
                                     <div
-                                        key={product.id}
+                                        key={product._id}
                                         className="bg-white rounded-xl border border-gray-100 overflow-hidden group"
                                     >
                                         {/* Image */}
@@ -137,7 +137,7 @@ export default function Wishlist() {
                                             <button
                                                 onClick={() =>
                                                     removeFromWishlist(
-                                                        product.id
+                                                        product._id
                                                     )
                                                 }
                                                 className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white shadow flex items-center justify-center text-red-500 hover:bg-red-50 transition"
@@ -223,7 +223,7 @@ export default function Wishlist() {
                                                 <button
                                                     onClick={() =>
                                                         removeFromWishlist(
-                                                            product.id
+                                                            product._id
                                                         )
                                                     }
                                                     className="w-11 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:text-red-500 hover:border-red-200 transition"

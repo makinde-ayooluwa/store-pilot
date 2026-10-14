@@ -28,14 +28,14 @@ export function OrderProvider({ children }) {
 
     const getOrderById = (orderId) => {
         return orders.find(
-            (order) => order.id === orderId
+            (order) => order._id === orderId
         )
     }
 
     const updateOrderStatus = (orderId, status) => {
         setOrders((currentOrders) =>
             currentOrders.map((order) =>
-                order.id === orderId
+                order._id === orderId
                     ? {
                         ...order,
                         status

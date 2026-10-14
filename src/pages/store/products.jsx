@@ -265,7 +265,7 @@ export default function StoreAllProducts() {
 
                             <tbody className="divide-y divide-gray-100 bg-white">
                                 {filteredProducts.map((product) => {
-                                    const productId = product.id || product._id;
+                                    const productId = product._id || product._id;
                                     const status = product.status?.toLowerCase();
                                     const imageUrl = product.image || product.images?.[0];
 
@@ -386,7 +386,7 @@ export default function StoreAllProducts() {
                     {/* MOBILE PRODUCTS */}
                     <div className="md:hidden divide-y divide-gray-100 border border-gray-200 rounded-xl bg-white shadow-sm overflow-hidden">
                         {filteredProducts.map((product) => {
-                            const productId = product.id || product._id;
+                            const productId = product._id || product._id;
                             const status = product.status?.toLowerCase();
                             const imageUrl = product.image || product.images?.[0];
 

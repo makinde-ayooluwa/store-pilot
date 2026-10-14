@@ -378,7 +378,7 @@ const {userLoading} = useUser();
 
                                     {order.items.map((item) => (
                                         <div
-                                            key={item.id}
+                                            key={item._id}
                                             className="flex gap-4 py-4 first:pt-0 last:pb-0"
                                         >
 

@@ -52,7 +52,7 @@ const {userLoading} = useUser()
     const markAsRead = (id) => {
         setNotifications((currentNotifications) =>
             currentNotifications.map((notification) =>
-                notification.id === id
+                notification._id === id
                     ? { ...notification, read: true }
                     : notification
             )
@@ -71,7 +71,7 @@ const {userLoading} = useUser()
     const removeNotification = (id) => {
         setNotifications((currentNotifications) =>
             currentNotifications.filter(
-                (notification) => notification.id !== id
+                (notification) => notification._id !== id
             )
         )
     }
@@ -224,10 +224,10 @@ const {userLoading} = useUser()
 
                                     return (
                                         <div
-                                            key={notification.id}
+                                            key={notification._id}
                                             onClick={() =>
                                                 markAsRead(
-                                                    notification.id
+                                                    notification._id
                                                 )
                                             }
                                             className={`relative p-5 sm:p-6 cursor-pointer transition hover:bg-gray-50 ${index !==
@@ -292,7 +292,7 @@ const {userLoading} = useUser()
                                                     onClick={(e) => {
                                                         e.stopPropagation()
                                                         removeNotification(
-                                                            notification.id
+                                                            notification._id
                                                         )
                                                     }}
                                                     className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition"

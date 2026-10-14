@@ -195,7 +195,7 @@ export default stores
 
 
 export const getStoreById = (id) => {
-    return stores.find((store) => store.id === id)
+    return stores.find((store) => store._id === id)
 }
 
 export const getFeaturedStores = () => {

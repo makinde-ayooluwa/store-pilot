@@ -316,7 +316,7 @@ const products = [
     }
 ]
 export const getProductById = (id) => {
-    return products.find((product) => product.id === id)
+    return products.find((product) => product._id === id)
 }
 
 export const getProductBySlug = (slug) => {

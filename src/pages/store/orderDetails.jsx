@@ -280,7 +280,7 @@ export default function StoreOrderDetails() {
 
         setSaving(true)
 
-        updateOrderStatus(order.id, status)
+        updateOrderStatus(order._id, status)
 
         setTimeout(() => {
             setSaving(false)
@@ -444,7 +444,7 @@ export default function StoreOrderDetails() {
                                             font-bold
                                             text-gray-900
                                         ">
-                                                {order.orderNumber || order.id}
+                                                {order.orderNumber || order._id}
                                             </h2>
 
                                             <p className="
@@ -506,7 +506,7 @@ export default function StoreOrderDetails() {
                                                 return (
                                                     <div
                                                         key={
-                                                            item.id ||
+                                                            item._id ||
                                                             item.productId ||
                                                             index
                                                         }
@@ -1209,7 +1209,7 @@ export default function StoreOrderDetails() {
                                         text-right
                                         break-all
                                     ">
-                                            {order.id}
+                                            {order._id}
                                         </span>
                                     </div>
 

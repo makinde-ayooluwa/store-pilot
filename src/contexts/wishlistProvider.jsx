@@ -19,15 +19,15 @@ export function WishlistProvider({ children }) {
     //     getWishlists();
     // },[])
     const isWishlisted = (productId) => {
-        return wishlistItems.some((item) => item.id === productId)
+        return wishlistItems.some((item) => item._id === productId)
     }
 
     const toggleWishlist = (product) => {
         setWishlistItems((currentItems) => {
-            const exists = currentItems.some((item) => item.id === product.id)
+            const exists = currentItems.some((item) => item._id === product._id)
 
             if (exists) {
-                return currentItems.filter((item) => item.id !== product.id)
+                return currentItems.filter((item) => item._id !== product._id)
             }
 
             return [...currentItems, product]
@@ -36,7 +36,7 @@ export function WishlistProvider({ children }) {
 
     const removeFromWishlist = (productId) => {
         setWishlistItems((currentItems) =>
-            currentItems.filter((item) => item.id !== productId)
+            currentItems.filter((item) => item._id !== productId)
         )
     }
 

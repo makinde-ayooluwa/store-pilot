@@ -164,7 +164,7 @@ export default function Stores() {
                                 .slice(0, 4)
                                 .map((store) => (
                                     <Link
-                                        key={store.id}
+                                        key={store._id}
                                         to={`/stores/${store.slug}`}
                                         className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-lg"
                                     >
@@ -282,7 +282,7 @@ export default function Stores() {
                                         (item) => (
                                             <button
                                                 key={
-                                                    item.id
+                                                    item._id
                                                 }
                                                 onClick={() =>
                                                     setCategory(
@@ -352,7 +352,7 @@ export default function Stores() {
                                         (store) => (
                                             <Link
                                                 key={
-                                                    store.id
+                                                    store._id
                                                 }
                                                 to={`/stores/${store.slug}`}
                                                 className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-lg"

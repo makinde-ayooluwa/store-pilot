@@ -23,7 +23,8 @@ import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
 import { useWishlist } from '../contexts/wishlistProvider'
 import { useResource } from '../contexts/resourceProvider'
-
+import Swal from 'sweetalert2'
+import {ImSpinner2} from "react-icons/im"
 const reviews = [
     {
         id: 1,
@@ -59,7 +60,7 @@ export default function ProductDetails({products}) {
 const {stores} = useResource();
     const { id } = useParams()
     const navigate = useNavigate()
-
+const [adding, setAdding] = useState(false);
     const [mobileMenu, setMobileMenu] = useState(false)
     const [quantity, setQuantity] = useState(1)
     const [selectedImage, setSelectedImage] = useState(0)
@@ -81,7 +82,7 @@ const {stores} = useResource();
         return products
             .filter(
                 item =>
-                    item.id !== product.id &&
+                    item._id !== product._id &&
                     (
                         item.category === product.category ||
                         item.store === product.store
@@ -107,17 +108,26 @@ const {stores} = useResource();
         : 0
 
 
-    const handleAddToCart = () => {
+    const handleAddToCart = async() => {
 
         if (!product) return
+setAdding(true)
+        const result = await addToCart(product, quantity)
 
-        addToCart(product, quantity)
-
-        setAddedToCart(true)
-
+        if(result.status){
+            setAddedToCart(true)
+setAdding(false)
         setTimeout(() => {
             setAddedToCart(false)
         }, 2000)
+        }else{
+            Swal.fire({
+                title: "Error",
+                text: "Failed to add product to cart",
+                icon: "error"
+            })
+            setAdding(false);
+        }
     }
 
 
@@ -251,7 +261,7 @@ const {stores} = useResource();
                                     aria-label="Add to wishlist"
                                 >
 
-                                    {isWishlisted(product.id) ? (
+                                    {isWishlisted(product._id) ? (
                                         <MdFavorite
                                             size={21}
                                             className="text-rose-500"
@@ -428,7 +438,7 @@ const {stores} = useResource();
                                             </div>
 
                                             <p className="mt-0.5 text-xs text-slate-500">
-                                                {store?.products || 0} products
+                                                {products.filter((x)=>x.store == store?._id).length || 0} products
                                                 {' · '}
                                                 {store?.rating || product.rating} rating
                                             </p>
@@ -525,7 +535,12 @@ const {stores} = useResource();
                                             <MdCheckCircle size={20} />
                                             Added to Cart
                                         </>
-                                    ) : (
+                                    ) : adding ? (
+                                        <>
+                                    <ImSpinner2 size={20} className="animate-spin" />
+                                    Adding
+                                    </>)
+                                     : (
                                         <>
                                             <MdShoppingCart size={20} />
                                             Add to Cart
@@ -751,7 +766,7 @@ const {stores} = useResource();
                         {reviews.map(review => (
 
                             <div
-                                key={review.id}
+                                key={review._id}
                                 className="py-5"
                             >
 
@@ -866,7 +881,7 @@ const {stores} = useResource();
                             {relatedProducts.map(item => (
 
                                 <Link
-                                    key={item.id}
+                                    key={item._id}
                                     to={`/products/${item._id}`}
                                     className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-lg"
                                 >

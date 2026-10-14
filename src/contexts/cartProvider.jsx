@@ -27,31 +27,48 @@ export function CartProvider({ children }) {
     useEffect(() => {
         checkCart();
     }, [checkCart])
-    const addToCart = (product, quantity = 1) => {
-        setCartItems((currentItems) => {
-            const existingItem = currentItems.find(
-                (item) => item.id === product.id
-            )
+    const addToCart = async (product, quantity = 1) => {
+        // setCartItems((currentItems) => {
+        //     const existingItem = currentItems.find(
+        //         (item) => item._id === product._id
+        //     )
 
-            if (existingItem) {
-                return currentItems.map((item) =>
-                    item.id === product.id
-                        ? {
-                            ...item,
-                            quantity: item.quantity + quantity
-                        }
-                        : item
-                )
-            }
+        //     if (existingItem) {
+        //         return currentItems.map((item) =>
+        //             item._id === product._id
+        //                 ? {
+        //                     ...item,
+        //                     quantity: item.quantity + quantity
+        //                 }
+        //                 : item
+        //         )
+        //     }
 
-            return [
-                ...currentItems,
-                {
+        //     return [
+        //         ...currentItems,
+        //         {
+        //             ...product,
+        //             quantity
+        //         }
+        //     ]
+        // })
+        try {
+            console.log(product)
+            const response = await axios.post(`${backendUrl}/cart/add`, {
+                user: data._id,
+                item: {
                     ...product,
                     quantity
                 }
-            ]
-        })
+            });
+            const result = response.data;
+            return result;
+        } catch (error) {
+            return {
+                status: false,
+                error
+            }
+        }
     }
 
     const updateQuantity = (productId, quantity) => {
@@ -62,7 +79,7 @@ export function CartProvider({ children }) {
 
         setCartItems((currentItems) =>
             currentItems.map((item) =>
-                item.id === productId
+                item._id === productId
                     ? {
                         ...item,
                         quantity
@@ -74,7 +91,7 @@ export function CartProvider({ children }) {
 
     const removeFromCart = (productId) => {
         setCartItems((currentItems) =>
-            currentItems.filter((item) => item.id !== productId)
+            currentItems.filter((item) => item._id !== productId)
         )
     }
 

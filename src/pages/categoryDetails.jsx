@@ -22,6 +22,8 @@ import {
 import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
 import { categoryIcons } from '../data/categoryIcons'
+import Swal from 'sweetalert2'
+import { ImSpinner2 } from 'react-icons/im'
 
 export default function CategoryDetails({ products, categories, getCategoryBySlug, getProductsByCategory, stores }) {
     const { slug } = useParams()
@@ -32,7 +34,7 @@ export default function CategoryDetails({ products, categories, getCategoryBySlu
         addToCart,
         cartCount
     } = useCart()
-
+    const [adding, setAdding] = useState(null);
     const [mobileMenu, setMobileMenu] = useState(false)
     const [search, setSearch] = useState('')
     const [sort, setSort] = useState('featured')
@@ -131,14 +133,25 @@ export default function CategoryDetails({ products, categories, getCategoryBySlu
         )
     }
 
-    const handleAddToCart = (product) => {
-        addToCart(product)
+    const handleAddToCart = async (product) => {
+        setAdding(product._id)
+        const result = await addToCart(product)
 
-        setAddedProduct(product.id)
+        if (result.status) {
+            setAddedProduct(product._id)
 
-        setTimeout(() => {
-            setAddedProduct(null)
-        }, 1500)
+            setTimeout(() => {
+                setAddedProduct(null)
+            }, 1500)
+            setAdding(null)
+        } else {
+            Swal.fire({
+                text: "Failed to add product to cart",
+                title: "Error",
+                icon: "error"
+            })
+            setAdding(null)
+        }
     }
 
     const handleSearch = (event) => {
@@ -392,11 +405,11 @@ export default function CategoryDetails({ products, categories, getCategoryBySlu
                                                         )
                                                     }}
                                                     className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition ${minRating ===
-                                                            String(
-                                                                rating
-                                                            )
-                                                            ? 'bg-slate-100 text-slate-900'
-                                                            : 'text-slate-500 hover:bg-slate-50'
+                                                        String(
+                                                            rating
+                                                        )
+                                                        ? 'bg-slate-100 text-slate-900'
+                                                        : 'text-slate-500 hover:bg-slate-50'
                                                         }`}
                                                 >
                                                     <span className="flex items-center gap-1">
@@ -491,7 +504,7 @@ export default function CategoryDetails({ products, categories, getCategoryBySlu
                                         (product) => {
                                             const isFavorite =
                                                 favorites.includes(
-                                                    product.id
+                                                    product._id
                                                 )
 
                                             return (
@@ -526,7 +539,7 @@ export default function CategoryDetails({ products, categories, getCategoryBySlu
                                                         <button
                                                             onClick={() =>
                                                                 toggleFavorite(
-                                                                    product.id
+                                                                    product._id
                                                                 )
                                                             }
                                                             className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow-sm transition hover:scale-105"
@@ -572,7 +585,7 @@ export default function CategoryDetails({ products, categories, getCategoryBySlu
                                                             />
 
                                                             {
-                                                                product.store
+                                                                stores.find((x) => x._id == product.store).name
                                                             }
                                                         </Link>
 
@@ -625,25 +638,28 @@ export default function CategoryDetails({ products, categories, getCategoryBySlu
                                                                     0
                                                                 }
                                                                 className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${addedProduct ===
-                                                                        product.id
-                                                                        ? 'bg-green-600 text-white'
-                                                                        : 'bg-slate-900 text-white hover:bg-slate-700'
+                                                                    product._id
+                                                                    ? 'bg-green-600 text-white'
+                                                                    : 'bg-slate-900 text-white hover:bg-slate-700'
                                                                     } disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400`}
                                                             >
                                                                 {addedProduct ===
-                                                                    product.id ? (
+                                                                    product._id ? (
                                                                     <MdCheckCircle
                                                                         size={
                                                                             20
                                                                         }
                                                                     />
+                                                                ) : adding == product._id ? (
+                                                                    <ImSpinner2 size={20} className="animate-spin text-white" />
                                                                 ) : (
                                                                     <MdShoppingCart
                                                                         size={
                                                                             20
                                                                         }
                                                                     />
-                                                                )}
+                                                                )
+                                                                }
                                                             </button>
                                                         </div>
                                                     </div>
@@ -719,9 +735,9 @@ export default function CategoryDetails({ products, categories, getCategoryBySlu
                                                 )
                                             }
                                             className={`h-10 w-10 rounded-xl text-sm font-semibold transition ${currentPage ===
-                                                    page
-                                                    ? 'bg-slate-900 text-white'
-                                                    : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                                                page
+                                                ? 'bg-slate-900 text-white'
+                                                : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
                                                 }`}
                                         >
                                             {page}

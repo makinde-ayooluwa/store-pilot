@@ -63,7 +63,7 @@ const {userLoading} = useUser();
     }
 
     const openEditForm = (address) => {
-        setEditingId(address.id)
+        setEditingId(address._id)
 
         setForm({
             type: address.type,
@@ -102,7 +102,7 @@ const {userLoading} = useUser();
         if (editingId) {
             setAddresses((current) =>
                 current.map((address) =>
-                    address.id === editingId
+                    address._id === editingId
                         ? {
                             ...address,
                             ...form
@@ -128,11 +128,11 @@ const {userLoading} = useUser();
 
     const deleteAddress = (id) => {
         const addressToDelete = addresses.find(
-            (address) => address.id === id
+            (address) => address._id === id
         )
 
         const remaining = addresses.filter(
-            (address) => address.id !== id
+            (address) => address._id !== id
         )
 
         if (addressToDelete?.isDefault && remaining.length > 0) {
@@ -146,7 +146,7 @@ const {userLoading} = useUser();
         setAddresses((current) =>
             current.map((address) => ({
                 ...address,
-                isDefault: address.id === id
+                isDefault: address._id === id
             }))
         )
     }
@@ -449,7 +449,7 @@ const {userLoading} = useUser();
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                             {addresses.map((address) => (
                                 <div
-                                    key={address.id}
+                                    key={address._id}
                                     className={`bg-white rounded-xl border p-5 ${address.isDefault
                                         ? 'border-green-300'
                                         : 'border-gray-100'
@@ -506,7 +506,7 @@ const {userLoading} = useUser();
                                             <button
                                                 onClick={() =>
                                                     deleteAddress(
-                                                        address.id
+                                                        address._id
                                                     )
                                                 }
                                                 className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-500 hover:bg-red-50 hover:text-red-500"
@@ -548,7 +548,7 @@ const {userLoading} = useUser();
                                         <button
                                             onClick={() =>
                                                 setDefaultAddress(
-                                                    address.id
+                                                    address._id
                                                 )
                                             }
                                             className="mt-5 flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700"

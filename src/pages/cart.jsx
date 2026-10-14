@@ -12,6 +12,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
 import { useUser } from "../contexts/userProvider"
+import { useResource } from "../contexts/resourceProvider"
 import { UserOnly } from "../components/userOnly"
 export default function Cart() {
     const navigate = useNavigate()
@@ -33,7 +34,7 @@ export default function Cart() {
     const formatPrice = (price) => {
         return `₦${Number(price).toLocaleString()}`
     }
-
+    const { stores } = useResource();
     const handleCheckout = () => {
         navigate('/checkout')
     }
@@ -162,7 +163,7 @@ export default function Cart() {
                                 {cartItems.map((item) => (
 
                                     <div
-                                        key={item.id}
+                                        key={item._id}
                                         className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5"
                                     >
 
@@ -197,7 +198,7 @@ export default function Cart() {
 
                                                         <p className="mb-1 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
                                                             <MdStorefront size={13} />
-                                                            {item.store}
+                                                            {stores.find((x) => x._id == item.store).name}
                                                         </p>
 
                                                         <Link
@@ -218,7 +219,7 @@ export default function Cart() {
 
                                                     <button
                                                         onClick={() =>
-                                                            removeFromCart(item.id)
+                                                            removeFromCart(item._id)
                                                         }
                                                         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-500"
                                                         title="Remove item"
@@ -257,7 +258,7 @@ export default function Cart() {
                                                         <button
                                                             onClick={() =>
                                                                 updateQuantity(
-                                                                    item.id,
+                                                                    item._id,
                                                                     item.quantity - 1
                                                                 )
                                                             }
@@ -273,7 +274,7 @@ export default function Cart() {
                                                         <button
                                                             onClick={() =>
                                                                 updateQuantity(
-                                                                    item.id,
+                                                                    item._id,
                                                                     item.quantity + 1
                                                                 )
                                                             }

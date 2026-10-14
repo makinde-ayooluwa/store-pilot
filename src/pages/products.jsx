@@ -110,7 +110,7 @@ export default function Products({ products, categories }) {
         if (sort === 'Newest') {
 
             result.sort(
-                (a, b) => b.id - a.id
+                (a, b) => b._id - a._id
             )
         }
 
@@ -136,7 +136,7 @@ export default function Products({ products, categories }) {
     /*
         Add the actual product object to CartProvider.
     */
-    const handleAddToCart = product => {
+    const handleAddToCart = (product) => {
         addToCart(product, 1)
     }
 
@@ -146,7 +146,7 @@ export default function Products({ products, categories }) {
     */
     const isProductInCart = productId => {
         return cartItems.some(
-            item => item.id === productId
+            item => item._id === productId
         )
     }
 
@@ -272,7 +272,7 @@ export default function Products({ products, categories }) {
                                     {categories.map(item => (
 
                                         <button
-                                            key={item.id}
+                                            key={item._id}
                                             onClick={() =>
                                                 handleCategoryChange(item)
                                             }
@@ -506,13 +506,13 @@ export default function Products({ products, categories }) {
                                     
                                     const inCart =
                                         isProductInCart(
-                                            product.id
+                                            product._id
                                         )
 
                                     return (
 
                                         <article
-                                            key={product.id}
+                                            key={product._id}
                                             className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition duration-200 hover:-translate-y-1 hover:shadow-lg"
                                         >
 
@@ -546,7 +546,7 @@ export default function Products({ products, categories }) {
 
                                                 <button
                                                     onClick={() => toggleWishlist(product)}
-                                                    className={`... ${isWishlisted(product.id)
+                                                    className={`... ${isWishlisted(product._id)
                                                             ? 'text-red-500'
                                                             : 'text-gray-400'
                                                         }`}

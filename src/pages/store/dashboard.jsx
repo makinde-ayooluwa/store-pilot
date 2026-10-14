@@ -370,13 +370,13 @@ export default function StoreDashboard() {
                             {recentOrders.map((order) => (
 
                                 <div
-                                    key={order.id}
+                                    key={order._id}
                                     className="flex items-center justify-between gap-3 p-3 rounded-xl hover:bg-gray-50 transition"
                                 >
 
                                     <div className="min-w-0">
                                         <p className="text-sm font-medium text-gray-900">
-                                            {order.id}
+                                            {order._id}
                                         </p>
 
                                         <p className="text-xs text-gray-500 truncate">

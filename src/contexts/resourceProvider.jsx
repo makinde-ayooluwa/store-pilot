@@ -3,6 +3,7 @@ import { MdCategory, MdHome, MdLaptop, MdLocalGroceryStore, MdShoppingBag } from
 
 import axios from "axios";
 import { backendUrl } from "../data/constants";
+import Loading from "../components/loading";
 export const ResourceContext = createContext()
 export const ResourceProvider = ({ children }) => {
     const [stores, setStores] = useState([]);
@@ -199,7 +200,9 @@ export const ResourceProvider = ({ children }) => {
 
 
     return <ResourceContext.Provider value={{ products, stores, getProductsByCategory, getCategoryBySlug, getStoreBySlug, categories }}>
-        {children}
+        {loading && <Loading page={"homepage"} />}
+        {!loading && children}
+        {!loading && error && <h1>Error occured</h1>}
     </ResourceContext.Provider>
 }
 export const useResource = () => {
