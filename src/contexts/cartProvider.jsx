@@ -72,21 +72,7 @@ export function CartProvider({ children }) {
     }
 
     const updateQuantity = (productId, quantity) => {
-        if (quantity <= 0) {
-            removeFromCart(productId)
-            return
-        }
-
-        setCartItems((currentItems) =>
-            currentItems.map((item) =>
-                item._id === productId
-                    ? {
-                        ...item,
-                        quantity
-                    }
-                    : item
-            )
-        )
+        
     }
 
     const removeFromCart = (productId) => {
