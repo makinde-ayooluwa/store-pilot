@@ -71,18 +71,25 @@ export function CartProvider({ children }) {
         }
     }
 
-    const updateQuantity = (productId, quantity) => {
-        
+    const updateQuantity = async(productId, quantity) => {
+        if (quantity <= 0) {
+            removeFromCart(productId)
+            return
+        }
+
+        const response = await axios.post(`${backendUrl}/cart/update-quantity`, {productId, quantity})
+        const result = response.data;
+        return result;
     }
 
-    const removeFromCart = (productId) => {
-        setCartItems((currentItems) =>
-            currentItems.filter((item) => item._id !== productId)
-        )
+    const removeFromCart = async(productId) => {
+        const response = await axios.post(`${backendUrl}/cart/remove`,{user: data._id, productId})
+        const result = response.data;
+        return result;
     }
 
-    const clearCart = () => {
-        setCartItems([])
+    const clearCart = async() => {
+        const response = await axios.post(`${backendUrl}/cart/clear`,{user: data._id})
     }
 
     const cartCount = useMemo(() => {
