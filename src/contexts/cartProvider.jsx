@@ -90,6 +90,8 @@ export function CartProvider({ children }) {
 
     const clearCart = async() => {
         const response = await axios.post(`${backendUrl}/cart/clear`,{user: data._id})
+        const result = response.data;
+        return result;
     }
 
     const cartCount = useMemo(() => {
