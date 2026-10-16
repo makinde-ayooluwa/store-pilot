@@ -23,7 +23,7 @@ export function CartProvider({ children }) {
         } catch (error) {
             console.log("Error occured while fetching cart", error)
         }
-    }, [user, cartItems])
+    }, [])
     useEffect(() => {
         checkCart();
     }, [checkCart])
