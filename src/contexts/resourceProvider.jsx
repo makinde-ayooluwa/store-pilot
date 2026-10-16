@@ -4,6 +4,7 @@ import { MdCategory, MdHome, MdLaptop, MdLocalGroceryStore, MdShoppingBag } from
 import axios from "axios";
 import { backendUrl } from "../data/constants";
 import Loading from "../components/loading";
+import Swal from "sweetalert2";
 export const ResourceContext = createContext()
 export const ResourceProvider = ({ children }) => {
     const [stores, setStores] = useState([]);
@@ -198,11 +199,17 @@ export const ResourceProvider = ({ children }) => {
         }
     };
 
-
+// if(!loading && error){
+// Swal.fire({
+//     title: "Error",
+//     text: "Failed to load products and stores",
+//     icon: "error",
+// })
+// }
     return <ResourceContext.Provider value={{ products, stores, getProductsByCategory, getCategoryBySlug, getStoreBySlug, categories }}>
-        {loading && <Loading page={"homepage"} />}
-        {!loading && children}
-        {!loading && error && <h1>Error occured</h1>}
+        {/* {loading && <Loading page={"homepage"} />}
+        {!loading && children} */}
+        {children}
     </ResourceContext.Provider>
 }
 export const useResource = () => {

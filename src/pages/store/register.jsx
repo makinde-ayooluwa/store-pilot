@@ -89,9 +89,9 @@ export default function SellerRegister() {
     }
 
     const handleSubmit = async (e) => {
+            e.preventDefault()
         setSubmitting(true);
         try {
-            e.preventDefault()
 
             if (!validate()) return
 
@@ -106,12 +106,14 @@ export default function SellerRegister() {
                     text: response.message,
                     icon: "error"
                 })
+                setSubmitting(false)
             } else {
                 Swal.fire({
                     title: "Success",
                     text: response.message,
                     icon: "success"
                 })
+                setSubmitting(false)
                 setTimeout(() => {
                     navigate('/store/dashboard')
                 }, 800);

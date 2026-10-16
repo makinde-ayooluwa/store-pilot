@@ -39,7 +39,7 @@ export const StoreProvider = ({ children }) => {
         }
 
         setLoading(false);
-    }, []);
+    }, [store]);
 
     // 2. Fetch products whenever storeData changes and contains an _id
     const checkProducts = useCallback(async () => {
@@ -96,20 +96,14 @@ export const StoreProvider = ({ children }) => {
                 sessionStorage.setItem("store", result.storeId);
 
                 setStore(result.storeId);
-                await checkStore();
+                // await checkStore();
 
-                return {
-                    status: true,
-                    message: result.message
-                };
+                return result;
             }
 
             setStore(null);
             setStoreData(null);
-            return {
-                status: false,
-                message: result.message || "Registration failed"
-            };
+            return result;
         } catch (error) {
             console.error("REGISTER ERROR:", error);
             return {

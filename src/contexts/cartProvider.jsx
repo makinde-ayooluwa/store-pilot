@@ -77,8 +77,9 @@ export function CartProvider({ children }) {
             return
         }
 
-        const response = await axios.post(`${backendUrl}/cart/update-quantity`, {productId, quantity})
+        const response = await axios.post(`${backendUrl}/cart/update-quantity`, {user: data._id, productId, quantity})
         const result = response.data;
+        console.log(result)
         return result;
     }
 
