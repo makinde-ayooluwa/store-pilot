@@ -654,13 +654,13 @@ if (bannerFile) {
                                 ))}
                             </select>
 
-                            <Input
+                            {/* <Input
                                 label="Currency"
                                 name="currency"
                                 value={formData.currency}
                                 onChange={handleChange}
                                 placeholder="e.g. NGN"
-                            />
+                            /> */}
 
                             <Input
                                 label="Location"

@@ -12,10 +12,10 @@ import { Link, useSearchParams } from 'react-router-dom'
 
 import Header from '../components/header'
 import { useResource } from "../contexts/resourceProvider"
-
+import Swal from "sweetalert2";
 import { useCart } from '../contexts/cartProvider'
 import { useWishlist } from '../contexts/wishlistProvider'
-
+import { useUser } from '../contexts/userProvider'
 export default function Search() {
     const [searchParams, setSearchParams] = useSearchParams()
     const { products, stores, categories } = useResource()
@@ -27,7 +27,7 @@ export default function Search() {
 
     const { addToCart } = useCart()
     const { isWishlisted, toggleWishlist } = useWishlist()
-
+const {user} = useUser();
     const query = search.trim().toLowerCase()
 
     const filteredProducts = useMemo(() => {
@@ -471,10 +471,18 @@ export default function Search() {
                                                         </div>
 
                                                         <button
-                                                            onClick={() =>
+                                                            onClick={() => {
+                                                                if (user == null) {
+                                                                    return Swal.fire({
+                                                                        text: "Login to add product to cart",
+                                                                        title: "Info",
+                                                                        icon: "info"
+                                                                    })
+                                                                }
                                                                 addToCart(
                                                                     product
                                                                 )
+                                                            }
                                                             }
                                                             disabled={
                                                                 product.stock <=
@@ -493,7 +501,7 @@ export default function Search() {
                                                         to={`/stores/${product.storeSlug}`}
                                                         className="block text-xs text-gray-500 mt-3 hover:text-green-600"
                                                     >
-                                                        {stores.find((x)=>x._id == product.store).name}
+                                                        {stores.find((x) => x._id == product.store).name}
                                                     </Link>
                                                 </div>
                                             </div>

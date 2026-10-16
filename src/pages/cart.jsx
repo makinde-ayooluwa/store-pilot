@@ -28,11 +28,15 @@ export default function Cart() {
     } = useCart()
     const { user, data, userLoading } = useUser();
     const deliveryFee = cartItems.length > 0 ? 2500 : 0
-
-    const grandTotal = cartTotal + deliveryFee
+    const processingPercent = 2;
+    const subTotal = cartTotal + deliveryFee;
+    const grandTotal = subTotal + ((processingPercent / 100) * (subTotal))
 
     const formatPrice = (price) => {
         return `₦${Number(price).toLocaleString()}`
+    }
+    const formatPercent = (percent) => {
+        return `₦${Number((percent / 100) * (subTotal)).toLocaleString()}`
     }
     const { stores } = useResource();
     const handleCheckout = () => {
@@ -366,6 +370,18 @@ export default function Cart() {
 
                                             <span className="text-sm font-semibold text-slate-900">
                                                 {formatPrice(deliveryFee)}
+                                            </span>
+
+                                        </div>
+
+                                        <div className="flex items-center justify-between">
+
+                                            <span className="text-sm text-slate-500">
+                                                Order processing fee
+                                            </span>
+
+                                            <span className="text-sm font-semibold text-slate-900">
+                                                {formatPercent(processingPercent)}
                                             </span>
 
                                         </div>

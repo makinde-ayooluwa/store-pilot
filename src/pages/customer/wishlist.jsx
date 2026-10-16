@@ -12,7 +12,7 @@ import { useWishlist } from '../../contexts/wishlistProvider'
 import { useCart } from '../../contexts/cartProvider'
 import { useUser } from '../../contexts/userProvider'
 import { UserOnly } from '../../components/userOnly'
-
+import Swal from "sweetalert2"
 export default function Wishlist() {
     const {
         wishlistItems,
@@ -21,8 +21,15 @@ export default function Wishlist() {
     } = useWishlist()
 
     const { addToCart } = useCart()
-    const { userLoading } = useUser();
+    const { userLoading, user } = useUser();
     const handleAddToCart = (product) => {
+        if(user == null){
+            return Swal.fire({
+                text: "Login to add product to cart",
+                title: "Info",
+                icon: "info"
+            })
+        }
         addToCart(product)
     }
 

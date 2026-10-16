@@ -21,6 +21,7 @@ import {
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
+import { useUser } from '../contexts/userProvider'
 import { useWishlist } from '../contexts/wishlistProvider'
 import { useResource } from '../contexts/resourceProvider'
 import Swal from 'sweetalert2'
@@ -69,7 +70,7 @@ const [adding, setAdding] = useState(false);
 
     const { addToCart } = useCart()
 
-
+const {user} = useUser();
     const product = products.find(
         item => item._id === id
     )
@@ -109,7 +110,13 @@ const [adding, setAdding] = useState(false);
 
 
     const handleAddToCart = async() => {
-
+if(user == null){
+            return Swal.fire({
+                text: "Login to add product to cart",
+                title: "Info",
+                icon: "info"
+            })
+        }
         if (!product) return
 setAdding(true)
         const result = await addToCart(product, quantity)

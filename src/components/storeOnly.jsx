@@ -10,11 +10,8 @@ const StoreOnly = ({ children }) => {
         if (!store) {
             navigate('/login', { replace: true });
         }
-    }, [store, navigate]);
-    if (!storeData) {
-        return <h1>Loading...</h1>
-    }
-    return children;
+    }, [store]);
+    return storeData ? children : <h1>Loading...</h1>;
 };
 
 export default StoreOnly;

@@ -361,7 +361,7 @@ export default function StoreStockOverview() {
 
 
                     {/* Table */}
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto z-30">
 
                         <table className="w-full min-w-[900px]">
 
@@ -578,7 +578,7 @@ export default function StoreStockOverview() {
 
                                                 {openMenu === product._id && (
 
-                                                    <div className="absolute right-0 top-10 z-30 w-36 rounded-lg border border-slate-200 bg-white p-1.5 shadow-lg z-30">
+                                                    <div className="absolute right-0 -top-13 z-40 w-36 rounded-lg border border-slate-200 bg-white p-1.5 shadow-lg z-30">
 
                                                         {/* <Link to={"/store/inventory/edit"} className="w-full rounded-md px-3 py-2 text-left text-xs text-slate-600 hover:bg-slate-50">
                                                             Update Stock

@@ -20,11 +20,12 @@ import {
 import { Link, useNavigate } from 'react-router-dom'
 import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
+import { useUser } from '../contexts/userProvider'
 import { useOrders } from '../contexts/orderProvider'
-
+import {UserOnly} from "../components/userOnly"
 export default function Checkout() {
     const navigate = useNavigate()
-
+const {user, data, userLoading} = useUser()
     const {
         cartItems,
         cartTotal,
@@ -135,7 +136,6 @@ export default function Checkout() {
                     mobileMenu={mobileMenu}
                     setMobileMenu={setMobileMenu}
                 />
-
                 <main className="mx-auto flex min-h-[calc(100vh-64px)] max-w-7xl items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
                     <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
                         <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
@@ -173,7 +173,7 @@ export default function Checkout() {
                 mobileMenu={mobileMenu}
                 setMobileMenu={setMobileMenu}
             />
-
+<UserOnly loading={userLoading}>
             <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
 
                 {/* Back */}
@@ -986,7 +986,7 @@ export default function Checkout() {
                     </div>
                 </form>
             </main>
-
+</UserOnly>
             {/* Footer */}
             <footer className="mt-12 border-t border-slate-200 bg-white">
                 <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">

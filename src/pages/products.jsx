@@ -17,10 +17,8 @@ import {
 import { Link } from 'react-router-dom'
 import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
-
-
-
-
+import { useUser } from '../contexts/userProvider'
+import Swal from "sweetalert2"
 const sortOptions = [
     'Featured',
     'Newest',
@@ -55,7 +53,7 @@ export default function Products({ products, categories }) {
         addToCart,
         cartCount
     } = useCart()
-
+const {user} = useUser();
     const filteredProducts = useMemo(() => {
 
         let result = [...products]
@@ -137,6 +135,13 @@ export default function Products({ products, categories }) {
         Add the actual product object to CartProvider.
     */
     const handleAddToCart = (product) => {
+if(user == null){
+            return Swal.fire({
+                text: "Login to add product to cart",
+                title: "Info",
+                icon: "info"
+            })
+        }
         addToCart(product, 1)
     }
 

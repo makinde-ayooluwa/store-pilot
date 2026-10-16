@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 import Header from '../components/header';
 import { useCart } from '../contexts/cartProvider';
 import { useResource } from '../contexts/resourceProvider';
+import { useUser } from '../contexts/userProvider'
 
 export default function StoreDetails() {
     const { slug } = useParams();
@@ -23,7 +24,7 @@ export default function StoreDetails() {
     const store = getStoreBySlug(slug);
 
     const { addToCart, cartCount } = useCart();
-
+const {user} = useUser()
     const [mobileMenu, setMobileMenu] = useState(false);
     const [search, setSearch] = useState('');
     const [sort, setSort] = useState('featured');
@@ -93,6 +94,13 @@ export default function StoreDetails() {
 
     const handleAddToCart = async (product) => {
         try {
+            if(user == null){
+            return Swal.fire({
+                text: "Login to add product to cart",
+                title: "Info",
+                icon: "info"
+            })
+        }
             setAdding(product._id);
             const result = await addToCart(product);
 

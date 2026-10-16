@@ -24,10 +24,10 @@ import { useCart } from '../contexts/cartProvider'
 import { categoryIcons } from '../data/categoryIcons'
 import Swal from 'sweetalert2'
 import { ImSpinner2 } from 'react-icons/im'
-
+import {useUser} from "../contexts/userProvider"
 export default function CategoryDetails({ products, categories, getCategoryBySlug, getProductsByCategory, stores }) {
     const { slug } = useParams()
-
+const {user} = useUser()
     const category = getCategoryBySlug(slug)
     console.log(category)
     const {
@@ -134,6 +134,13 @@ export default function CategoryDetails({ products, categories, getCategoryBySlu
     }
 
     const handleAddToCart = async (product) => {
+        if(user == null){
+            return Swal.fire({
+                text: "Login to add product to cart",
+                title: "Info",
+                icon: "info"
+            })
+        }
         setAdding(product._id)
         const result = await addToCart(product)
 

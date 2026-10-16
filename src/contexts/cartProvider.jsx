@@ -8,14 +8,13 @@ const CartContext = createContext()
 export function CartProvider({ children }) {
     const [cartItems, setCartItems] = useState([])
     const { user, data } = useUser();
+    const [cartChange, setCartChange] = useState(0)
     const checkCart = useCallback(async () => {
         try {
             const response = await axios.post(`${backendUrl}/cart/get`, { user: data._id })
             const result = response.data;
             if (result.status) {
                 setCartItems(result.data.items)
-                console.log("CART FETCHING MESSAGE", result.message)
-                console.log("CART", result.data.items)
             } else {
                 setCartItems([]);
                 console.log("CART FETCHING MESSAGE", result.message)
@@ -26,32 +25,8 @@ export function CartProvider({ children }) {
     }, [user, cartItems])
     useEffect(() => {
         checkCart();
-    }, [checkCart])
+    }, [cartChange, checkCart])
     const addToCart = async (product, quantity = 1) => {
-        // setCartItems((currentItems) => {
-        //     const existingItem = currentItems.find(
-        //         (item) => item._id === product._id
-        //     )
-
-        //     if (existingItem) {
-        //         return currentItems.map((item) =>
-        //             item._id === product._id
-        //                 ? {
-        //                     ...item,
-        //                     quantity: item.quantity + quantity
-        //                 }
-        //                 : item
-        //         )
-        //     }
-
-        //     return [
-        //         ...currentItems,
-        //         {
-        //             ...product,
-        //             quantity
-        //         }
-        //     ]
-        // })
         try {
             console.log(product)
             const response = await axios.post(`${backendUrl}/cart/add`, {
@@ -76,8 +51,11 @@ export function CartProvider({ children }) {
             removeFromCart(productId)
             return
         }
-
-        const response = await axios.post(`${backendUrl}/cart/update-quantity`, {user: data._id, productId, quantity})
+        const updated = cartItems.find((x)=>x._id == productId);
+        if(updated){
+            updated.quantity = quantity;
+        }
+        const response = await axios.post(`${backendUrl}/cart/update-quantity`, {user: data._id, items: cartItems})
         const result = response.data;
         console.log(result)
         return result;

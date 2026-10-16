@@ -306,7 +306,7 @@ const [defaultImage, setDefaultImage] = useState(product.image)
                                                             shrink-0
                                                             rounded-lg
                                                             overflow-hidden
-                                                            ${defaultImage == image ? "border-2 border-blue-700" : "border border-gray-200"}
+                                                            ${defaultImage == image ? "border-3 border-green-700" : "border border-gray-200"}
                                                         `}
                                                     >
                                                         <img

@@ -96,7 +96,7 @@ export const StoreProvider = ({ children }) => {
                 sessionStorage.setItem("store", result.storeId);
 
                 setStore(result.storeId);
-                // await checkStore();
+                await checkStore();
 
                 return result;
             }
