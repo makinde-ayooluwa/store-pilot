@@ -211,7 +211,7 @@ export default function Checkout() {
             }
 
             const response = await fetch(
-                `${backendUrl}/payment/paystack/initialize`,
+                `${backendUrl}/payment/initialize`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
