@@ -21,112 +21,159 @@ import { Link, useNavigate } from 'react-router-dom'
 import Header from '../components/header'
 import { useCart } from '../contexts/cartProvider'
 import { useUser } from '../contexts/userProvider'
-import { useOrders } from '../contexts/orderProvider'
-import {UserOnly} from "../components/userOnly"
+import { UserOnly } from '../components/userOnly'
+import { backendUrl } from '../data/constants'
+
+const NIGERIAN_STATES = [
+    'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa',
+    'Benue', 'Borno', 'Cross River', 'Delta', 'Ebonyi', 'Edo',
+    'Ekiti', 'Enugu', 'Gombe', 'Imo', 'Jigawa', 'Kaduna', 'Kano',
+    'Katsina', 'Kebbi', 'Kogi', 'Kwara', 'Lagos', 'Nasarawa',
+    'Niger', 'Ogun', 'Ondo', 'Osun', 'Oyo', 'Plateau', 'Rivers',
+    'Sokoto', 'Taraba', 'Yobe', 'Zamfara', 'Federal Capital Territory'
+]
+
+const formatPrice = (price) =>
+    `₦${Number(price || 0).toLocaleString('en-NG')}`
+
 export default function Checkout() {
     const navigate = useNavigate()
-const {user, data, userLoading} = useUser()
+    const { data, userLoading } = useUser()
     const {
         cartItems,
         cartTotal,
         updateQuantity,
-        removeFromCart,
-        clearCart
+        removeFromCart
     } = useCart()
 
-    const { createOrder } = useOrders()
-
     const [mobileMenu, setMobileMenu] = useState(false)
-
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        phone: '',
-        email: '',
-        address: '',
-        city: '',
-        state: '',
-        landmark: ''
-    })
-
-    const [paymentMethod, setPaymentMethod] = useState('paystack')
     const [deliveryMethod, setDeliveryMethod] = useState('standard')
     const [placingOrder, setPlacingOrder] = useState(false)
+    const [error, setError] = useState('')
 
-    const deliveryFee = useMemo(() => {
-        if (deliveryMethod === 'express') {
-            return 5000
-        }
+    const [formData, setFormData] = useState({
+        fullname: data?.fullname ?? '',
+        phone: data?.phone ?? '',
+        email: data?.email ?? '',
+        address: data?.address ?? '',
+        city: data?.city ?? '',
+        state: data?.state ?? ''
+    })
 
-        return 2500
-    }, [deliveryMethod])
+    const deliveryFee = useMemo(
+        () => deliveryMethod === 'express' ? 5000 : 2500,
+        [deliveryMethod]
+    )
 
-    const total = cartTotal + deliveryFee
+    const processingPercent = 2
+    const processingFee = Math.round(
+        (Number(cartTotal || 0) + deliveryFee) * processingPercent / 100
+    )
+    const total = Number(cartTotal || 0) + deliveryFee + processingFee
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target
-
-        setFormData((current) => ({
-            ...current,
-            [name]: value
-        }))
+    const handleInputChange = (event) => {
+        const { name, value } = event.target
+        setFormData((current) => ({ ...current, [name]: value }))
     }
 
-    const handlePlaceOrder = (e) => {
-        e.preventDefault()
+    /*
+     * IMPORTANT:
+     * Set VITE_BACKEND_URL in your frontend .env file, for example:
+     * VITE_BACKEND_URL=http://localhost:8000
+     *
+     * The backend endpoint below must:
+     * 1. Validate the authenticated customer and cart/product prices.
+     * 2. Recalculate subtotal, delivery and processing fee on the server.
+     * 3. Create a PENDING order (not a paid order).
+     * 4. Initialize Paystack using the SECRET KEY on the server.
+     * 5. Return { authorization_url, reference, orderId }.
+     *
+     * Never put your Paystack secret key in frontend code.
+     */
+    const handlePlaceOrder = async (event) => {
+        event.preventDefault()
+        setError('')
 
-        if (!cartItems.length) return
+        if (!cartItems.length) {
+            setError('Your cart is empty.')
+            return
+        }
+
+        const requiredFields = [
+            'fullname', 'phone', 'email', 'address', 'city', 'state'
+        ]
+        const missingField = requiredFields.find(
+            (field) => !String(formData[field] || '').trim()
+        )
+
+        if (missingField) {
+            setError('Please complete all contact and delivery fields.')
+            return
+        }
 
         setPlacingOrder(true)
 
-        const order = createOrder({
-            customer: {
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                phone: formData.phone,
-                email: formData.email
-            },
+        try {
 
-            shippingAddress: {
-                address: formData.address,
-                city: formData.city,
-                state: formData.state,
-                landmark: formData.landmark
-            },
+            if (!backendUrl) {
+                throw new Error(
+                    'VITE_BACKEND_URL is not configured in your frontend .env file.'
+                )
+            }
 
-            items: cartItems.map((item) => ({
-                id: item._id,
-                name: item.name,
-                image: item.image,
-                price: item.price,
-                quantity: item.quantity,
-                store: item.store,
-                category: item.category
-            })),
+            const response = await fetch(
+                `${backendUrl}/payment/paystack/initialize`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        customer: {
+                            fullname: formData.fullname.trim(),
+                            phone: formData.phone.trim(),
+                            email: formData.email.trim()
+                        },
+                        shippingAddress: {
+                            address: formData.address.trim(),
+                            city: formData.city.trim(),
+                            state: formData.state
+                        },
+                        delivery: {
+                            method: deliveryMethod
+                        },
+                        paymentMethod: 'paystack',
+                        items: cartItems.map((item) => ({
+                            productId: item._id,
+                            quantity: Number(item.quantity)
+                        }))
+                    })
+                }
+            )
 
-            subtotal: cartTotal,
+            const result = await response.json().catch(() => ({}))
 
-            delivery: {
-                method: deliveryMethod,
-                fee: deliveryFee
-            },
+            if (!response.ok) {
+                throw new Error(
+                    result.message || 'Unable to initialize Paystack payment.'
+                )
+            }
 
-            paymentMethod,
+            if (!result.authorization_url) {
+                throw new Error(
+                    'The payment server did not return a Paystack authorization URL.'
+                )
+            }
 
-            total
-        })
-
-        clearCart()
-
-        setTimeout(() => {
+            // Redirect to Paystack. Do not clear the cart or mark the order
+            // paid here; the backend must verify the transaction on return/webhook.
+            window.location.assign(result.authorization_url)
+        } catch (err) {
+            setError(
+                err.message ||
+                'Something went wrong while starting your payment. Please try again.'
+            )
             setPlacingOrder(false)
-
-            navigate(`/orders/${order._id}`)
-        }, 800)
-    }
-
-    const formatPrice = (price) => {
-        return `₦${Number(price).toLocaleString()}`
+        }
     }
 
     if (cartItems.length === 0) {
@@ -136,33 +183,28 @@ const {user, data, userLoading} = useUser()
                     mobileMenu={mobileMenu}
                     setMobileMenu={setMobileMenu}
                 />
-                <main className="mx-auto flex min-h-[calc(100vh-64px)] max-w-7xl items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-                    <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-                        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
-                            <MdShoppingBag
-                                size={30}
-                                className="text-slate-500"
-                            />
+                <UserOnly loading={userLoading}>
+                    <main className="mx-auto flex min-h-[calc(100vh-64px)] max-w-7xl items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+                        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+                            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
+                                <MdShoppingBag size={30} className="text-slate-500" />
+                            </div>
+                            <h1 className="text-xl font-bold text-slate-900">
+                                Your cart is empty
+                            </h1>
+                            <p className="mt-2 text-sm leading-6 text-slate-500">
+                                Add some products to your cart before proceeding to checkout.
+                            </p>
+                            <Link
+                                to="/products"
+                                className="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+                            >
+                                Continue Shopping
+                                <MdArrowForward size={18} />
+                            </Link>
                         </div>
-
-                        <h1 className="text-xl font-bold text-slate-900">
-                            Your cart is empty
-                        </h1>
-
-                        <p className="mt-2 text-sm leading-6 text-slate-500">
-                            Add some products to your cart before proceeding
-                            to checkout.
-                        </p>
-
-                        <Link
-                            to="/products"
-                            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-                        >
-                            Continue Shopping
-                            <MdArrowForward size={18} />
-                        </Link>
-                    </div>
-                </main>
+                    </main>
+                </UserOnly>
             </div>
         )
     }
@@ -173,839 +215,499 @@ const {user, data, userLoading} = useUser()
                 mobileMenu={mobileMenu}
                 setMobileMenu={setMobileMenu}
             />
-<UserOnly loading={userLoading}>
-            <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
 
-                {/* Back */}
-                <Link
-                    to="/cart"
-                    className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-slate-900"
-                >
-                    <MdArrowBack size={19} />
-                    Back to Cart
-                </Link>
+            <UserOnly loading={userLoading}>
+                <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+                    <Link
+                        to="/cart"
+                        className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+                    >
+                        <MdArrowBack size={19} />
+                        Back to Cart
+                    </Link>
 
-                {/* Page Header */}
-                <div className="mb-8">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
-                            <MdLock size={21} />
-                        </div>
-
-                        <div>
-                            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                                Checkout
-                            </h1>
-
-                            <p className="mt-1 text-sm text-slate-500">
-                                Complete your order securely.
-                            </p>
+                    {/* Page heading */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+                                <MdLock size={21} />
+                            </div>
+                            <div>
+                                <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                                    Checkout
+                                </h1>
+                                <p className="mt-1 text-sm text-slate-500">
+                                    Confirm your delivery details and pay securely.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Checkout Progress */}
-                <div className="mb-8 rounded-2xl border border-slate-200 bg-white px-4 py-5 sm:px-6">
-                    <div className="mx-auto flex max-w-2xl items-center justify-between">
-
-                        <div className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-white">
-                                <MdCheckCircle size={18} />
-                            </div>
-
-                            <span className="hidden text-xs font-semibold text-slate-900 sm:block">
-                                Cart
-                            </span>
-                        </div>
-
-                        <div className="mx-3 h-px flex-1 bg-emerald-200 sm:mx-5" />
-
-                        <div className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-xs font-bold text-white">
-                                2
-                            </div>
-
-                            <span className="hidden text-xs font-semibold text-slate-900 sm:block">
-                                Checkout
-                            </span>
-                        </div>
-
-                        <div className="mx-3 h-px flex-1 bg-slate-200 sm:mx-5" />
-
-                        <div className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-400">
-                                3
-                            </div>
-
-                            <span className="hidden text-xs font-semibold text-slate-400 sm:block">
-                                Confirmation
-                            </span>
-                        </div>
-
-                    </div>
-                </div>
-
-                <form onSubmit={handlePlaceOrder}>
-                    <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
-
-                        {/* LEFT COLUMN */}
-                        <div className="space-y-6">
-
-                            {/* Contact Information */}
-                            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-
-                                <div className="mb-5 flex items-start gap-3">
-                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100">
-                                        <MdPersonOutline
-                                            size={21}
-                                            className="text-slate-600"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <h2 className="text-base font-bold text-slate-900">
-                                            Contact Information
-                                        </h2>
-
-                                        <p className="mt-1 text-xs text-slate-500">
-                                            We'll use this information to
-                                            contact you about your order.
-                                        </p>
-                                    </div>
+                    {/* Checkout progress */}
+                    <div className="mb-8 rounded-2xl border border-slate-200 bg-white px-4 py-5 sm:px-6">
+                        <div className="mx-auto flex max-w-2xl items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-white">
+                                    <MdCheckCircle size={18} />
                                 </div>
+                                <span className="hidden text-xs font-semibold text-slate-900 sm:block">
+                                    Cart
+                                </span>
+                            </div>
+                            <div className="mx-3 h-px flex-1 bg-emerald-200 sm:mx-5" />
+                            <div className="flex items-center gap-2">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-xs font-bold text-white">
+                                    2
+                                </div>
+                                <span className="hidden text-xs font-semibold text-slate-900 sm:block">
+                                    Checkout
+                                </span>
+                            </div>
+                            <div className="mx-3 h-px flex-1 bg-slate-200 sm:mx-5" />
+                            <div className="flex items-center gap-2">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-400">
+                                    3
+                                </div>
+                                <span className="hidden text-xs font-semibold text-slate-400 sm:block">
+                                    Confirmation
+                                </span>
+                            </div>
+                        </div>
+                    </div>
 
-                                <div className="grid gap-4 sm:grid-cols-2">
-
-                                    {/* First Name */}
-                                    <div>
-                                        <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-                                            First name
-                                        </label>
-
-                                        <input
-                                            type="text"
-                                            name="firstName"
-                                            value={formData.firstName}
-                                            onChange={handleInputChange}
-                                            placeholder="John"
-                                            required
-                                            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
-                                        />
-                                    </div>
-
-                                    {/* Last Name */}
-                                    <div>
-                                        <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-                                            Last name
-                                        </label>
-
-                                        <input
-                                            type="text"
-                                            name="lastName"
-                                            value={formData.lastName}
-                                            onChange={handleInputChange}
-                                            placeholder="Doe"
-                                            required
-                                            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
-                                        />
-                                    </div>
-
-                                    {/* Phone */}
-                                    <div>
-                                        <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-                                            Phone number
-                                        </label>
-
-                                        <div className="relative">
-                                            <MdPhone
-                                                size={18}
-                                                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                                            />
-
-                                            <input
-                                                type="tel"
-                                                name="phone"
-                                                value={formData.phone}
-                                                onChange={handleInputChange}
-                                                placeholder="0801 234 5678"
-                                                required
-                                                className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
-                                            />
+                    <form onSubmit={handlePlaceOrder}>
+                        <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
+                            {/* LEFT COLUMN */}
+                            <div className="space-y-6">
+                                {/* Contact information */}
+                                <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                                    <div className="mb-5 flex items-start gap-3">
+                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100">
+                                            <MdPersonOutline size={21} className="text-slate-600" />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-base font-bold text-slate-900">
+                                                Contact Information
+                                            </h2>
+                                            <p className="mt-1 text-xs text-slate-500">
+                                                We'll use these details to contact you about your order.
+                                            </p>
                                         </div>
                                     </div>
 
-                                    {/* Email */}
-                                    <div>
-                                        <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-                                            Email address
-                                        </label>
-
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleInputChange}
-                                            placeholder="john@example.com"
-                                            required
-                                            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
-                                        />
-                                    </div>
-
-                                </div>
-                            </section>
-
-                            {/* Delivery Address */}
-                            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-
-                                <div className="mb-5 flex items-start gap-3">
-                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100">
-                                        <MdLocationOn
-                                            size={21}
-                                            className="text-slate-600"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <h2 className="text-base font-bold text-slate-900">
-                                            Delivery Address
-                                        </h2>
-
-                                        <p className="mt-1 text-xs text-slate-500">
-                                            Where should we deliver your
-                                            order?
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-
-                                    {/* Address */}
-                                    <div>
-                                        <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-                                            Street address
-                                        </label>
-
-                                        <textarea
-                                            name="address"
-                                            value={formData.address}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter your full delivery address"
-                                            required
-                                            rows="3"
-                                            className="w-full resize-none rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
-                                        />
-                                    </div>
-
                                     <div className="grid gap-4 sm:grid-cols-2">
-
-                                        {/* City */}
                                         <div>
-                                            <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-                                                City
+                                            <label htmlFor="fullname" className="mb-1.5 block text-xs font-semibold text-slate-700">
+                                                Full name
                                             </label>
-
                                             <input
+                                                id="fullname"
                                                 type="text"
-                                                name="city"
-                                                value={formData.city}
+                                                name="fullname"
+                                                autoComplete="name"
+                                                value={formData.fullname}
                                                 onChange={handleInputChange}
-                                                placeholder="Lagos"
+                                                placeholder="Your full name"
                                                 required
                                                 className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                                             />
                                         </div>
 
-                                        {/* State */}
                                         <div>
-                                            <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-                                                State
+                                            <label htmlFor="phone" className="mb-1.5 block text-xs font-semibold text-slate-700">
+                                                Phone number
                                             </label>
-
                                             <div className="relative">
-                                                <select
-                                                    name="state"
-                                                    value={formData.state}
+                                                <MdPhone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input
+                                                    id="phone"
+                                                    type="tel"
+                                                    name="phone"
+                                                    autoComplete="tel"
+                                                    value={formData.phone}
                                                     onChange={handleInputChange}
+                                                    placeholder="0801 234 5678"
                                                     required
-                                                    className="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 pr-9 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
-                                                >
-                                                    <option value="">
-                                                        Select state
-                                                    </option>
-
-                                                    <option value="Abia">Abia</option>
-                                                    <option value="Adamawa">Adamawa</option>
-                                                    <option value="Akwa Ibom">Akwa Ibom</option>
-                                                    <option value="Anambra">Anambra</option>
-                                                    <option value="Bauchi">Bauchi</option>
-                                                    <option value="Bayelsa">Bayelsa</option>
-                                                    <option value="Benue">Benue</option>
-                                                    <option value="Borno">Borno</option>
-                                                    <option value="Cross River">Cross River</option>
-                                                    <option value="Delta">Delta</option>
-                                                    <option value="Ebonyi">Ebonyi</option>
-                                                    <option value="Edo">Edo</option>
-                                                    <option value="Ekiti">Ekiti</option>
-                                                    <option value="Enugu">Enugu</option>
-                                                    <option value="Gombe">Gombe</option>
-                                                    <option value="Imo">Imo</option>
-                                                    <option value="Jigawa">Jigawa</option>
-                                                    <option value="Kaduna">Kaduna</option>
-                                                    <option value="Kano">Kano</option>
-                                                    <option value="Katsina">Katsina</option>
-                                                    <option value="Kebbi">Kebbi</option>
-                                                    <option value="Kogi">Kogi</option>
-                                                    <option value="Kwara">Kwara</option>
-                                                    <option value="Lagos">Lagos</option>
-                                                    <option value="Nasarawa">Nasarawa</option>
-                                                    <option value="Niger">Niger</option>
-                                                    <option value="Ogun">Ogun</option>
-                                                    <option value="Ondo">Ondo</option>
-                                                    <option value="Osun">Osun</option>
-                                                    <option value="Oyo">Oyo</option>
-                                                    <option value="Plateau">Plateau</option>
-                                                    <option value="Rivers">Rivers</option>
-                                                    <option value="Sokoto">Sokoto</option>
-                                                    <option value="Taraba">Taraba</option>
-                                                    <option value="Yobe">Yobe</option>
-                                                    <option value="Zamfara">Zamfara</option>
-                                                    <option value="FCT">
-                                                        Federal Capital Territory
-                                                    </option>
-                                                </select>
-
-                                                <MdKeyboardArrowDown
-                                                    size={20}
-                                                    className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400"
+                                                    className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                                                 />
                                             </div>
                                         </div>
 
-                                    </div>
-
-                                    {/* Landmark */}
-                                    <div>
-                                        <label className="mb-1.5 block text-xs font-semibold text-slate-700">
-                                            Landmark
-                                            <span className="ml-1 font-normal text-slate-400">
-                                                (optional)
-                                            </span>
-                                        </label>
-
-                                        <input
-                                            type="text"
-                                            name="landmark"
-                                            value={formData.landmark}
-                                            onChange={handleInputChange}
-                                            placeholder="Nearby landmark"
-                                            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
-                                        />
-                                    </div>
-
-                                </div>
-                            </section>
-
-                            {/* Delivery Method */}
-                            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-
-                                <div className="mb-5 flex items-start gap-3">
-                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100">
-                                        <MdLocalShipping
-                                            size={21}
-                                            className="text-slate-600"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <h2 className="text-base font-bold text-slate-900">
-                                            Delivery Method
-                                        </h2>
-
-                                        <p className="mt-1 text-xs text-slate-500">
-                                            Select how you'd like to receive
-                                            your order.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3">
-
-                                    {/* Standard */}
-                                    <label
-                                        className={`flex cursor-pointer items-center justify-between rounded-xl border p-4 transition ${
-                                            deliveryMethod === 'standard'
-                                                ? 'border-slate-900 bg-slate-50'
-                                                : 'border-slate-200 hover:border-slate-300'
-                                        }`}
-                                    >
-                                        <div className="flex items-start gap-3">
-
+                                        <div className="sm:col-span-2">
+                                            <label htmlFor="email" className="mb-1.5 block text-xs font-semibold text-slate-700">
+                                                Email address
+                                            </label>
                                             <input
-                                                type="radio"
-                                                name="deliveryMethod"
-                                                value="standard"
-                                                checked={
-                                                    deliveryMethod === 'standard'
-                                                }
-                                                onChange={(e) =>
-                                                    setDeliveryMethod(
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="mt-1 h-4 w-4 accent-slate-900"
-                                            />
-
-                                            <div>
-                                                <p className="text-sm font-semibold text-slate-900">
-                                                    Standard Delivery
-                                                </p>
-
-                                                <p className="mt-1 text-xs text-slate-500">
-                                                    Estimated delivery in
-                                                    2–5 business days
-                                                </p>
-                                            </div>
-
-                                        </div>
-
-                                        <span className="text-sm font-bold text-slate-900">
-                                            ₦2,500
-                                        </span>
-                                    </label>
-
-                                    {/* Express */}
-                                    <label
-                                        className={`flex cursor-pointer items-center justify-between rounded-xl border p-4 transition ${
-                                            deliveryMethod === 'express'
-                                                ? 'border-slate-900 bg-slate-50'
-                                                : 'border-slate-200 hover:border-slate-300'
-                                        }`}
-                                    >
-                                        <div className="flex items-start gap-3">
-
-                                            <input
-                                                type="radio"
-                                                name="deliveryMethod"
-                                                value="express"
-                                                checked={
-                                                    deliveryMethod === 'express'
-                                                }
-                                                onChange={(e) =>
-                                                    setDeliveryMethod(
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="mt-1 h-4 w-4 accent-slate-900"
-                                            />
-
-                                            <div>
-                                                <p className="text-sm font-semibold text-slate-900">
-                                                    Express Delivery
-                                                </p>
-
-                                                <p className="mt-1 text-xs text-slate-500">
-                                                    Estimated delivery in
-                                                    1–2 business days
-                                                </p>
-                                            </div>
-
-                                        </div>
-
-                                        <span className="text-sm font-bold text-slate-900">
-                                            ₦5,000
-                                        </span>
-                                    </label>
-
-                                </div>
-                            </section>
-
-                            {/* Payment */}
-                            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-
-                                <div className="mb-5 flex items-start gap-3">
-                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100">
-                                        <MdPayments
-                                            size={21}
-                                            className="text-slate-600"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <h2 className="text-base font-bold text-slate-900">
-                                            Payment Method
-                                        </h2>
-
-                                        <p className="mt-1 text-xs text-slate-500">
-                                            Choose how you want to pay for
-                                            your order.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3">
-
-                                    {/* Paystack */}
-                                    <label
-                                        className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition ${
-                                            paymentMethod === 'paystack'
-                                                ? 'border-emerald-500 bg-emerald-50/40'
-                                                : 'border-slate-200 hover:border-slate-300'
-                                        }`}
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="paymentMethod"
-                                            value="paystack"
-                                            checked={
-                                                paymentMethod === 'paystack'
-                                            }
-                                            onChange={(e) =>
-                                                setPaymentMethod(
-                                                    e.target.value
-                                                )
-                                            }
-                                            className="h-4 w-4 accent-emerald-500"
-                                        />
-
-                                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 text-white">
-                                            <MdCreditCard size={19} />
-                                        </div>
-
-                                        <div className="flex-1">
-                                            <p className="text-sm font-semibold text-slate-900">
-                                                Pay online
-                                            </p>
-
-                                            <p className="mt-1 text-xs text-slate-500">
-                                                Card, bank transfer or USSD
-                                            </p>
-                                        </div>
-
-                                        <MdCheckCircle
-                                            size={20}
-                                            className={
-                                                paymentMethod === 'paystack'
-                                                    ? 'text-emerald-500'
-                                                    : 'hidden'
-                                            }
-                                        />
-                                    </label>
-
-                                    {/* Cash */}
-                                    <label
-                                        className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition ${
-                                            paymentMethod === 'cash'
-                                                ? 'border-emerald-500 bg-emerald-50/40'
-                                                : 'border-slate-200 hover:border-slate-300'
-                                        }`}
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="paymentMethod"
-                                            value="cash"
-                                            checked={
-                                                paymentMethod === 'cash'
-                                            }
-                                            onChange={(e) =>
-                                                setPaymentMethod(
-                                                    e.target.value
-                                                )
-                                            }
-                                            className="h-4 w-4 accent-emerald-500"
-                                        />
-
-                                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">
-                                            <MdPayments
-                                                size={19}
-                                                className="text-slate-600"
+                                                id="email"
+                                                type="email"
+                                                name="email"
+                                                autoComplete="email"
+                                                value={formData.email}
+                                                onChange={handleInputChange}
+                                                placeholder="you@example.com"
+                                                required
+                                                className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                                             />
                                         </div>
-
-                                        <div className="flex-1">
-                                            <p className="text-sm font-semibold text-slate-900">
-                                                Cash on Delivery
-                                            </p>
-
-                                            <p className="mt-1 text-xs text-slate-500">
-                                                Pay when your order arrives
-                                            </p>
-                                        </div>
-
-                                        <MdCheckCircle
-                                            size={20}
-                                            className={
-                                                paymentMethod === 'cash'
-                                                    ? 'text-emerald-500'
-                                                    : 'hidden'
-                                            }
-                                        />
-                                    </label>
-
-                                </div>
-                            </section>
-
-                        </div>
-
-                        {/* RIGHT COLUMN */}
-                        <aside className="lg:sticky lg:top-24 lg:h-fit">
-                            <div className="space-y-5">
-
-                                {/* Order Summary */}
-                                <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-
-                                    <div className="mb-5 flex items-center justify-between">
-                                        <h2 className="text-base font-bold text-slate-900">
-                                            Order Summary
-                                        </h2>
-
-                                        <span className="text-xs font-medium text-slate-500">
-                                            {cartItems.length}{' '}
-                                            {cartItems.length === 1
-                                                ? 'item'
-                                                : 'items'}
-                                        </span>
                                     </div>
-
-                                    {/* Items */}
-                                    <div className="max-h-[390px] space-y-4 overflow-y-auto pr-1">
-
-                                        {cartItems.map((item) => (
-                                            <div
-                                                key={item._id}
-                                                className="flex gap-3"
-                                            >
-
-                                                {/* Image */}
-                                                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100">
-                                                    <img
-                                                        src={item.image}
-                                                        alt={item.name}
-                                                        className="h-full w-full object-cover"
-                                                    />
-
-                                                    <span className="absolute right-1 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-slate-900 px-1 text-[9px] font-bold text-white">
-                                                        {item.quantity}
-                                                    </span>
-                                                </div>
-
-                                                {/* Info */}
-                                                <div className="min-w-0 flex-1">
-
-                                                    <p className="truncate text-xs font-semibold text-slate-900">
-                                                        {item.name}
-                                                    </p>
-
-                                                    {item.store && (
-                                                        <div className="mt-1 flex items-center gap-1">
-                                                            <MdStorefront
-                                                                size={13}
-                                                                className="text-slate-400"
-                                                            />
-
-                                                            <span className="truncate text-[10px] text-slate-400">
-                                                                {item.store}
-                                                            </span>
-                                                        </div>
-                                                    )}
-
-                                                    <div className="mt-2 flex items-center justify-between">
-
-                                                        <div className="flex items-center rounded-lg border border-slate-200">
-
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    updateQuantity(
-                                                                        item._id,
-                                                                        item.quantity - 1
-                                                                    )
-                                                                }
-                                                                className="flex h-7 w-7 items-center justify-center text-slate-500 hover:bg-slate-50"
-                                                            >
-                                                                <MdRemove size={14} />
-                                                            </button>
-
-                                                            <span className="w-6 text-center text-[10px] font-semibold text-slate-700">
-                                                                {item.quantity}
-                                                            </span>
-
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    updateQuantity(
-                                                                        item._id,
-                                                                        item.quantity + 1
-                                                                    )
-                                                                }
-                                                                className="flex h-7 w-7 items-center justify-center text-slate-500 hover:bg-slate-50"
-                                                            >
-                                                                <MdAdd size={14} />
-                                                            </button>
-
-                                                        </div>
-
-                                                        <div className="flex items-center gap-2">
-
-                                                            <span className="text-xs font-bold text-slate-900">
-                                                                {formatPrice(
-                                                                    item.price *
-                                                                    item.quantity
-                                                                )}
-                                                            </span>
-
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    removeFromCart(
-                                                                        item._id
-                                                                    )
-                                                                }
-                                                                className="text-slate-300 transition hover:text-red-500"
-                                                                title="Remove item"
-                                                            >
-                                                                <MdDeleteOutline
-                                                                    size={17}
-                                                                />
-                                                            </button>
-
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        ))}
-
-                                    </div>
-
-                                    {/* Divider */}
-                                    <div className="my-5 border-t border-slate-100" />
-
-                                    {/* Price Details */}
-                                    <div className="space-y-3">
-
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="text-slate-500">
-                                                Subtotal
-                                            </span>
-
-                                            <span className="font-medium text-slate-800">
-                                                {formatPrice(cartTotal)}
-                                            </span>
-                                        </div>
-
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="text-slate-500">
-                                                Delivery
-                                            </span>
-
-                                            <span className="font-medium text-slate-800">
-                                                {formatPrice(deliveryFee)}
-                                            </span>
-                                        </div>
-
-                                        <div className="border-t border-slate-100 pt-4">
-                                            <div className="flex items-end justify-between">
-
-                                                <div>
-                                                    <p className="text-sm font-bold text-slate-900">
-                                                        Total
-                                                    </p>
-
-                                                    <p className="mt-0.5 text-[10px] text-slate-400">
-                                                        Including delivery
-                                                    </p>
-                                                </div>
-
-                                                <span className="text-xl font-bold tracking-tight text-slate-900">
-                                                    {formatPrice(total)}
-                                                </span>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    {/* Place Order */}
-                                    <button
-                                        type="submit"
-                                        disabled={placingOrder}
-                                        className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 text-sm font-bold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-70"
-                                    >
-                                        {placingOrder ? (
-                                            <>
-                                                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                                                Processing...
-                                            </>
-                                        ) : (
-                                            <>
-                                                Place Order
-                                                <MdArrowForward size={19} />
-                                            </>
-                                        )}
-                                    </button>
-
-                                    <div className="mt-4 flex items-center justify-center gap-1.5 text-[10px] text-slate-400">
-                                        <MdLock size={14} />
-                                        Secure checkout
-                                    </div>
-
                                 </section>
 
-                                {/* Protection */}
-                                <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                                {/* Delivery address */}
+                                <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                                    <div className="mb-5 flex items-start gap-3">
+                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100">
+                                            <MdLocationOn size={21} className="text-slate-600" />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-base font-bold text-slate-900">
+                                                Delivery Address
+                                            </h2>
+                                            <p className="mt-1 text-xs text-slate-500">
+                                                Where should we deliver your order?
+                                            </p>
+                                        </div>
+                                    </div>
 
-                                    <div className="flex gap-3">
-
-                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50">
-                                            <MdCheckCircle
-                                                size={19}
-                                                className="text-emerald-500"
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label htmlFor="address" className="mb-1.5 block text-xs font-semibold text-slate-700">
+                                                Street address
+                                            </label>
+                                            <textarea
+                                                id="address"
+                                                name="address"
+                                                autoComplete="street-address"
+                                                value={formData.address}
+                                                onChange={handleInputChange}
+                                                placeholder="Enter your full delivery address"
+                                                required
+                                                rows={3}
+                                                className="w-full resize-none rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                                             />
                                         </div>
 
-                                        <div>
-                                            <p className="text-xs font-bold text-slate-900">
-                                                Buyer Protection
-                                            </p>
+                                        <div className="grid gap-4 sm:grid-cols-2">
+                                            <div>
+                                                <label htmlFor="city" className="mb-1.5 block text-xs font-semibold text-slate-700">
+                                                    City
+                                                </label>
+                                                <input
+                                                    id="city"
+                                                    type="text"
+                                                    name="city"
+                                                    autoComplete="address-level2"
+                                                    value={formData.city}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Your city"
+                                                    required
+                                                    className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                                                />
+                                            </div>
 
-                                            <p className="mt-1 text-[10px] leading-5 text-slate-500">
-                                                Your payment and personal
-                                                information are protected
-                                                throughout checkout.
+                                            <div>
+                                                <label htmlFor="state" className="mb-1.5 block text-xs font-semibold text-slate-700">
+                                                    State
+                                                </label>
+                                                <div className="relative">
+                                                    <select
+                                                        id="state"
+                                                        name="state"
+                                                        autoComplete="address-level1"
+                                                        value={formData.state}
+                                                        onChange={handleInputChange}
+                                                        required
+                                                        className="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 pr-9 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                                                    >
+                                                        <option value="">Select state</option>
+                                                        {NIGERIAN_STATES.map((state) => (
+                                                            <option key={state} value={state}>
+                                                                {state}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    <MdKeyboardArrowDown size={20} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {/* Delivery method */}
+                                <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                                    <div className="mb-5 flex items-start gap-3">
+                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100">
+                                            <MdLocalShipping size={21} className="text-slate-600" />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-base font-bold text-slate-900">
+                                                Delivery Method
+                                            </h2>
+                                            <p className="mt-1 text-xs text-slate-500">
+                                                Select how you'd like to receive your order.
                                             </p>
                                         </div>
-
                                     </div>
 
-                                </div>
+                                    <div className="space-y-3">
+                                        <label className={`flex cursor-pointer items-center justify-between rounded-xl border p-4 transition ${deliveryMethod === 'standard' ? 'border-slate-900 bg-slate-50' : 'border-slate-200 hover:border-slate-300'}`}>
+                                            <div className="flex items-start gap-3">
+                                                <input
+                                                    type="radio"
+                                                    name="deliveryMethod"
+                                                    value="standard"
+                                                    checked={deliveryMethod === 'standard'}
+                                                    onChange={(event) => setDeliveryMethod(event.target.value)}
+                                                    className="mt-1 h-4 w-4 accent-slate-900"
+                                                />
+                                                <div>
+                                                    <p className="text-sm font-semibold text-slate-900">Standard Delivery</p>
+                                                    <p className="mt-1 text-xs text-slate-500">Estimated delivery in 2–5 business days</p>
+                                                </div>
+                                            </div>
+                                            <span className="text-sm font-bold text-slate-900">₦2,500</span>
+                                        </label>
 
+                                        <label className={`flex cursor-pointer items-center justify-between rounded-xl border p-4 transition ${deliveryMethod === 'express' ? 'border-slate-900 bg-slate-50' : 'border-slate-200 hover:border-slate-300'}`}>
+                                            <div className="flex items-start gap-3">
+                                                <input
+                                                    type="radio"
+                                                    name="deliveryMethod"
+                                                    value="express"
+                                                    checked={deliveryMethod === 'express'}
+                                                    onChange={(event) => setDeliveryMethod(event.target.value)}
+                                                    className="mt-1 h-4 w-4 accent-slate-900"
+                                                />
+                                                <div>
+                                                    <p className="text-sm font-semibold text-slate-900">Express Delivery</p>
+                                                    <p className="mt-1 text-xs text-slate-500">Estimated delivery in 1–2 business days</p>
+                                                </div>
+                                            </div>
+                                            <span className="text-sm font-bold text-slate-900">₦5,000</span>
+                                        </label>
+                                    </div>
+                                </section>
+
+                                {/* Paystack only */}
+                                <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                                    <div className="mb-5 flex items-start gap-3">
+                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50">
+                                            <MdPayments size={21} className="text-emerald-600" />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-base font-bold text-slate-900">
+                                                Payment Method
+                                            </h2>
+                                            <p className="mt-1 text-xs text-slate-500">
+                                                Pay securely online through Paystack.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="rounded-xl border border-emerald-500 bg-emerald-50/40 p-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-white">
+                                                <MdCreditCard size={23} className="text-emerald-600" />
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="text-sm font-bold text-slate-900">Paystack</p>
+                                                <p className="mt-1 text-xs leading-5 text-slate-500">
+                                                    Pay with card, bank transfer, or USSD where available.
+                                                </p>
+                                            </div>
+                                            <MdCheckCircle size={22} className="shrink-0 text-emerald-500" />
+                                        </div>
+                                        <div className="mt-4 flex items-center gap-2 border-t border-emerald-100 pt-3">
+                                            <MdLock size={16} className="text-emerald-600" />
+                                            <p className="text-[11px] text-slate-600">
+                                                Your payment is processed securely by Paystack.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </section>
                             </div>
-                        </aside>
 
-                    </div>
-                </form>
-            </main>
-</UserOnly>
-            {/* Footer */}
+                            {/* RIGHT COLUMN */}
+                            <aside className="lg:sticky lg:top-24 lg:h-fit">
+                                <div className="space-y-5">
+                                    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                                        <div className="mb-5 flex items-center justify-between">
+                                            <h2 className="text-base font-bold text-slate-900">
+                                                Order Summary
+                                            </h2>
+                                            <span className="text-xs font-medium text-slate-500">
+                                                {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}
+                                            </span>
+                                        </div>
+
+                                        <div className="max-h-[390px] space-y-4 overflow-y-auto pr-1">
+                                            {cartItems.map((item) => (
+                                                <div key={item._id} className="flex gap-3">
+                                                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100">
+                                                        <img
+                                                            src={item.images?.[0] || item.image}
+                                                            alt={item.name}
+                                                            className="h-full w-full object-cover"
+                                                        />
+                                                        <span className="absolute right-1 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-slate-900 px-1 text-[9px] font-bold text-white">
+                                                            {item.quantity}
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="truncate text-xs font-semibold text-slate-900">
+                                                            {item.name}
+                                                        </p>
+                                                        {item.store && (
+                                                            <div className="mt-1 flex items-center gap-1">
+                                                                <MdStorefront size={13} className="text-slate-400" />
+                                                                <span className="truncate text-[10px] text-slate-400">
+                                                                    {typeof item.store === 'object' ? item.store.name : item.store}
+                                                                </span>
+                                                            </div>
+                                                        )}
+
+                                                        <div className="mt-2 flex items-center justify-between gap-2">
+                                                            <div className="flex items-center rounded-lg border border-slate-200">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                                                                    disabled={item.quantity <= 1}
+                                                                    className="flex h-7 w-7 items-center justify-center text-slate-500 hover:bg-slate-50 disabled:opacity-40"
+                                                                    aria-label={`Decrease ${item.name} quantity`}
+                                                                >
+                                                                    <MdRemove size={14} />
+                                                                </button>
+                                                                <span className="w-6 text-center text-[10px] font-semibold text-slate-700">
+                                                                    {item.quantity}
+                                                                </span>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                                                                    disabled={item.stock != null && item.quantity >= item.stock}
+                                                                    className="flex h-7 w-7 items-center justify-center text-slate-500 hover:bg-slate-50 disabled:opacity-40"
+                                                                    aria-label={`Increase ${item.name} quantity`}
+                                                                >
+                                                                    <MdAdd size={14} />
+                                                                </button>
+                                                            </div>
+
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-xs font-bold text-slate-900">
+                                                                    {formatPrice(item.price * item.quantity)}
+                                                                </span>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => removeFromCart(item._id)}
+                                                                    className="text-slate-300 transition hover:text-red-500"
+                                                                    title="Remove item"
+                                                                    aria-label={`Remove ${item.name}`}
+                                                                >
+                                                                    <MdDeleteOutline size={17} />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div className="my-5 border-t border-slate-100" />
+
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-slate-500">Subtotal</span>
+                                                <span className="font-medium text-slate-800">{formatPrice(cartTotal)}</span>
+                                            </div>
+
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-slate-500">Delivery</span>
+                                                <span className="font-medium text-slate-800">{formatPrice(deliveryFee)}</span>
+                                            </div>
+
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-slate-500">Processing fee (2%)</span>
+                                                <span className="font-medium text-slate-800">{formatPrice(processingFee)}</span>
+                                            </div>
+
+                                            <div className="border-t border-slate-100 pt-4">
+                                                <div className="flex items-end justify-between gap-3">
+                                                    <div>
+                                                        <p className="text-sm font-bold text-slate-900">Total to pay</p>
+                                                        <p className="mt-0.5 text-[10px] text-slate-400">
+                                                            Including delivery and processing
+                                                        </p>
+                                                    </div>
+                                                    <span className="text-xl font-bold tracking-tight text-slate-900">
+                                                        {formatPrice(total)}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {error && (
+                                            <div role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-xs leading-5 text-red-700">
+                                                {error}
+                                            </div>
+                                        )}
+
+                                        <button
+                                            type="submit"
+                                            disabled={placingOrder || cartItems.length === 0}
+                                            className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 text-sm font-bold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-70"
+                                        >
+                                            {placingOrder ? (
+                                                <>
+                                                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                                                    Redirecting to Paystack...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Pay {formatPrice(total)}
+                                                    <MdArrowForward size={19} />
+                                                </>
+                                            )}
+                                        </button>
+
+                                        <div className="mt-4 flex items-center justify-center gap-1.5 text-[10px] text-slate-400">
+                                            <MdLock size={14} />
+                                            Secure Paystack checkout
+                                        </div>
+                                    </section>
+
+                                    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50">
+                                                <MdCheckCircle size={19} className="text-emerald-500" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-bold text-slate-900">
+                                                    Secure payment
+                                                </p>
+                                                <p className="mt-1 text-[10px] leading-5 text-slate-500">
+                                                    Your payment is handled by Paystack. Your order should only be confirmed after the server verifies payment.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </form>
+                </main>
+            </UserOnly>
+
             <footer className="mt-12 border-t border-slate-200 bg-white">
                 <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-
                     <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
-
                         <p className="text-xs text-slate-400">
-                            © {new Date().getFullYear()} StorePilot. All
-                            rights reserved.
+                            © {new Date().getFullYear()} StorePilot. All rights reserved.
                         </p>
-
                         <div className="flex items-center gap-4 text-xs text-slate-400">
                             <span>Secure Checkout</span>
                             <span>•</span>
-                            <span>Buyer Protection</span>
+                            <span>Paystack Payments</span>
                         </div>
-
                     </div>
-
                 </div>
             </footer>
         </div>

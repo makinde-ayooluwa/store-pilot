@@ -104,7 +104,7 @@ export default function Header({ mobileMenu, setMobileMenu }) {
             <>
               {/* Profile */}
 
-              {data.picture ? (
+              {data != null && data.picture ? (
                 <>
                   <Link
                     to="/account"
