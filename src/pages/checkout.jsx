@@ -34,7 +34,7 @@ const NIGERIAN_STATES = [
 ]
 
 const formatPrice = (price) =>
-    `₦${Number(price || 0).toLocaleString('en-NG')}`
+    `₦${(price || 0).toLocaleString('en-NG')}`
 
 export default function Checkout() {
     const navigate = useNavigate()
@@ -47,7 +47,6 @@ export default function Checkout() {
     } = useCart()
 
     const [mobileMenu, setMobileMenu] = useState(false)
-    const [deliveryMethod, setDeliveryMethod] = useState('standard')
     const [placingOrder, setPlacingOrder] = useState(false)
     const [error, setError] = useState('')
 
@@ -60,16 +59,92 @@ export default function Checkout() {
         state: data?.state ?? ''
     })
 
-    const deliveryFee = useMemo(
-        () => deliveryMethod === 'express' ? 5000 : 2500,
-        [deliveryMethod]
-    )
+    // Calculate delivery separately for each product using its saved quantity rules.
+    const deliveryItems = useMemo(() => {
+        return cartItems.map((item) => {
+            const pricing = item.deliveryPricing;
+            const quantity = Number(item.quantity);
+
+            if (!pricing || !Array.isArray(pricing.rules)) {
+                return { item, fee: null, issue: 'not-configured' };
+            }
+
+            if (pricing.enabled === false) {
+                return { item, fee: null, issue: 'pickup-only' };
+            }
+
+            if (!Number.isInteger(quantity) || quantity < 1) {
+                return { item, fee: null, issue: 'invalid-quantity' };
+            }
+
+            const rule = pricing.rules.find((candidate) => {
+                const min = Number(candidate.minQuantity);
+                const rawMax = candidate.maxQuantity;
+
+                // Infinity becomes null during JSON serialization. Also accept
+                // common string values used to mean "no maximum".
+                const unlimitedMax =
+                    rawMax === null ||
+                    rawMax === undefined ||
+                    rawMax === '' ||
+                    rawMax === Infinity ||
+                    (typeof rawMax === 'string' &&
+                        ['infinity', 'unlimited', '∞'].includes(
+                            rawMax.trim().toLowerCase()
+                        ));
+
+                const max = unlimitedMax ? Infinity : Number(rawMax);
+
+                if (!Number.isInteger(min) || min < 1) return false;
+                if (!unlimitedMax && (!Number.isInteger(max) || max < min)) {
+                    return false;
+                }
+
+                return quantity >= min && quantity <= max;
+            });
+
+            if (!rule) {
+                return { item, fee: null, issue: 'no-rule' };
+            }
+
+            // Use the actual price saved in the matching rule.
+            // Supports numeric values and strings like "1,500" or "₦1,500".
+            const rawPrice = rule.price;
+            const fee = typeof rawPrice === 'string'
+                ? Number(rawPrice.replace(/[₦,\s]/g, ''))
+                : Number(rawPrice);
+
+            if (
+                rawPrice === null ||
+                rawPrice === undefined ||
+                rawPrice === '' ||
+                !Number.isFinite(fee) ||
+                fee < 0
+            ) {
+                return { item, fee: null, issue: 'invalid-price' };
+            }
+
+            return { item, fee, issue: null };
+        });
+    }, [cartItems]);
+
+    const deliveryIssue = deliveryItems.find(
+        (entry) => entry.issue !== null
+    );
+
+    const deliveryFee = useMemo(() => {
+        if (deliveryItems.some((entry) => entry.fee === null)) {
+            return 0;
+        }
+
+        return deliveryItems.reduce((sum, entry) => sum + entry.fee, 0);
+    }, [deliveryItems]);
 
     const processingPercent = 2
     const processingFee = Math.round(
-        (Number(cartTotal || 0) + deliveryFee) * processingPercent / 100
+        ((cartTotal || 0) + deliveryFee) * processingPercent / 100
     )
-    const total = Number(cartTotal || 0) + deliveryFee + processingFee
+    const total = (cartTotal || 0) + deliveryFee + processingFee
 
     const handleInputChange = (event) => {
         const { name, value } = event.target
@@ -97,6 +172,20 @@ export default function Checkout() {
         if (!cartItems.length) {
             setError('Your cart is empty.')
             return
+        }
+
+        if (deliveryIssue) {
+            const messages = {
+                'pickup-only': `${deliveryIssue.item.name} is marked as pickup-only.`,
+                'not-configured': `Delivery pricing is not configured for ${deliveryIssue.item.name}. Please contact the store owner.`,
+                'no-rule': `No delivery rule matches the selected quantity for ${deliveryIssue.item.name}. Please contact the store owner.`,
+                'invalid-price': `The saved delivery price for ${deliveryIssue.item.name} is invalid.`,
+                'invalid-quantity': `The quantity selected for ${deliveryIssue.item.name} is invalid.`
+            };
+
+            setError(messages[deliveryIssue.issue] ||
+                `Delivery pricing could not be calculated for ${deliveryIssue.item.name}.`);
+            return;
         }
 
         const requiredFields = [
@@ -139,12 +228,13 @@ export default function Checkout() {
                             state: formData.state
                         },
                         delivery: {
-                            method: deliveryMethod
+                            method: 'product-rules',
+                            fee: deliveryFee
                         },
                         paymentMethod: 'paystack',
                         items: cartItems.map((item) => ({
                             productId: item._id,
-                            quantity: Number(item.quantity)
+                            quantity: (item.quantity)
                         }))
                     })
                 }
@@ -432,7 +522,7 @@ export default function Checkout() {
                                     </div>
                                 </section>
 
-                                {/* Delivery method */}
+                                {/* Product-specific delivery pricing */}
                                 <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                                     <div className="mb-5 flex items-start gap-3">
                                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100">
@@ -440,50 +530,50 @@ export default function Checkout() {
                                         </div>
                                         <div>
                                             <h2 className="text-base font-bold text-slate-900">
-                                                Delivery Method
+                                                Delivery Charges
                                             </h2>
                                             <p className="mt-1 text-xs text-slate-500">
-                                                Select how you'd like to receive your order.
+                                                Each product uses its store owner's delivery price for the quantity ordered.
                                             </p>
                                         </div>
                                     </div>
 
                                     <div className="space-y-3">
-                                        <label className={`flex cursor-pointer items-center justify-between rounded-xl border p-4 transition ${deliveryMethod === 'standard' ? 'border-slate-900 bg-slate-50' : 'border-slate-200 hover:border-slate-300'}`}>
-                                            <div className="flex items-start gap-3">
-                                                <input
-                                                    type="radio"
-                                                    name="deliveryMethod"
-                                                    value="standard"
-                                                    checked={deliveryMethod === 'standard'}
-                                                    onChange={(event) => setDeliveryMethod(event.target.value)}
-                                                    className="mt-1 h-4 w-4 accent-slate-900"
-                                                />
-                                                <div>
-                                                    <p className="text-sm font-semibold text-slate-900">Standard Delivery</p>
-                                                    <p className="mt-1 text-xs text-slate-500">Estimated delivery in 2–5 business days</p>
+                                        {deliveryItems.map(({ item, fee, issue }) => (
+                                            <div key={item._id} className="flex items-center justify-between gap-4 rounded-xl border border-slate-100 p-3">
+                                                <div className="min-w-0">
+                                                    <p className="truncate text-sm font-semibold text-slate-800">
+                                                        {item.name}
+                                                    </p>
+                                                    <p className="mt-1 text-xs text-slate-500">
+                                                        Quantity: {item.quantity}
+                                                    </p>
+                                                    {issue && (
+                                                        <p className="mt-1 text-xs text-amber-700">
+                                                            {issue === 'pickup-only'
+                                                                ? 'Pickup only'
+                                                                : issue === 'not-configured'
+                                                                    ? 'Delivery price not configured'
+                                                                    : issue === 'invalid-price'
+                                                                        ? 'Invalid delivery price'
+                                                                        : issue === 'invalid-quantity'
+                                                                            ? 'Invalid quantity'
+                                                                            : 'No matching quantity rule'}
+                                                        </p>
+                                                    )}
                                                 </div>
+                                                <span className="shrink-0 text-sm font-bold text-slate-900">
+                                                    {fee === null ? 'Unavailable' : formatPrice(fee)}
+                                                </span>
                                             </div>
-                                            <span className="text-sm font-bold text-slate-900">₦2,500</span>
-                                        </label>
+                                        ))}
+                                    </div>
 
-                                        <label className={`flex cursor-pointer items-center justify-between rounded-xl border p-4 transition ${deliveryMethod === 'express' ? 'border-slate-900 bg-slate-50' : 'border-slate-200 hover:border-slate-300'}`}>
-                                            <div className="flex items-start gap-3">
-                                                <input
-                                                    type="radio"
-                                                    name="deliveryMethod"
-                                                    value="express"
-                                                    checked={deliveryMethod === 'express'}
-                                                    onChange={(event) => setDeliveryMethod(event.target.value)}
-                                                    className="mt-1 h-4 w-4 accent-slate-900"
-                                                />
-                                                <div>
-                                                    <p className="text-sm font-semibold text-slate-900">Express Delivery</p>
-                                                    <p className="mt-1 text-xs text-slate-500">Estimated delivery in 1–2 business days</p>
-                                                </div>
-                                            </div>
-                                            <span className="text-sm font-bold text-slate-900">₦5,000</span>
-                                        </label>
+                                    <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+                                        <span className="text-sm font-semibold text-slate-700">Combined delivery fee</span>
+                                        <span className="text-sm font-bold text-slate-900">
+                                            {deliveryIssue ? 'Check delivery settings' : formatPrice(deliveryFee)}
+                                        </span>
                                     </div>
                                 </section>
 
@@ -621,7 +711,7 @@ export default function Checkout() {
 
                                             <div className="flex items-center justify-between text-sm">
                                                 <span className="text-slate-500">Delivery</span>
-                                                <span className="font-medium text-slate-800">{formatPrice(deliveryFee)}</span>
+                                                <span className="font-medium text-slate-800">{deliveryIssue ? 'Unavailable' : formatPrice(deliveryFee)}</span>
                                             </div>
 
                                             <div className="flex items-center justify-between text-sm">
@@ -652,7 +742,7 @@ export default function Checkout() {
 
                                         <button
                                             type="submit"
-                                            disabled={placingOrder || cartItems.length === 0}
+                                            disabled={placingOrder || cartItems.length === 0 || Boolean(deliveryIssue)}
                                             className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 text-sm font-bold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-70"
                                         >
                                             {placingOrder ? (

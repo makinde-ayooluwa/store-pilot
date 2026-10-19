@@ -43,7 +43,17 @@ export default function EditProduct() {
             discount: product.discount ?? 0,
             lowStockThreshold: product.lowStockThreshold ?? '',
             slug: product.slug ?? '',
-            status: product.status ?? 'active'
+            status: product.status ?? 'active',
+            deliveryPricing: {
+                enabled: product.deliveryPricing?.enabled ?? true,
+                rules: Array.isArray(product.deliveryPricing?.rules)
+                    ? product.deliveryPricing.rules.map((rule) => ({
+                        minQuantity: String(rule.minQuantity ?? 1),
+                        maxQuantity: rule.maxQuantity == null ? '' : String(rule.maxQuantity),
+                        price: String(rule.price ?? 0)
+                    }))
+                    : []
+            }
         }
 
         setFormData(productData)
@@ -77,6 +87,57 @@ export default function EditProduct() {
             [name]: value
         }))
     }
+
+    const handleDeliveryEnabledChange = (e) => {
+        const enabled = e.target.checked;
+
+        setFormData((current) => ({
+            ...current,
+            deliveryPricing: {
+                ...current.deliveryPricing,
+                enabled
+            }
+        }));
+    };
+
+    const handleDeliveryRuleChange = (index, field, value) => {
+        setFormData((current) => ({
+            ...current,
+            deliveryPricing: {
+                ...current.deliveryPricing,
+                rules: current.deliveryPricing.rules.map((rule, ruleIndex) =>
+                    ruleIndex === index
+                        ? { ...rule, [field]: value }
+                        : rule
+                )
+            }
+        }));
+    };
+
+    const addDeliveryRule = () => {
+        setFormData((current) => ({
+            ...current,
+            deliveryPricing: {
+                ...current.deliveryPricing,
+                rules: [
+                    ...current.deliveryPricing.rules,
+                    { minQuantity: '1', maxQuantity: '', price: '0' }
+                ]
+            }
+        }));
+    };
+
+    const removeDeliveryRule = (index) => {
+        setFormData((current) => ({
+            ...current,
+            deliveryPricing: {
+                ...current.deliveryPricing,
+                rules: current.deliveryPricing.rules.filter(
+                    (_, ruleIndex) => ruleIndex !== index
+                )
+            }
+        }));
+    };
 
     /*
      * Upload new images
@@ -127,6 +188,18 @@ export default function EditProduct() {
             data.append("lowStockThreshold", formData.lowStockThreshold);
             data.append("slug", formData.slug);
             data.append("status", formData.status);
+
+            const deliveryPricing = {
+                enabled: formData.deliveryPricing.enabled,
+                rules: formData.deliveryPricing.rules.map((rule) => ({
+                    minQuantity: Number(rule.minQuantity),
+                    maxQuantity: rule.maxQuantity === '' ? null : Number(rule.maxQuantity),
+                    price: Number(rule.price)
+                }))
+            };
+
+            data.append("deliveryPricing", JSON.stringify(deliveryPricing));
+
             previewImages.forEach((image) => {
                 data.append("images", image.file);
             });
@@ -141,22 +214,11 @@ export default function EditProduct() {
                 })
                 return;
             }
-            const keys = Object.keys(formData);
             Swal.fire({
                 title: "Success",
                 text: result.message,
                 icon: "success"
-            })
-            // 1. Copy current form state
-            const updatedForm = { ...formData };
-
-            // 2. Clear the specific keys in the loop
-            keys.forEach((key) => {
-                updatedForm[key] = "";
             });
-
-            // 3. Update state ONCE
-            setFormData(updatedForm);
         } catch (error) {
             console.error(
                 "EDIT PRODUCT ERROR:",
@@ -683,6 +745,124 @@ export default function EditProduct() {
 
                         </div>
 
+                    </div>
+
+
+                    {/* DELIVERY PRICING */}
+                    <div className="rounded-xl border border-gray-200 bg-white p-5 md:p-6">
+                        <div className="mb-5">
+                            <h2 className="text-base font-bold text-gray-900">
+                                Delivery Pricing
+                            </h2>
+                            <p className="mt-1 text-sm text-gray-500">
+                                Set delivery prices for different quantities of this product.
+                            </p>
+                        </div>
+
+                        <label className="mb-5 flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 p-4">
+                            <input
+                                type="checkbox"
+                                checked={formData.deliveryPricing.enabled}
+                                onChange={handleDeliveryEnabledChange}
+                                className="mt-1 accent-green-600"
+                            />
+                            <span>
+                                <span className="block text-sm font-medium text-gray-800">
+                                    Enable delivery for this product
+                                </span>
+                                <span className="mt-1 block text-xs text-gray-500">
+                                    Turn this off if the product is pickup-only.
+                                </span>
+                            </span>
+                        </label>
+
+                        {formData.deliveryPricing.enabled && (
+                            <div className="space-y-4">
+                                {formData.deliveryPricing.rules.map((rule, index) => (
+                                    <div
+                                        key={index}
+                                        className="rounded-lg border border-gray-200 p-4"
+                                    >
+                                        <div className="mb-3 flex items-center justify-between">
+                                            <h3 className="text-sm font-semibold text-gray-800">
+                                                Rule {index + 1}
+                                            </h3>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeDeliveryRule(index)}
+                                                className="text-sm font-medium text-red-600 hover:text-red-700"
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                                            <div>
+                                                <label className="mb-1 block text-xs font-medium text-gray-600">
+                                                    Minimum quantity
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    required
+                                                    value={rule.minQuantity}
+                                                    onChange={(e) => handleDeliveryRuleChange(index, 'minQuantity', e.target.value)}
+                                                    className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="mb-1 block text-xs font-medium text-gray-600">
+                                                    Maximum quantity
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    min={rule.minQuantity || 1}
+                                                    value={rule.maxQuantity}
+                                                    onChange={(e) => handleDeliveryRuleChange(index, 'maxQuantity', e.target.value)}
+                                                    placeholder="No maximum"
+                                                    className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100"
+                                                />
+                                                <p className="mt-1 text-xs text-gray-400">
+                                                    Leave blank for unlimited.
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <label className="mb-1 block text-xs font-medium text-gray-600">
+                                                    Delivery price (₦)
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    required
+                                                    value={rule.price}
+                                                    onChange={(e) => handleDeliveryRuleChange(index, 'price', e.target.value)}
+                                                    className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100"
+                                                />
+                                                <p className="mt-1 text-xs text-gray-400">
+                                                    Enter 0 for free delivery.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                <button
+                                    type="button"
+                                    onClick={addDeliveryRule}
+                                    className="inline-flex items-center rounded-lg border border-green-200 px-4 py-2.5 text-sm font-semibold text-green-700 transition hover:bg-green-50"
+                                >
+                                    + Add quantity rule
+                                </button>
+
+                                {formData.deliveryPricing.rules.length === 0 && (
+                                    <p className="text-sm text-amber-700">
+                                        Add at least one rule to configure delivery pricing.
+                                    </p>
+                                )}
+                            </div>
+                        )}
                     </div>
 
 
