@@ -410,9 +410,11 @@ setAdding(false)
                                     About this product
                                 </h2>
 
-                                <p className="mt-2 text-sm leading-6 text-slate-600">
+                                <div className="w-25">
+                                    <p className="mt-2 text-sm leading-6 text-slate-600">
                                     {product.description}
                                 </p>
+                                </div>
 
                             </div>
 

@@ -166,6 +166,7 @@ export default function Checkout() {
      * Never put your Paystack secret key in frontend code.
      */
     const handlePlaceOrder = async (event) => {
+        
         event.preventDefault()
         setError('')
 
