@@ -16,13 +16,14 @@ import Header from '../../components/header'
 import { useOrders } from '../../contexts/orderProvider'
 import { useUser } from '../../contexts/userProvider'
 import { UserOnly } from '../../components/userOnly'
+import { useResource } from '../../contexts/resourceProvider'
 
 export default function Orders() {
     const { orders } = useOrders()
 const {userLoading} = useUser();
     const [mobileMenu, setMobileMenu] = useState(false)
     const [activeFilter, setActiveFilter] = useState('All')
-
+const {stores} = useResource()
     const filters = [
         'All',
         'Processing',
@@ -302,7 +303,7 @@ const {userLoading} = useUser();
                                                                             <>
                                                                                 <span>•</span>
                                                                                 <span>
-                                                                                    {item.store}
+                                                                                    {stores.find((x)=>x._id == item.store).name}
                                                                                 </span>
                                                                             </>
                                                                         )}
@@ -311,7 +312,7 @@ const {userLoading} = useUser();
 
                                                                 <p className="shrink-0 text-sm font-bold text-slate-900">
                                                                     {formatPrice(
-                                                                        item.price *
+                                                                        item.unitPrice *
                                                                         item.quantity
                                                                     )}
                                                                 </p>

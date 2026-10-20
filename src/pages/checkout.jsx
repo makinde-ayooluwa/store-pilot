@@ -23,6 +23,8 @@ import { useCart } from '../contexts/cartProvider'
 import { useUser } from '../contexts/userProvider'
 import { UserOnly } from '../components/userOnly'
 import { backendUrl } from '../data/constants'
+import { useOrders } from '../contexts/orderProvider'
+import Swal from 'sweetalert2'
 
 const NIGERIAN_STATES = [
     'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa',
@@ -45,6 +47,7 @@ export default function Checkout() {
         updateQuantity,
         removeFromCart
     } = useCart()
+    const { createOrder } = useOrders()
 
     const [mobileMenu, setMobileMenu] = useState(false)
     const [placingOrder, setPlacingOrder] = useState(false)
@@ -166,7 +169,7 @@ export default function Checkout() {
      * Never put your Paystack secret key in frontend code.
      */
     const handlePlaceOrder = async (event) => {
-        
+
         event.preventDefault()
         setError('')
 
@@ -201,64 +204,43 @@ export default function Checkout() {
             return
         }
 
-        setPlacingOrder(true)
+        
 
         try {
-
-            if (!backendUrl) {
-                throw new Error(
-                    'VITE_BACKEND_URL is not configured in your frontend .env file.'
-                )
+            setPlacingOrder(true)
+            const orderData = {
+                user: data._id ?? "",
+                items: cartItems.map((item) => {
+                    return {
+                        product: item._id,
+                        name: item.name,
+                        image: item.image,
+                        quantity: item.quantity,
+                        unitPrice: item.price,
+                        store: item.store,
+                        deliveryFee: Number(item.deliveryPricing.rules.find((x) => item.quantity >= x.minQuantity && item.quantity <= x.maxQuantity))
+                    }
+                }),
+                customer: {
+                    name: formData.fullname,
+                    email: formData.email,
+                    phone: formData.phone
+                },
+                shippingAddress: {
+                    address: formData.address,
+                    city: formData.city,
+                    state: formData.state,
+                    country: "Nigeria"
+                },
+                deliveryMethod: "standard"
             }
-
-            const response = await fetch(
-                `${backendUrl}/payment/initialize`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        customer: {
-                            fullname: formData.fullname.trim(),
-                            phone: formData.phone.trim(),
-                            email: formData.email.trim()
-                        },
-                        shippingAddress: {
-                            address: formData.address.trim(),
-                            city: formData.city.trim(),
-                            state: formData.state
-                        },
-                        delivery: {
-                            method: 'product-rules',
-                            fee: deliveryFee
-                        },
-                        paymentMethod: 'paystack',
-                        items: cartItems.map((item) => ({
-                            productId: item._id,
-                            quantity: (item.quantity)
-                        }))
-                    })
-                }
-            )
-
-            const result = await response.json().catch(() => ({}))
-
-            if (!response.ok) {
-                throw new Error(
-                    result.message || 'Unable to initialize Paystack payment.'
-                )
+            const response = await createOrder(orderData);
+            if(response.status){
+                setPlacingOrder(false)
+                
             }
-
-            if (!result.authorization_url) {
-                throw new Error(
-                    'The payment server did not return a Paystack authorization URL.'
-                )
-            }
-
-            // Redirect to Paystack. Do not clear the cart or mark the order
-            // paid here; the backend must verify the transaction on return/webhook.
-            window.location.assign(result.authorization_url)
-        } catch (err) {
+            console.log(response.status)
+            } catch (err) {
             setError(
                 err.message ||
                 'Something went wrong while starting your payment. Please try again.'

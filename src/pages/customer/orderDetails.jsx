@@ -21,11 +21,12 @@ import Header from '../../components/header'
 import { useOrders } from '../../contexts/orderProvider'
 import { useUser } from '../../contexts/userProvider'
 import { UserOnly } from '../../components/userOnly'
+import { useResource } from '../../contexts/resourceProvider'
 
 export default function OrderDetails() {
     const { id } = useParams()
     const navigate = useNavigate()
-
+const {stores} = useResource();
     const { getOrderById } = useOrders()
 
     const [mobileMenu, setMobileMenu] = useState(false)
@@ -179,7 +180,7 @@ const {userLoading} = useUser();
     const statusStyle = getStatusStyle(order.status)
     const currentStep = getStatusStep(order.status)
 
-    const deliveryFee = order.delivery?.fee || 0
+    const deliveryFee = order.deliveryFee || 0
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -229,7 +230,7 @@ const {userLoading} = useUser();
                             </p>
 
                             <p className="mt-1 text-sm font-bold text-slate-900">
-                                {order.orderNumber}
+                                {order.orderId}
                             </p>
                         </div>
 
@@ -407,7 +408,7 @@ const {userLoading} = useUser();
                                                                 />
 
                                                                 <span className="text-xs text-slate-400">
-                                                                    {item.store}
+                                                                    {stores.find((x)=>x._id == item.store).name}
                                                                 </span>
                                                             </div>
                                                         )}
@@ -416,7 +417,7 @@ const {userLoading} = useUser();
 
                                                     <p className="text-sm font-bold text-slate-900">
                                                         {formatPrice(
-                                                            item.price *
+                                                            item.unitPrice *
                                                             item.quantity
                                                         )}
                                                     </p>
@@ -430,7 +431,7 @@ const {userLoading} = useUser();
                                                     </span>
 
                                                     <span className="text-xs text-slate-400">
-                                                        {formatPrice(item.price)} each
+                                                        {formatPrice(item.unitPrice)} each
                                                     </span>
 
                                                 </div>
@@ -562,7 +563,17 @@ const {userLoading} = useUser();
                                             </span>
 
                                             <span className="font-medium text-slate-800">
-                                                {formatPrice(deliveryFee)}
+                                                {formatPrice(order.deliveryFee)}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center justify-between text-sm">
+                                            <span className="text-slate-500">
+                                                Processing Fee
+                                            </span>
+
+                                            <span className="font-medium text-slate-800">
+                                                {formatPrice(order.processingFee)}
                                             </span>
                                         </div>
 
@@ -576,7 +587,7 @@ const {userLoading} = useUser();
                                                     </p>
 
                                                     <p className="mt-0.5 text-[10px] text-slate-400">
-                                                        Including delivery
+                                                        Including delivery and fee
                                                     </p>
                                                 </div>
 
@@ -636,6 +647,7 @@ const {userLoading} = useUser();
                                                 >
                                                     {order.paymentStatus}
                                                 </span>
+                                                {order.paymentStatus == "pending" && <h1>True</h1>}
                                             </div>
 
                                         </div>

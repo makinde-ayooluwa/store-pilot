@@ -141,7 +141,6 @@ export default function Cart() {
                 return 'Delivery pricing needs to be checked at checkout.'
         }
     }
-
     return (
         <div className="min-h-screen bg-slate-50">
             <Header
