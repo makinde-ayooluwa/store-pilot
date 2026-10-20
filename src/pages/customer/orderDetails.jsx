@@ -14,7 +14,9 @@ import {
     MdPhone,
     MdEmail,
     MdAccessTime,
-    MdReceiptLong
+    MdReceiptLong,
+    MdWallet,
+    MdTab
 } from 'react-icons/md'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Header from '../../components/header'
@@ -22,13 +24,14 @@ import { useOrders } from '../../contexts/orderProvider'
 import { useUser } from '../../contexts/userProvider'
 import { UserOnly } from '../../components/userOnly'
 import { useResource } from '../../contexts/resourceProvider'
+import { ImSpinner2 } from 'react-icons/im'
 
 export default function OrderDetails() {
     const { id } = useParams()
     const navigate = useNavigate()
-const {stores} = useResource();
-    const { getOrderById } = useOrders()
-
+    const { stores } = useResource();
+    const { getOrderById, initializePayment } = useOrders()
+    const [paying, setPaying] = useState(false)
     const [mobileMenu, setMobileMenu] = useState(false)
 
     const order = getOrderById(id)
@@ -46,7 +49,7 @@ const {stores} = useResource();
             year: 'numeric'
         })
     }
-const {userLoading} = useUser();
+    const { userLoading } = useUser();
     const formatDateTime = (date) => {
         if (!date) return ''
 
@@ -131,47 +134,47 @@ const {userLoading} = useUser();
                     setMobileMenu={setMobileMenu}
                 />
                 <UserOnly loading={userLoading}>
-                <main className="mx-auto flex min-h-[calc(100vh-64px)] max-w-7xl items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-                    <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+                    <main className="mx-auto flex min-h-[calc(100vh-64px)] max-w-7xl items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+                        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
 
-                        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
-                            <MdReceiptLong
-                                size={30}
-                                className="text-slate-500"
-                            />
+                            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
+                                <MdReceiptLong
+                                    size={30}
+                                    className="text-slate-500"
+                                />
+                            </div>
+
+                            <h1 className="text-xl font-bold text-slate-900">
+                                Order not found
+                            </h1>
+
+                            <p className="mt-2 text-sm leading-6 text-slate-500">
+                                We couldn't find the order you're looking for.
+                                It may no longer be available.
+                            </p>
+
+                            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+
+                                <button
+                                    onClick={() => navigate(-1)}
+                                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                >
+                                    <MdArrowBack size={18} />
+                                    Go Back
+                                </button>
+
+                                <Link
+                                    to="/products"
+                                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+                                >
+                                    Continue Shopping
+                                    <MdArrowForward size={18} />
+                                </Link>
+
+                            </div>
+
                         </div>
-
-                        <h1 className="text-xl font-bold text-slate-900">
-                            Order not found
-                        </h1>
-
-                        <p className="mt-2 text-sm leading-6 text-slate-500">
-                            We couldn't find the order you're looking for.
-                            It may no longer be available.
-                        </p>
-
-                        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-
-                            <button
-                                onClick={() => navigate(-1)}
-                                className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                            >
-                                <MdArrowBack size={18} />
-                                Go Back
-                            </button>
-
-                            <Link
-                                to="/products"
-                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-                            >
-                                Continue Shopping
-                                <MdArrowForward size={18} />
-                            </Link>
-
-                        </div>
-
-                    </div>
-                </main>
+                    </main>
                 </UserOnly>
             </div>
         )
@@ -179,9 +182,20 @@ const {userLoading} = useUser();
 
     const statusStyle = getStatusStyle(order.status)
     const currentStep = getStatusStep(order.status)
-
-    const deliveryFee = order.deliveryFee || 0
-
+    const handlePayNow = async () => {
+        try {
+            setPaying(true);
+            await initializePayment({
+                amount: order.total,
+                email: order.customer.email,
+                reference: order.orderId
+            });
+            setPaying(false);
+        } catch (error) {
+            setPaying(false)
+            console.log("Error occured while handling quick payment", error);
+        }
+    }
     return (
         <div className="min-h-screen bg-slate-50">
 
@@ -319,8 +333,8 @@ const {userLoading} = useUser();
 
                                                 <div
                                                     className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-4 border-white text-[10px] font-bold ${completed
-                                                            ? 'bg-emerald-500 text-white'
-                                                            : 'bg-slate-100 text-slate-400'
+                                                        ? 'bg-emerald-500 text-white'
+                                                        : 'bg-slate-100 text-slate-400'
                                                         }`}
                                                 >
                                                     {completed ? (
@@ -332,8 +346,8 @@ const {userLoading} = useUser();
 
                                                 <p
                                                     className={`mt-2 text-[10px] font-semibold ${completed
-                                                            ? 'text-slate-900'
-                                                            : 'text-slate-400'
+                                                        ? 'text-slate-900'
+                                                        : 'text-slate-400'
                                                         }`}
                                                 >
                                                     {item.label}
@@ -408,7 +422,7 @@ const {userLoading} = useUser();
                                                                 />
 
                                                                 <span className="text-xs text-slate-400">
-                                                                    {stores.find((x)=>x._id == item.store).name}
+                                                                    {stores.find((x) => x._id == item.store).name}
                                                                 </span>
                                                             </div>
                                                         )}
@@ -641,13 +655,31 @@ const {userLoading} = useUser();
 
                                                 <span
                                                     className={`mt-2 inline-flex rounded-full px-2 py-1 text-[9px] font-bold ${order.paymentStatus === 'Paid'
-                                                            ? 'bg-emerald-50 text-emerald-600'
-                                                            : 'bg-amber-50 text-amber-600'
+                                                        ? 'bg-emerald-50 text-emerald-600'
+                                                        : 'bg-amber-50 text-amber-600'
                                                         }`}
                                                 >
                                                     {order.paymentStatus}
                                                 </span>
-                                                {order.paymentStatus == "pending" && <h1>True</h1>}
+                                                {order.paymentStatus == "pending" &&
+                                                    <div>
+                                                        <button onClick={() => !paying && handlePayNow()} className="bg-green-700 p-2 rounded-[10px] text-white flex gap-2 items-center">
+                                                            {!paying ?
+                                                                (
+                                                                    <>
+                                                                        <span>
+                                                                            <MdWallet />
+                                                                        </span>
+                                                                        <span>Pay Now</span>
+                                                                    </>
+                                                                ) :
+                                                                (
+                                                                    <ImSpinner2 className="animate-spin text-white" />
+                                                                )
+                                                            }
+                                                        </button>
+                                                    </div>
+                                                }
                                             </div>
 
                                         </div>

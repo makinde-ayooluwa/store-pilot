@@ -61,10 +61,10 @@ export function OrderProvider({ children }) {
                 )
             }
             const response = await axios.post(`${backendUrl}/orders/create`, orderData)
-            const result = response.data;
+            const result = await response.data;
             console.log("ORDER PROVIDER RESULT", result)
             if (result.status) {
-                Swal.fire({
+                await Swal.fire({
                     title: "Order success",
                     text: "Order placed. Redirecting to paystack ...",
                     icon: "success",
@@ -79,7 +79,7 @@ export function OrderProvider({ children }) {
                         email,
                         reference: orderId
                     });
-                    const payResult = payResponse.data;
+                    const payResult = await payResponse.data;
                     if (payResult.status) {
                         const { authorization_url } = payResult;
                         setTimeout(() => {
@@ -103,14 +103,36 @@ export function OrderProvider({ children }) {
         } catch (error) {
 
         }
-       }
-const initializePayment = async(req, res)=>{
-    try {
-        const response = await axios.post(`${backendUrl}/payment/initialize`)
-    } catch (error) {
-        
     }
-}
+    const initializePayment = async (data) => {
+        try {
+            const response = await axios.post(`${backendUrl}/payment/initialize`, {
+                amount: Number(data.amount) * 100, //Kobo
+                email: data.email,
+                reference: data.reference
+            });
+            const result = await response.data;
+            if (result.status) {
+                const { authorization_url } = result;
+                await Swal.fire({
+                    title: "Success",
+                    text:"Redirection in progress ...",
+                    icon:"success"
+                })
+                setTimeout(() => {
+                    window.location.assign(authorization_url);
+                }, 3000);
+            }
+            return result;
+        } catch (error) {
+            await Swal.fire({
+                title: "Error",
+                text: "Quick payment error occured",
+                icon: "error"
+            })
+            console.log(error);
+        }
+    }
     const getOrderById = (orderId) => {
         return orders.find(
             (order) => order._id === orderId
@@ -147,7 +169,8 @@ const initializePayment = async(req, res)=>{
                 getOrderById,
                 updateOrderStatus,
                 clearOrders,
-                orderCount
+                orderCount,
+                initializePayment
             }}
         >
             {children}
