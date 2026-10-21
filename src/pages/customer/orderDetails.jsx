@@ -662,23 +662,27 @@ export default function OrderDetails() {
                                                     {order.paymentStatus}
                                                 </span>
                                                 {order.paymentStatus == "pending" &&
-                                                    <div>
-                                                        <button onClick={() => !paying && handlePayNow()} className="bg-green-700 p-2 rounded-[10px] text-white flex gap-2 items-center">
-                                                            {!paying ?
-                                                                (
-                                                                    <>
-                                                                        <span>
-                                                                            <MdWallet />
-                                                                        </span>
-                                                                        <span>Pay Now</span>
-                                                                    </>
-                                                                ) :
-                                                                (
-                                                                    <ImSpinner2 className="animate-spin text-white" />
-                                                                )
-                                                            }
-                                                        </button>
-                                                    </div>
+                                                    (
+                                                        <>
+                                                            {/* <div>
+                                                            <button onClick={() => !paying && handlePayNow()} className="bg-green-700 p-2 rounded-[10px] text-white flex gap-2 items-center">
+                                                                {!paying ?
+                                                                    (
+                                                                        <>
+                                                                            <span>
+                                                                                <MdWallet />
+                                                                            </span>
+                                                                            <span className="text-[10px]">Pay Now</span>
+                                                                        </>
+                                                                    ) :
+                                                                    (
+                                                                        <ImSpinner2 className="animate-spin text-white" />
+                                                                    )
+                                                                }
+                                                            </button>
+                                                        </div> */}
+                                                        </>
+                                                    )
                                                 }
                                             </div>
 
