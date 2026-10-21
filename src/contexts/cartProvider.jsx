@@ -75,8 +75,8 @@ export function CartProvider({ children }) {
                     user: userId,
                     item: {
                         ...product,
-                        quantity
-                    }
+                        quantity,
+                    },                    
                 }
             );
 

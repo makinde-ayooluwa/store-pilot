@@ -68,54 +68,52 @@ export default function Checkout() {
             const pricing = item.deliveryPricing;
             const quantity = Number(item.quantity);
 
-            if (!pricing || !Array.isArray(pricing.rules)) {
-                return { item, fee: null, issue: 'not-configured' };
-            }
+            // if (!pricing || !Array.isArray(pricing.rules)) {
+            //     return { item, fee: null, issue: 'not-configured' };
+            // }
 
-            if (pricing.enabled === false) {
+            if (item.deliveryPricing.enabled === false) {
                 return { item, fee: null, issue: 'pickup-only' };
             }
 
-            if (!Number.isInteger(quantity) || quantity < 1) {
-                return { item, fee: null, issue: 'invalid-quantity' };
-            }
+            // if (!Number.isInteger(quantity) || quantity < 1) {
+            //     return { item, fee: null, issue: 'invalid-quantity' };
+            // }
 
-            const rule = pricing.rules.find((candidate) => {
-                const min = Number(candidate.minQuantity);
-                const rawMax = candidate.maxQuantity;
+            // const rule = pricing.rules.find((candidate) => {
+            //     const min = Number(candidate.minQuantity);
+            //     const rawMax = candidate.maxQuantity;
 
-                // Infinity becomes null during JSON serialization. Also accept
-                // common string values used to mean "no maximum".
-                const unlimitedMax =
-                    rawMax === null ||
-                    rawMax === undefined ||
-                    rawMax === '' ||
-                    rawMax === Infinity ||
-                    (typeof rawMax === 'string' &&
-                        ['infinity', 'unlimited', '∞'].includes(
-                            rawMax.trim().toLowerCase()
-                        ));
+            //     // Infinity becomes null during JSON serialization. Also accept
+            //     // common string values used to mean "no maximum".
+            //     const unlimitedMax =
+            //         rawMax === null ||
+            //         rawMax === undefined ||
+            //         rawMax === '' ||
+            //         rawMax === Infinity ||
+            //         (typeof rawMax === 'string' &&
+            //             ['infinity', 'unlimited', '∞'].includes(
+            //                 rawMax.trim().toLowerCase()
+            //             ));
 
-                const max = unlimitedMax ? Infinity : Number(rawMax);
+            //     const max = unlimitedMax ? Infinity : Number(rawMax);
 
-                if (!Number.isInteger(min) || min < 1) return false;
-                if (!unlimitedMax && (!Number.isInteger(max) || max < min)) {
-                    return false;
-                }
+            //     if (!Number.isInteger(min) || min < 1) return false;
+            //     if (!unlimitedMax && (!Number.isInteger(max) || max < min)) {
+            //         return false;
+            //     }
 
-                return quantity >= min && quantity <= max;
-            });
+            //     return quantity >= min && quantity <= max;
+            // });
 
-            if (!rule) {
-                return { item, fee: null, issue: 'no-rule' };
-            }
+            // if (!rule) {
+            //     return { item, fee: null, issue: 'no-rule' };
+            // }
 
             // Use the actual price saved in the matching rule.
             // Supports numeric values and strings like "1,500" or "₦1,500".
-            const rawPrice = rule.price;
-            const fee = typeof rawPrice === 'string'
-                ? Number(rawPrice.replace(/[₦,\s]/g, ''))
-                : Number(rawPrice);
+            const rawPrice = item.deliveryFee;
+            const fee = Number(rawPrice);
 
             if (
                 rawPrice === null ||
@@ -143,11 +141,9 @@ export default function Checkout() {
         return deliveryItems.reduce((sum, entry) => sum + entry.fee, 0);
     }, [deliveryItems]);
 
-    const processingPercent = 2
-    const processingFee = Math.round(
-        ((cartTotal || 0) + deliveryFee) * processingPercent / 100
-    )
-    const total = (cartTotal || 0) + deliveryFee + processingFee
+    const processingPercent = 0.02;
+    const processingFee = (cartTotal + deliveryFee) * processingPercent
+    const total = cartTotal + deliveryFee + processingFee
 
     const handleInputChange = (event) => {
         const { name, value } = event.target
@@ -209,10 +205,10 @@ export default function Checkout() {
         try {
             setPlacingOrder(true)
             const deliveryFee = (item)=>{
-                item.deliveryPricing.rules.forEach((rule)=>{
-                    if(rule.maxQuantity == null){
-                        return rule.price;
-                    }
+                item.deliveryPricing.rules.map((rule)=>{
+                    // if(rule.maxQuantity == null){
+                    //     return rule.price;
+                    // }
                     if(item.quantity >= rule.minQuantity && item.quantity <= rule.maxQuantity){
                         return rule.price;
                     }
@@ -226,9 +222,10 @@ export default function Checkout() {
                         name: item.name,
                         image: item.image,
                         quantity: item.quantity,
-                        unitPrice: item.price,
+                        unitPrice: Number(item.price),
                         store: item.store,
-                        deliveryFee: deliveryFee(item)
+                        deliveryFee: item.deliveryFee,
+                        deliveryPricing: item.deliveryPricing
                     }
                 }),
                 customer: {
