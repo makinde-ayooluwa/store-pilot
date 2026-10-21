@@ -13,9 +13,10 @@ import {
 import { Link } from 'react-router-dom'
 import { useOrders } from '../../contexts/orderProvider'
 import StoreOnly from '../../components/storeOnly'
+import { useStore } from '../../contexts/storeProvider'
 
 export default function StoreOrders() {
-    const { orders = [] } = useOrders()
+    const { orders = [] } = useStore()
 
     const [search, setSearch] = useState('')
     const [statusFilter, setStatusFilter] = useState('All')
@@ -30,15 +31,10 @@ export default function StoreOrders() {
         return orders.filter((order) => {
             const customer = order.customer || {}
 
-            const customerName = [
-                customer.firstName,
-                customer.lastName
-            ]
-                .filter(Boolean)
-                .join(' ')
+            const customerName = customer.name;
 
             const orderNumber =
-                order.orderNumber ||
+                order.orderId ||
                 order._id ||
                 ''
 
@@ -62,21 +58,21 @@ export default function StoreOrders() {
     }, [orders, search, statusFilter])
 
     const getOrderTotal = (order) => {
-        if (order.total !== undefined) {
-            return Number(order.total)
+        if (order.subtotal !== undefined && order.deliveryFee !== undefined) {
+            return Number(order.subtotal + order.deliveryFee)
         }
 
-        if (order.totalAmount !== undefined) {
-            return Number(order.totalAmount)
-        }
+        // if (order.totalAmount !== undefined) {
+        //     return Number(order.totalAmount)
+        // }
 
-        return (order.items || []).reduce(
-            (total, item) =>
-                total +
-                Number(item.price || 0) *
-                Number(item.quantity || 0),
-            0
-        )
+        // return (order.items || []).reduce(
+        //     (subtotal, item) =>
+        //         subtotal +
+        //         Number(item.price || 0) *
+        //         Number(item.quantity || 0),
+        //     0
+        // )
     }
 
     const formatPrice = (amount) => {
@@ -86,12 +82,7 @@ export default function StoreOrders() {
     const getCustomerName = (order) => {
         const customer = order.customer || {}
 
-        const fullName = [
-            customer.firstName,
-            customer.lastName
-        ]
-            .filter(Boolean)
-            .join(' ')
+        const fullName = customer.name;
 
         return fullName || 'Guest Customer'
     }

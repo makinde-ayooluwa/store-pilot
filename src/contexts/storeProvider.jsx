@@ -10,6 +10,7 @@ export const StoreProvider = ({ children }) => {
     const [store, setStore] = useState(null);
     const [storeData, setStoreData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [storeOrders, setStoreOrders] = useState([]);
 
     // 1. Fetch store metadata from stored ID
     const checkStore = useCallback(async () => {
@@ -71,7 +72,9 @@ export const StoreProvider = ({ children }) => {
             console.error("CHECK PRODUCTS ERROR:", error);
         }
     }, [storeData]);
-
+const checkOrders = useCallback(()=>{
+    
+},[storeData])
     // Initial store verification on mount
     useEffect(() => {
         checkStore();
@@ -195,7 +198,8 @@ export const StoreProvider = ({ children }) => {
                 addProduct,
                 editProduct,
                 deleteProduct,
-                updateStore
+                updateStore,
+                storeOrders
             }}
         >
             {children}

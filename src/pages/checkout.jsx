@@ -208,6 +208,16 @@ export default function Checkout() {
 
         try {
             setPlacingOrder(true)
+            const deliveryFee = (item)=>{
+                item.deliveryPricing.rules.forEach((rule)=>{
+                    if(rule.maxQuantity == null){
+                        return rule.price;
+                    }
+                    if(item.quantity >= rule.minQuantity && item.quantity <= rule.maxQuantity){
+                        return rule.price;
+                    }
+                })
+            }
             const orderData = {
                 user: data._id ?? "",
                 items: cartItems.map((item) => {
@@ -218,7 +228,7 @@ export default function Checkout() {
                         quantity: item.quantity,
                         unitPrice: item.price,
                         store: item.store,
-                        deliveryFee: Number(item.deliveryPricing.rules.find((x) => item.quantity >= x.minQuantity && item.quantity <= x.maxQuantity))
+                        deliveryFee: deliveryFee(item)
                     }
                 }),
                 customer: {
