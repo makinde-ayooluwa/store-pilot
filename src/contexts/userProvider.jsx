@@ -47,9 +47,9 @@ export const UserProvider = ({ children }) => {
                 console.log(user)
                 try {
                     const checkStoreRes = await axios.post(`${backendUrl}/auth/check-store`, { id: userData._id, email: userData.email })
-                    const checkRes = checkStoreRes.data;
+                    const checkRes = await checkStoreRes.data;
                     if (checkRes.status) {
-                        localStorage.setItem("store", userData._id)
+                        await localStorage.setItem("store", userData._id)
                         console.log("USER STORE UPDATED SUCCESSFULLY")
                         setOwnStore(true);
                     }
