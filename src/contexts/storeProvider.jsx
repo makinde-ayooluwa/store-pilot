@@ -21,7 +21,7 @@ export const StoreProvider = ({ children }) => {
         if (storedId) {
             setStore(storedId);
             try {
-                console.log("CHECKING STORE")
+                // console.log("CHECKING STORE")
                 const response = await axios.post(`${backendUrl}/store/getStore`, { id: storedId });
                 const result = response.data;
 
@@ -48,7 +48,7 @@ export const StoreProvider = ({ children }) => {
 
         try {
             const response = await axios.post(`${backendUrl}/store/getProducts`, { id: storeData._id });
-            console.log("RAW BACKEND RESPONSE:", response.data);
+            // console.log("RAW BACKEND RESPONSE:", response.data);
 
             // 1. Safely extract the data payload regardless of key naming
             const payload = response.data?.data || response.data?.products || response.data;
@@ -66,8 +66,8 @@ export const StoreProvider = ({ children }) => {
             }));
 
             setStoreProducts(updatedProducts);
-            console.log("INSIDE DATA OBJECT:", response.data.data);
-            console.log("UPDATED STORE PRODUCTS", updatedProducts)
+            // console.log("INSIDE DATA OBJECT:", response.data.data);
+            // console.log("UPDATED STORE PRODUCTS", updatedProducts)
         } catch (error) {
             console.error("CHECK PRODUCTS ERROR:", error);
         }
@@ -75,9 +75,10 @@ export const StoreProvider = ({ children }) => {
 const checkOrders = useCallback(async()=>{
     try {
         const response = await axios.post(`${backendUrl}/store/getOrders`,{store: storeData._id})
-        console.log(response.data)
+        const result = await response.data;
+        setStoreOrders(result)
     } catch (error) {
-        
+        // console.log(error)
     }
 },[storeData])
     // Initial store verification on mount
@@ -96,7 +97,7 @@ const checkOrders = useCallback(async()=>{
     const register = async (data) => {
         try {
             setLoading(true);
-            console.log("REGISTERING STORE")
+            // console.log("REGISTERING STORE")
             const response = await axios.post(`${backendUrl}/store/register`, data);
             const result = response.data;
 
@@ -127,7 +128,7 @@ const checkOrders = useCallback(async()=>{
     const addProduct = async (data) => {
         try {
             const response = await axios.post(`${backendUrl}/products/add`, data);
-            console.log("PRODUCT RESPONSE:", response.data);
+            // console.log("PRODUCT RESPONSE:", response.data);
 
             // Refresh product list after adding a new item
             await checkProducts();
@@ -145,7 +146,7 @@ const checkOrders = useCallback(async()=>{
     const editProduct = async (data) => {
         try {
             const response = await axios.post(`${backendUrl}/products/edit`, data);
-            console.log("PRODUCT EDIT RESPONSE:", response.data);
+            // console.log("PRODUCT EDIT RESPONSE:", response.data);
 
             // Refresh product list after editing a new item
             await checkProducts();
@@ -171,7 +172,7 @@ const checkOrders = useCallback(async()=>{
                 message: response.data.message
             }
         } catch (error) {
-            console.log("STORE UPDATE ERROR", error)
+            // console.log("STORE UPDATE ERROR", error)
             return {
                 status: false,
                 message: "Error occured while updating store"
@@ -205,7 +206,7 @@ const checkOrders = useCallback(async()=>{
                 editProduct,
                 deleteProduct,
                 updateStore,
-                storeOrders
+                orders: storeOrders
             }}
         >
             {children}

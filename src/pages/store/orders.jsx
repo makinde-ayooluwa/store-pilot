@@ -58,9 +58,11 @@ export default function StoreOrders() {
     }, [orders, search, statusFilter])
 
     const getOrderTotal = (order) => {
-        if (order.subtotal !== undefined && order.deliveryFee !== undefined) {
-            return Number(order.subtotal + order.deliveryFee)
-        }
+        let total = 0;
+        order.items.map((item) => {
+            total += Number(item.total)
+        })
+        return total;
 
         // if (order.totalAmount !== undefined) {
         //     return Number(order.totalAmount)
@@ -113,420 +115,419 @@ export default function StoreOrders() {
     const totalOrders = orders.length
 
     const processingOrders = orders.filter(
-        (order) => order.status === 'Processing'
+        (order) => order.status === 'processing'
     ).length
 
     const shippedOrders = orders.filter(
-        (order) => order.status === 'Shipped'
+        (order) => order.status === 'shipped'
     ).length
 
     const deliveredOrders = orders.filter(
-        (order) => order.status === 'Delivered'
+        (order) => order.status === 'delivered'
     ).length
 
     return (
         <StoreOnly>
-        <div className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
+            <div className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8">
 
-            {/* Header */}
-            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                {/* Header */}
+                <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-                        Orders
-                    </h1>
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+                            Orders
+                        </h1>
 
-                    <p className="mt-1 text-sm text-slate-500">
-                        Manage and track your store orders.
-                    </p>
-                </div>
-
-                <button
-                    type="button"
-                    onClick={() => {
-                        setSearch('')
-                        setStatusFilter('All')
-                    }}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                >
-                    <MdRefresh size={18} />
-                    Reset
-                </button>
-
-            </div>
-
-            {/* Summary */}
-            <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-
-                <SummaryCard
-                    icon={<MdShoppingBag size={21} />}
-                    label="Total Orders"
-                    value={totalOrders}
-                />
-
-                <SummaryCard
-                    icon={<MdPending size={21} />}
-                    label="Processing"
-                    value={processingOrders}
-                />
-
-                <SummaryCard
-                    icon={<MdLocalShipping size={21} />}
-                    label="Shipped"
-                    value={shippedOrders}
-                />
-
-                <SummaryCard
-                    icon={<MdCheckCircle size={21} />}
-                    label="Delivered"
-                    value={deliveredOrders}
-                />
-
-            </div>
-
-            {/* Filters */}
-            <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4">
-
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-
-                    {/* Search */}
-                    <div className="relative w-full lg:max-w-md">
-
-                        <MdSearch
-                            size={20}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                        />
-
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search orders, customers..."
-                            className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
-                        />
-
+                        <p className="mt-1 text-sm text-slate-500">
+                            Manage and track your store orders.
+                        </p>
                     </div>
 
-                    {/* Status */}
-                    <div className="flex flex-wrap gap-2">
-
-                        {[
-                            'All',
-                            'Processing',
-                            'Shipped',
-                            'Delivered',
-                            'Cancelled'
-                        ].map((status) => (
-                            <button
-                                key={status}
-                                type="button"
-                                onClick={() =>
-                                    setStatusFilter(status)
-                                }
-                                className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${
-                                    statusFilter === status
-                                        ? 'bg-slate-900 text-white'
-                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                                }`}
-                            >
-                                {status}
-                            </button>
-                        ))}
-
-                    </div>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setSearch('')
+                            setStatusFilter('All')
+                        }}
+                        className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                    >
+                        <MdRefresh size={18} />
+                        Reset
+                    </button>
 
                 </div>
 
-            </div>
+                {/* Summary */}
+                <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
 
-            {/* Desktop table */}
-            <div className="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white lg:block">
+                    <SummaryCard
+                        icon={<MdShoppingBag size={21} />}
+                        label="Total Orders"
+                        value={totalOrders}
+                    />
 
-                <div className="overflow-x-auto">
+                    <SummaryCard
+                        icon={<MdPending size={21} />}
+                        label="Processing"
+                        value={processingOrders}
+                    />
 
-                    <table className="w-full text-left">
+                    <SummaryCard
+                        icon={<MdLocalShipping size={21} />}
+                        label="Shipped"
+                        value={shippedOrders}
+                    />
 
-                        <thead className="border-b border-slate-200 bg-slate-50">
+                    <SummaryCard
+                        icon={<MdCheckCircle size={21} />}
+                        label="Delivered"
+                        value={deliveredOrders}
+                    />
 
-                            <tr>
+                </div>
 
-                                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    Order
-                                </th>
+                {/* Filters */}
+                <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4">
 
-                                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    Customer
-                                </th>
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
-                                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    Items
-                                </th>
+                        {/* Search */}
+                        <div className="relative w-full lg:max-w-md">
 
-                                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    Total
-                                </th>
+                            <MdSearch
+                                size={20}
+                                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                            />
 
-                                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    Status
-                                </th>
+                            <input
+                                type="text"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Search orders, customers..."
+                                className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                            />
 
-                                <th className="px-5 py-4 text-right text-xs font-bold uppercase tracking-wide text-slate-500">
-                                    Action
-                                </th>
+                        </div>
 
-                            </tr>
+                        {/* Status */}
+                        <div className="flex flex-wrap gap-2">
 
-                        </thead>
-
-                        <tbody className="divide-y divide-slate-100">
-
-                            {filteredOrders.map((order) => (
-
-                                <tr
-                                    key={order._id}
-                                    className="transition hover:bg-slate-50"
+                            {[
+                                'All',
+                                'Processing',
+                                'Shipped',
+                                'Delivered',
+                                'Cancelled'
+                            ].map((status) => (
+                                <button
+                                    key={status}
+                                    type="button"
+                                    onClick={() =>
+                                        setStatusFilter(status)
+                                    }
+                                    className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${statusFilter === status
+                                            ? 'bg-slate-900 text-white'
+                                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                        }`}
                                 >
+                                    {status}
+                                </button>
+                            ))}
 
-                                    <td className="px-5 py-4">
+                        </div>
 
-                                        <p className="text-sm font-bold text-slate-900">
-                                            {order.orderNumber || order._id}
-                                        </p>
+                    </div>
 
-                                        <p className="mt-1 text-xs text-slate-400">
-                                            {new Date(
-                                                order.createdAt
-                                            ).toLocaleDateString()}
-                                        </p>
+                </div>
 
-                                    </td>
+                {/* Desktop table */}
+                <div className="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white lg:block">
 
-                                    <td className="px-5 py-4">
+                    <div className="overflow-x-auto">
 
-                                        <p className="text-sm font-semibold text-slate-800">
-                                            {getCustomerName(order)}
-                                        </p>
+                        <table className="w-full text-left">
 
-                                        <p className="mt-1 text-xs text-slate-400">
-                                            {getCustomerEmail(order)}
-                                        </p>
+                            <thead className="border-b border-slate-200 bg-slate-50">
 
-                                    </td>
+                                <tr>
 
-                                    <td className="px-5 py-4">
+                                    <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500">
+                                        Order
+                                    </th>
 
-                                        <span className="text-sm text-slate-600">
-                                            {(order.items || []).reduce(
-                                                (total, item) =>
-                                                    total +
-                                                    Number(
-                                                        item.quantity || 0
-                                                    ),
-                                                0
-                                            )}
-                                        </span>
+                                    <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500">
+                                        Customer
+                                    </th>
 
-                                    </td>
+                                    <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500">
+                                        Items
+                                    </th>
 
-                                    <td className="px-5 py-4">
+                                    <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500">
+                                        Total
+                                    </th>
 
-                                        <span className="text-sm font-bold text-slate-900">
-                                            {formatPrice(
-                                                getOrderTotal(order)
-                                            )}
-                                        </span>
+                                    <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-slate-500">
+                                        Status
+                                    </th>
 
-                                    </td>
-
-                                    <td className="px-5 py-4">
-
-                                        <span
-                                            className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${getStatusClass(
-                                                order.status
-                                            )}`}
-                                        >
-                                            {order.status}
-                                        </span>
-
-                                    </td>
-
-                                    <td className="px-5 py-4 text-right">
-
-                                        <div className="relative inline-block">
-
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    setOpenMenu(
-                                                        openMenu === order._id
-                                                            ? null
-                                                            : order._id
-                                                    )
-                                                }
-                                                className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
-                                            >
-                                                <MdMoreVert size={21} />
-                                            </button>
-
-                                            {openMenu === order._id && (
-                                                <div className="absolute right-0 top-11 z-50 w-40 rounded-xl border border-slate-200 bg-white p-1 text-left shadow-lg">
-
-                                                    <Link
-                                                        to={`/store/orders/${order._id}`}
-                                                        onClick={() =>
-                                                            setOpenMenu(null)
-                                                        }
-                                                        className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm text-slate-700 transition hover:bg-slate-50"
-                                                    >
-                                                        <MdVisibility size={18} />
-                                                        View Order
-                                                    </Link>
-
-                                                </div>
-                                            )}
-
-                                        </div>
-
-                                    </td>
+                                    <th className="px-5 py-4 text-right text-xs font-bold uppercase tracking-wide text-slate-500">
+                                        Action
+                                    </th>
 
                                 </tr>
 
-                            ))}
+                            </thead>
 
-                        </tbody>
+                            <tbody className="divide-y divide-slate-100">
 
-                    </table>
+                                {filteredOrders.map((order) => (
+
+                                    <tr
+                                        key={order._id}
+                                        className="transition hover:bg-slate-50"
+                                    >
+
+                                        <td className="px-5 py-4">
+
+                                            <p className="text-sm font-bold text-slate-900">
+                                                {order.orderId || order._id}
+                                            </p>
+
+                                            <p className="mt-1 text-xs text-slate-400">
+                                                {new Date(
+                                                    order.createdAt
+                                                ).toLocaleDateString()}
+                                            </p>
+
+                                        </td>
+
+                                        <td className="px-5 py-4">
+
+                                            <p className="text-sm font-semibold text-slate-800">
+                                                {getCustomerName(order)}
+                                            </p>
+
+                                            <p className="mt-1 text-xs text-slate-400">
+                                                {getCustomerEmail(order)}
+                                            </p>
+
+                                        </td>
+
+                                        <td className="px-5 py-4">
+
+                                            <span className="text-sm text-slate-600">
+                                                {(order.items || []).reduce(
+                                                    (total, item) =>
+                                                        total +
+                                                        Number(
+                                                            item.quantity || 0
+                                                        ),
+                                                    0
+                                                )}
+                                            </span>
+
+                                        </td>
+
+                                        <td className="px-5 py-4">
+
+                                            <span className="text-sm font-bold text-slate-900">
+                                                {formatPrice(
+                                                    getOrderTotal(order)
+                                                )}
+                                            </span>
+
+                                        </td>
+
+                                        <td className="px-5 py-4">
+
+                                            <span
+                                                className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${getStatusClass(
+                                                    order.status
+                                                )}`}
+                                            >
+                                                {order.status}
+                                            </span>
+
+                                        </td>
+
+                                        <td className="px-5 py-4 text-right">
+
+                                            <div className="relative inline-block">
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setOpenMenu(
+                                                            openMenu === order._id
+                                                                ? null
+                                                                : order._id
+                                                        )
+                                                    }
+                                                    className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+                                                >
+                                                    <MdMoreVert size={21} />
+                                                </button>
+
+                                                {openMenu === order._id && (
+                                                    <div className="absolute right-0 top-11 z-50 w-40 rounded-xl border border-slate-200 bg-white p-1 text-left shadow-lg">
+
+                                                        <Link
+                                                            to={`/store/orders/${order.orderId}`}
+                                                            onClick={() =>
+                                                                setOpenMenu(null)
+                                                            }
+                                                            className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm text-slate-700 transition hover:bg-slate-50"
+                                                        >
+                                                            <MdVisibility size={18} />
+                                                            View Order
+                                                        </Link>
+
+                                                    </div>
+                                                )}
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    {/* Empty state */}
+                    {filteredOrders.length === 0 && (
+                        <div className="px-6 py-16 text-center">
+
+                            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
+                                <MdShoppingBag
+                                    size={27}
+                                    className="text-slate-400"
+                                />
+                            </div>
+
+                            <h3 className="text-sm font-bold text-slate-900">
+                                No orders found
+                            </h3>
+
+                            <p className="mt-1 text-xs text-slate-500">
+                                {orders.length === 0
+                                    ? 'Orders placed by customers will appear here.'
+                                    : 'Try changing your search or filter.'}
+                            </p>
+
+                        </div>
+                    )}
 
                 </div>
 
-                {/* Empty state */}
-                {filteredOrders.length === 0 && (
-                    <div className="px-6 py-16 text-center">
+                {/* Mobile */}
+                <div className="space-y-3 lg:hidden">
 
-                        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-                            <MdShoppingBag
-                                size={27}
-                                className="text-slate-400"
-                            />
-                        </div>
+                    {filteredOrders.map((order) => (
 
-                        <h3 className="text-sm font-bold text-slate-900">
-                            No orders found
-                        </h3>
-
-                        <p className="mt-1 text-xs text-slate-500">
-                            {orders.length === 0
-                                ? 'Orders placed by customers will appear here.'
-                                : 'Try changing your search or filter.'}
-                        </p>
-
-                    </div>
-                )}
-
-            </div>
-
-            {/* Mobile */}
-            <div className="space-y-3 lg:hidden">
-
-                {filteredOrders.map((order) => (
-
-                    <div
-                        key={order._id}
-                        className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-                    >
-
-                        <div className="flex items-start justify-between gap-3">
-
-                            <div>
-
-                                <p className="text-sm font-bold text-slate-900">
-                                    {order.orderNumber || order._id}
-                                </p>
-
-                                <p className="mt-1 text-xs text-slate-400">
-                                    {new Date(
-                                        order.createdAt
-                                    ).toLocaleDateString()}
-                                </p>
-
-                            </div>
-
-                            <span
-                                className={`rounded-full px-2.5 py-1 text-xs font-semibold ${getStatusClass(
-                                    order.status
-                                )}`}
-                            >
-                                {order.status}
-                            </span>
-
-                        </div>
-
-                        <div className="my-4 border-t border-slate-100" />
-
-                        <div className="grid grid-cols-2 gap-4">
-
-                            <div>
-                                <p className="text-[10px] font-semibold uppercase text-slate-400">
-                                    Customer
-                                </p>
-
-                                <p className="mt-1 text-sm font-semibold text-slate-800">
-                                    {getCustomerName(order)}
-                                </p>
-                            </div>
-
-                            <div>
-                                <p className="text-[10px] font-semibold uppercase text-slate-400">
-                                    Total
-                                </p>
-
-                                <p className="mt-1 text-sm font-bold text-slate-900">
-                                    {formatPrice(
-                                        getOrderTotal(order)
-                                    )}
-                                </p>
-                            </div>
-
-                        </div>
-
-                        <Link
-                            to={`/store/orders/${order._id}`}
-                            className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-xs font-bold text-white transition hover:bg-slate-800"
+                        <div
+                            key={order._id}
+                            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                         >
-                            <MdVisibility size={17} />
-                            View Order
-                        </Link>
 
-                    </div>
+                            <div className="flex items-start justify-between gap-3">
 
-                ))}
+                                <div>
 
-                {filteredOrders.length === 0 && (
-                    <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center">
+                                    <p className="text-sm font-bold text-slate-900">
+                                        {order.orderNumber || order._id}
+                                    </p>
 
-                        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-                            <MdShoppingBag
-                                size={27}
-                                className="text-slate-400"
-                            />
+                                    <p className="mt-1 text-xs text-slate-400">
+                                        {new Date(
+                                            order.createdAt
+                                        ).toLocaleDateString()}
+                                    </p>
+
+                                </div>
+
+                                <span
+                                    className={`rounded-full px-2.5 py-1 text-xs font-semibold ${getStatusClass(
+                                        order.status
+                                    )}`}
+                                >
+                                    {order.status}
+                                </span>
+
+                            </div>
+
+                            <div className="my-4 border-t border-slate-100" />
+
+                            <div className="grid grid-cols-2 gap-4">
+
+                                <div>
+                                    <p className="text-[10px] font-semibold uppercase text-slate-400">
+                                        Customer
+                                    </p>
+
+                                    <p className="mt-1 text-sm font-semibold text-slate-800">
+                                        {getCustomerName(order)}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <p className="text-[10px] font-semibold uppercase text-slate-400">
+                                        Total
+                                    </p>
+
+                                    <p className="mt-1 text-sm font-bold text-slate-900">
+                                        {formatPrice(
+                                            getOrderTotal(order)
+                                        )}
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <Link
+                                to={`/store/orders/${order.orderId}`}
+                                className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-xs font-bold text-white transition hover:bg-slate-800"
+                            >
+                                <MdVisibility size={17} />
+                                View Order
+                            </Link>
+
                         </div>
 
-                        <h3 className="text-sm font-bold text-slate-900">
-                            No orders found
-                        </h3>
+                    ))}
 
-                        <p className="mt-1 text-xs text-slate-500">
-                            {orders.length === 0
-                                ? 'Orders placed by customers will appear here.'
-                                : 'Try changing your search or filter.'}
-                        </p>
+                    {filteredOrders.length === 0 && (
+                        <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center">
 
-                    </div>
-                )}
+                            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
+                                <MdShoppingBag
+                                    size={27}
+                                    className="text-slate-400"
+                                />
+                            </div>
+
+                            <h3 className="text-sm font-bold text-slate-900">
+                                No orders found
+                            </h3>
+
+                            <p className="mt-1 text-xs text-slate-500">
+                                {orders.length === 0
+                                    ? 'Orders placed by customers will appear here.'
+                                    : 'Try changing your search or filter.'}
+                            </p>
+
+                        </div>
+                    )}
+
+                </div>
 
             </div>
-
-        </div>
         </StoreOnly>
     )
 }

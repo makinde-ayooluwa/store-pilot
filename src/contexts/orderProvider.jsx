@@ -135,7 +135,7 @@ export function OrderProvider({ children }) {
     }
     const getOrderById = (orderId) => {
         return orders.find(
-            (order) => order._id === orderId
+            (order) => order.orderId === orderId
         )
     }
 

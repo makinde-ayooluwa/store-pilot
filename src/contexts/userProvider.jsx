@@ -68,15 +68,15 @@ export const UserProvider = ({ children }) => {
                 const userData = response.data;
                 setData(userData);
                 setUserError({ status: 200 });
-                console.log("USER ERROR", userError)
+                // console.log("USER ERROR", userError)
 
-                console.log(user)
+                // console.log(user)
                 try {
                     const checkStoreRes = await axios.post(`${backendUrl}/auth/check-store`, { id: userData._id, email: userData.email })
                     const checkRes = await checkStoreRes.data;
                     if (checkRes.status) {
                         await localStorage.setItem("store", userData._id)
-                        console.log("USER STORE UPDATED SUCCESSFULLY")
+                        // console.log("USER STORE UPDATED SUCCESSFULLY")
                         setOwnStore(true);
                     }
                 } catch (error) {
@@ -254,7 +254,7 @@ export const UserProvider = ({ children }) => {
         const response = await axios.post(`${backendUrl}/auth/reset-password`, data)
         const result = response.data;
         if (result.status == true) {
-            console.log(result.status)
+            // console.log(result.status)
             return true;
         } else {
             return false;

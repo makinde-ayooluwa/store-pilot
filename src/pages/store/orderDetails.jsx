@@ -24,11 +24,12 @@ export default function StoreOrderDetails() {
 
     const {
         getOrderById,
-        updateOrderStatus
+        updateOrderStatus,
+        orders
     } = useOrders()
 
     const order = getOrderById(id)
-
+console.log(orders);
     const [status, setStatus] = useState(
         order?.status || 'Processing'
     )
