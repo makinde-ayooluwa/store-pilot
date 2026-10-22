@@ -4,6 +4,7 @@ import axios from "axios";
 import { MdErrorOutline, MdRefresh } from "react-icons/md";
 import Loading from "../components/loading";
 import { useSocket } from "./socketProvider";
+import Swal from "sweetalert2";
 
 export const UserContext = createContext();
 
@@ -13,7 +14,7 @@ export const UserProvider = ({ children }) => {
     const [data, setData] = useState(null);
     const [userError, setUserError] = useState({});
     const [ownStore, setOwnStore] = useState(false);
-    const { sendToSocket } = useSocket();
+    const { sendToSocket, lastMessage, closeSocket } = useSocket();
     useEffect(() => {
         if (user != null && data != null && data._id !== "") {
             sendToSocket({
@@ -23,6 +24,31 @@ export const UserProvider = ({ children }) => {
         }
     }, [user, data]); // Add sendToSocket to dependencies if it's defined inside the component scope
     // useCallback prevents unnecessary re-creations of checkUser
+    /*
+    useEffect(() => {
+        if (!lastMessage) return
+        if (lastMessage.type == "connected_users") {
+            console.log("USERS ARE CONNECTED")
+            lastMessage.data.forEach(async (message) => {
+                const response = await axios.post(`${backendUrl}/auth/getUser`, { id: message })
+                const result = await response.data;
+                if (result && result._id !== data._id) {
+                    await Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'info',
+                        title: `${result.fullname} is online now. Chat with them`,
+                        showConfirmButton: false,
+                        timer: 2500,
+                        timerProgressBar: true,
+                    });
+                }
+            })
+            console.log("LAST MESSAGE CHANGE");
+        }
+        
+    }, [lastMessage])
+    */
     const checkUser = useCallback(async () => {
         try {
             setUserLoading(true);
@@ -100,8 +126,16 @@ export const UserProvider = ({ children }) => {
 
                 if (loginData.rememberMe) {
                     localStorage.setItem("user", sessionPayload);
+                    sendToSocket({
+                        userId: sessionPayload._id,
+                        type: "join"
+                    });
                 } else {
                     sessionStorage.setItem("user", sessionPayload);
+                    sendToSocket({
+                        userId: sessionPayload._id,
+                        type: "join"
+                    });
                 }
 
                 // Fetch fresh user profile details
@@ -245,6 +279,7 @@ export const UserProvider = ({ children }) => {
         sessionStorage.removeItem("user");
         localStorage.removeItem("store");
         sessionStorage.removeItem("store");
+        closeSocket()
         setUser(null);
         setData(null);
         setUserError({});

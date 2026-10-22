@@ -221,10 +221,11 @@ export default function Checkout() {
                         product: item._id,
                         name: item.name,
                         image: item.image,
-                        quantity: item.quantity,
+                        quantity: Number(item.quantity),
                         unitPrice: Number(item.price),
                         store: item.store,
-                        deliveryFee: item.deliveryFee,
+                        deliveryFee: Number(item.deliveryFee),
+                        total: (Number(item.price) * Number(item.quantity)) + Number(item.deliveryFee),
                         deliveryPricing: item.deliveryPricing
                     }
                 }),

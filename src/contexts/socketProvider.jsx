@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { useUser } from "./userProvider";
+import axios from "axios";
+import { backendUrl } from "../data/constants";
+import Swal from "sweetalert2";
 
 export const SocketContext = createContext(null);
 
@@ -7,6 +9,7 @@ export const SocketProvider = ({ children }) => {
     const ws = useRef(null);
     const [isConnected, setIsConnected] = useState(false);
     const [lastMessage, setLastMessage] = useState(null);
+
     useEffect(() => {
         const socket = new WebSocket("ws://localhost:5000");
 
@@ -14,14 +17,15 @@ export const SocketProvider = ({ children }) => {
 
         socket.onopen = (e) => {
             console.log("WebSocket connected", e);
-            
+
             setIsConnected(true);
         };
 
         socket.onmessage = (event) => {
             console.log("Message received:", event.data);
 
-            setLastMessage(event.data);
+            setLastMessage(JSON.parse(event.data));
+            console.log("LAST MESSAGE", JSON.parse(event.data))
         };
 
         socket.onerror = (error) => {
@@ -51,13 +55,24 @@ export const SocketProvider = ({ children }) => {
 
         ws.current.send(JSON.stringify(message) ?? message);
     };
-
+    const closeSocket = () => {
+        if (!ws.current) {
+            console.warn("WebSocket is not initialized");
+            return;
+        }
+        if (ws.current.readyState !== WebSocket.OPEN) {
+            console.warn("WebSocket is not connected");
+            return;
+        }
+        ws.current.close();
+    }
     return (
         <SocketContext.Provider
             value={{
                 sendToSocket,
                 isConnected,
-                lastMessage
+                lastMessage,
+                closeSocket
             }}
         >
             {children}

@@ -72,13 +72,19 @@ export const StoreProvider = ({ children }) => {
             console.error("CHECK PRODUCTS ERROR:", error);
         }
     }, [storeData]);
-const checkOrders = useCallback(()=>{
-    
+const checkOrders = useCallback(async()=>{
+    try {
+        const response = await axios.post(`${backendUrl}/store/getOrders`,{store: storeData._id})
+        console.log(response.data)
+    } catch (error) {
+        
+    }
 },[storeData])
     // Initial store verification on mount
     useEffect(() => {
         checkStore();
-    }, [checkStore]);
+        checkOrders();
+    }, [checkStore, checkOrders]);
 
     // Fetch products once storeData is successfully populated
     useEffect(() => {
