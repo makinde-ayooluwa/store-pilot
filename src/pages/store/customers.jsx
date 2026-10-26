@@ -19,7 +19,7 @@ export default function StoreCustomers() {
 
     const [search, setSearch] = useState('')
     const [openMenu, setOpenMenu] = useState(null)
-
+console.log(orders);
     /*
      * Build a unique customer list from orders.
      *

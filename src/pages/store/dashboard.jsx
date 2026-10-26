@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
     MdTrendingUp,
     MdShoppingCart,
@@ -30,20 +30,123 @@ export default function StoreDashboard() {
         { day: "Thu", sales: 145000 },
         { day: "Fri", sales: 180000 },
         { day: "Sat", sales: 250000 },
-        { day: "Sun", sales: 175000 }
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
+        { day: "Mon", sales: 85000 },
+        { day: "Tue", sales: 120000 },
+        { day: "Wed", sales: 95000 },
+        { day: "Thu", sales: 145000 },
+        { day: "Fri", sales: 180000 },
+        { day: "Sat", sales: 250000 },
+        { day: "Sun", sales: 175000 },
     ]
-    const {products} = useStore();
+    const [salesFilter, setSalesFilter] = useState(7);
+    const {products, orders} = useStore();
+    let totalSale = 0;
+    orders.map((order)=>{
+totalSale += order.total
+    })
     const stats = [
         {
             title: "Total Sales",
-            value: "₦1,245,000",
+            value: `NGN ${totalSale.toLocaleString()}`,
             // change: "+12.5%",
             positive: true,
             icon: <MdTrendingUp size={22} />
         },
         {
             title: "Total Orders",
-            value: "248",
+            value: orders.length,
             // change: "+8.2%",
             positive: true,
             icon: <MdShoppingCart size={22} />
@@ -57,7 +160,7 @@ export default function StoreDashboard() {
         },
         {
             title: "Customers",
-            value: "384",
+            value: orders.filter((x)=>x.customer !== undefined && x.customer !== null).length,
             // change: "+15.4%",
             positive: true,
             icon: <MdPeople size={22} />
@@ -196,11 +299,13 @@ export default function StoreDashboard() {
                                     </p>
                                 </div>
 
-                                <select className="border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none">
-                                    <option>Last 7 days</option>
-                                    <option>Last 30 days</option>
-                                    <option>Last 3 months</option>
-                                    <option>Last year</option>
+                                <select onChange={(e)=>{
+setSalesFilter(Number(e.target.value))
+                                }} className="border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none">
+                                    <option value={7}>Last 7 days</option>
+                                    <option  value={30}>Last 30 days</option>
+                                    <option value={90}>Last 3 months</option>
+                                    <option value={365}>Last year</option>
                                 </select>
                             </div>
 
@@ -209,7 +314,7 @@ export default function StoreDashboard() {
 
                                 <ResponsiveContainer width="100%" height="100%">
 
-                                    <AreaChart data={salesData}>
+                                    <AreaChart data={salesData.filter((x, index)=>index <= salesFilter)}>
 
                                         <defs>
                                             <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">

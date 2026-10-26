@@ -14,6 +14,7 @@ import { useCart } from '../contexts/cartProvider'
 import { useUser } from "../contexts/userProvider"
 import { useResource } from "../contexts/resourceProvider"
 import { UserOnly } from "../components/userOnly"
+import { backendUrl } from '../data/constants'
 
 export default function Cart() {
     const navigate = useNavigate()
@@ -221,7 +222,7 @@ export default function Cart() {
                                                 className="h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-slate-100 sm:h-28 sm:w-28"
                                             >
                                                 <img
-                                                    src={item.images?.[0] || item.image}
+                                                    src={`${backendUrl}/${item.images?.[0]}` || `${backendUrl}/${item.image}`}
                                                     alt={item.name}
                                                     className="h-full w-full object-cover transition hover:scale-105"
                                                 />

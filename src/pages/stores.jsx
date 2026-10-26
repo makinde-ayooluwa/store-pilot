@@ -19,10 +19,10 @@ export default function Stores() {
     const [search, setSearch] = useState('')
     const [category, setCategory] = useState('all')
     const [sort, setSort] = useState('featured')
+const {products} = useResource()
 
     const filteredStores = useMemo(() => {
         let result = [...stores]
-
         const searchValue = search.trim().toLowerCase()
 
         if (searchValue) {
@@ -49,7 +49,7 @@ export default function Stores() {
         if (category !== 'all') {
             result = result.filter(
                 (store) =>
-                    store.categorySlug === category
+                    store.category === category
             )
         }
 
@@ -445,8 +445,7 @@ export default function Stores() {
 
                                                         <span>
                                                             {
-                                                                store
-                                                                    .productsCount
+                                                                products.filter((x)=>x.store == store._id).length ?? 0
                                                             }{' '}
                                                             products
                                                         </span>

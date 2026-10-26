@@ -284,7 +284,7 @@ const {send} = useSocket()
                                     <div className="flex flex-1 flex-col justify-center p-4">
                                         <p className="text-sm font-bold text-slate-800">{store.name}</p>
                                         <p className="mt-1 text-[10px] text-slate-400">{store.category}</p>
-                                        <p className="mt-2 text-[10px] font-medium text-slate-500">{store.productsCount ?? 0} products</p>
+                                        <p className="mt-2 text-[10px] font-medium text-slate-500">{products.filter((x)=>x.store == store._id).length ?? 0} products</p>
                                         <div className="mt-2 flex items-center gap-1 text-[10px] font-semibold text-emerald-600">
                                             Visit store <MdKeyboardArrowRight size={14} />
                                         </div>

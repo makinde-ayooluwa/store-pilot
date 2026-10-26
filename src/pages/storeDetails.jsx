@@ -240,7 +240,7 @@ const {user} = useUser()
 
                                     <div className="pb-1">
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+                                            <h1 className="text-2xl font-bold text-white sm:text-3xl">
                                                 {store.name}
                                             </h1>
 
