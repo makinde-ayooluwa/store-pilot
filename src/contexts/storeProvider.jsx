@@ -34,9 +34,11 @@ export const StoreProvider = ({ children }) => {
                 console.error("CHECK STORE ERROR:", error);
                 setStoreData(null);
             }
+            setLoading(false)
         } else {
             setStore(null);
             setStoreData(null);
+            setLoading(false);
         }
 
         setLoading(false);
@@ -74,13 +76,16 @@ export const StoreProvider = ({ children }) => {
     }, [storeData]);
 const checkOrders = useCallback(async()=>{
     try {
+        setLoading(true)
         const response = await axios.post(`${backendUrl}/store/getOrders`,{store: storeData._id})
         const result = await response.data;
-        setStoreOrders(result)
+        setStoreOrders(result.data)
+        setLoading(false);
     } catch (error) {
         // console.log(error)
+        setLoading(false);
     }
-},[storeData])
+},[])
     // Initial store verification on mount
     useEffect(() => {
         checkStore();

@@ -131,10 +131,10 @@ export default function StoreDashboard() {
         { day: "Sun", sales: 175000 },
     ]
     const [salesFilter, setSalesFilter] = useState(7);
-    const {products, orders} = useStore();
+    const { products, orders } = useStore();
     let totalSale = 0;
-    orders.map((order)=>{
-totalSale += order.total
+    orders.map((order) => {
+        totalSale += order.total
     })
     const stats = [
         {
@@ -160,7 +160,7 @@ totalSale += order.total
         },
         {
             title: "Customers",
-            value: orders.filter((x)=>x.customer !== undefined && x.customer !== null).length,
+            value: orders.filter((x) => x.customer !== undefined && x.customer !== null).length,
             // change: "+15.4%",
             positive: true,
             icon: <MdPeople size={22} />
@@ -299,11 +299,11 @@ totalSale += order.total
                                     </p>
                                 </div>
 
-                                <select onChange={(e)=>{
-setSalesFilter(Number(e.target.value))
+                                <select onChange={(e) => {
+                                    setSalesFilter(Number(e.target.value))
                                 }} className="border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none">
                                     <option value={7}>Last 7 days</option>
-                                    <option  value={30}>Last 30 days</option>
+                                    <option value={30}>Last 30 days</option>
                                     <option value={90}>Last 3 months</option>
                                     <option value={365}>Last year</option>
                                 </select>
@@ -314,7 +314,7 @@ setSalesFilter(Number(e.target.value))
 
                                 <ResponsiveContainer width="100%" height="100%">
 
-                                    <AreaChart data={salesData.filter((x, index)=>index <= salesFilter)}>
+                                    <AreaChart data={salesData.filter((x, index) => index <= salesFilter)}>
 
                                         <defs>
                                             <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
